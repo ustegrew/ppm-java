@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/peter/git/ppm_java/lib/jna/jna-3.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jjack/jjack-clients.jar"/>
+	<classpathentry kind="lib" path="lib/jjack/jjack.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

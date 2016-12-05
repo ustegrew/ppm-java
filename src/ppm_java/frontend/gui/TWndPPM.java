@@ -1,0 +1,264 @@
+/* -----------------------------------------------------------------------------
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+----------------------------------------------------------------------------- */
+package ppm_java.frontend.gui;
+
+import java.awt.Color;
+
+import ppm_java.frontend.gui.TGUISurrogate.EClipType;
+
+/**
+ *
+ * @author peter
+ */
+class TWndPPM extends javax.swing.JFrame
+{
+    private static final Color              kColorClip          = new Color (0xbf, 0x03, 0x03);
+    private static final Color              kColorNormal        = new Color (0xe0, 0xe0, 0xe0);
+    private static final Color              kColorWarn          = new Color (0xff, 0xd5, 0x00);
+    private static final long               serialVersionUID    = -2335417501850617358L;
+    
+    private TGUISurrogate                   fConnector;
+    private javax.swing.JLabel              fLblL;
+    private javax.swing.JLabel              fLblR;
+    private javax.swing.JProgressBar        fMeterL;
+    private javax.swing.JProgressBar        fMeterR;
+    private javax.swing.JPanel              fPnlMeterL;
+    private javax.swing.JPanel              fPnlMeterR;
+    private javax.swing.JLabel              fSigClipL;
+    private javax.swing.JLabel              fSigClipR;
+
+    public TWndPPM (TGUISurrogate surrogate)
+    {
+        fConnector = surrogate;
+        initComponents ();
+    }
+
+    public void ClippingSet (EClipType cType, int iChannel)
+    {
+        _SetClipColor (cType, iChannel);
+    }
+    
+    public void SetLevel (int lvl, int iChannel)
+    {
+        javax.swing.JProgressBar        target;
+        switch (iChannel)
+        {
+            case 0:
+                target = fMeterL;
+                break;
+            case 1:
+                target = fMeterR;
+                break;
+            default:
+                target = fMeterL;
+        }
+        target.setValue (lvl);
+    }
+    
+    private void _OnSigClipLMouseClicked(java.awt.event.MouseEvent evt)
+    {
+        fConnector.OnSigClip_Click ();
+    }
+    
+    private void _OnSigClipRMouseClicked(java.awt.event.MouseEvent evt)
+    {
+        fConnector.OnSigClip_Click ();
+    }
+    
+    private void _OnWindowClose(java.awt.event.WindowEvent evt)
+    {
+        fConnector.OnTerminate ();
+    }
+    
+    private void _SetClipColor (EClipType cType, int iChannel)
+    {
+        javax.swing.JLabel  sig;
+        Color               c;
+        
+        switch (cType)
+        {
+            case kClear:
+                c = kColorNormal;
+                break;
+            case kWarn:
+                c = kColorWarn;
+                break;
+            case kError:
+                c = kColorClip;
+                break;
+            default:
+                c = kColorNormal;
+        }
+        
+        if (iChannel == 0)
+        {
+            sig = fSigClipL;
+        }
+        else if (iChannel == 1)
+        {
+            sig = fSigClipR;
+        }
+        else
+        {
+            sig = null;
+        }
+        
+        if (sig != null)
+        {
+            sig.setBackground (c);
+        }
+        else
+        {
+            fSigClipL.setBackground (c);
+            fSigClipR.setBackground (c);
+        }
+    }
+    
+    private void initComponents()
+    {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        fPnlMeterL = new javax.swing.JPanel();
+        fLblL = new javax.swing.JLabel();
+        fMeterL = new javax.swing.JProgressBar();
+        fSigClipL = new javax.swing.JLabel();
+        fPnlMeterR = new javax.swing.JPanel();
+        fLblR = new javax.swing.JLabel();
+        fMeterR = new javax.swing.JProgressBar();
+        fSigClipR = new javax.swing.JLabel();
+
+        setDefaultCloseOperation (javax.swing.WindowConstants.HIDE_ON_CLOSE);
+//        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("PPM");
+        setBounds(new java.awt.Rectangle(0, 0, 500, 100));
+        setMaximumSize(new java.awt.Dimension(600, 100));
+        setMinimumSize(new java.awt.Dimension(400, 100));
+        setPreferredSize(new java.awt.Dimension(600, 100));
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter()
+        {
+            public void windowClosing (java.awt.event.WindowEvent evt)
+            {
+                _OnWindowClose (evt);
+            }
+        });
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        fPnlMeterL.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        fPnlMeterL.setLayout(new java.awt.GridBagLayout());
+
+        fLblL.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        fLblL.setForeground(new java.awt.Color(102, 0, 255));
+        fLblL.setText("L");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
+        fPnlMeterL.add(fLblL, gridBagConstraints);
+
+        fMeterL.setForeground(new java.awt.Color(102, 0, 255));
+        fMeterL.setValue(50);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
+        fPnlMeterL.add(fMeterL, gridBagConstraints);
+
+        fSigClipL.setForeground(new java.awt.Color(204, 204, 204));
+        fSigClipL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        fSigClipL.setText("Clip");
+        fSigClipL.setToolTipText("");
+        fSigClipL.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                _OnSigClipLMouseClicked(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 30;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        fPnlMeterL.add(fSigClipL, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        getContentPane().add(fPnlMeterL, gridBagConstraints);
+
+        fPnlMeterR.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        fPnlMeterR.setLayout(new java.awt.GridBagLayout());
+
+        fLblR.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        fLblR.setForeground(new java.awt.Color(0, 0, 255));
+        fLblR.setText("R");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
+        fPnlMeterR.add(fLblR, gridBagConstraints);
+
+        fMeterR.setForeground(new java.awt.Color(0, 0, 255));
+        fMeterR.setValue(50);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
+        fPnlMeterR.add(fMeterR, gridBagConstraints);
+
+        fSigClipR.setForeground(new java.awt.Color(204, 204, 204));
+        fSigClipR.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        fSigClipR.setText("Clip");
+        fSigClipR.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
+                _OnSigClipRMouseClicked(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 30;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
+        fPnlMeterR.add(fSigClipR, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
+        getContentPane().add(fPnlMeterR, gridBagConstraints);
+
+        pack();
+    }
+}
