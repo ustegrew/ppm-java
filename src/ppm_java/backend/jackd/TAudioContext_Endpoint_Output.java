@@ -18,6 +18,8 @@ package ppm_java.backend.jackd;
 import java.nio.FloatBuffer;
 
 import ppm_java._aux.storage.TAtomicBuffer;
+import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
 import ppm_java._framework.typelib.VAudioPort_Output_Chunks;
 
 /**
@@ -31,6 +33,7 @@ public class TAudioContext_Endpoint_Output extends VAudioPort_Output_Chunks
     protected TAudioContext_Endpoint_Output (String id, TAudioContext_JackD host)
     {
         super (id, host);
+        fBuffer = new TAtomicBuffer (ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnEmpty);
     }
 
     /* (non-Javadoc)

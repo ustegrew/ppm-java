@@ -19,6 +19,7 @@ import java.nio.FloatBuffer;
 
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
 import ppm_java._framework.typelib.VAudioPort_Input_Chunks;
 
 /**
@@ -32,7 +33,7 @@ public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks
     protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host, int iPort)
     {
         super (id, host, iPort);
-        fBuffer = new TAtomicBuffer (ECopyPolicy.kCopyOnSet);
+        fBuffer = new TAtomicBuffer (ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);
     }
 
     /* (non-Javadoc)

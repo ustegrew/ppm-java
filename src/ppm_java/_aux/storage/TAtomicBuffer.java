@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * to another thread updating the GUI. The audio hardware thread cannot 
  * afford to be blocked, hence has high priority. The GUI thread isn't time 
  * critical, and we can afford to have it loose some data. 
+ * <p><br/></p>
  * 
  * The <code>TAtomicBuffer</code> guarantees that data can be passed from (to)
  * a high priority thread within a fixed (short) time without 
@@ -36,9 +37,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * thread can't keep up with the streaming data it can't make full use of 
  * the stream anyway, so this seemed to be the best solution for data in 
  * contention situations.
+ * <p><br/></p>
  * 
  * To monitor the quality of the data flow we offer various counters which can 
  * be queried by all parties (all {@link #ClearStats() clearable}}:
+ * <p><br/></p>
  * 
  * <ul>
  *     <li>Overrun counter:    Increments each time the producer pushes a new 
@@ -56,6 +59,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *                             indicates that both, producer and consumer, are too 
  *                             aggressive trying to set and get data.</li>
  * </ul>
+ * <p><br/></p>
  * 
  * Clients can use the underrun and overrun counters for automatic dropout compensation. 
  * For example, a low priority consumer thread can, with each cycle: 
@@ -75,11 +79,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  *         </ul>
  *     </li>
  * </ul>
+ * <p><br/></p>
  * 
  * If the contention counter has a steep rise then both, the producer and consumer are
  * too aggressively trying to set and read data. As a mitigation strategy the party with the 
  * lower priority must be forced to yield whilst the higher priority party has the critical section.
  * You can use the {@link #IsLocked()} method for that:
+ * <p><br/></p>
  * 
  * <pre>
  * while (myBuffer.IsLocked()) 
@@ -90,8 +96,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  *     } catch (ThatInterruptedExceptionISeeNoUseFor e){}
  * }
  * </pre>
+ * <p><br/></p>
  * 
  * This is not a pretty solution, but it works - best use sparingly, if you have to. 
+ * <p><br/></p>
  * 
  * Don't assume the counters are precise. Overall access to the counters isn't thread safe
  * (it seemed overkill to implement that, too). Whilst each counter is using an atomic 
@@ -100,6 +108,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Due to lack of overall counter thread safety the counters can only serve as guideline 
  * to assess the various reasons for dropped data. Them counters aren't brilliant, but good 
  * enough for simple diagnosis.
+ * <p><br/></p>
  * 
  * Clients can customize what's returned to the consumer thread when no valid data is 
  * available upon call to {@link #Get()}. Default is to return an empty sample chunk
@@ -108,6 +117,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * feel that good. Therefore there's also the possibility to have {@link #Get()} 
  * return <code>null</code> which allows consumers to operate in a similar fashion 
  * as it's done with {@link AtomicInteger#compareAndSet(int, int)}:
+ * <p><br/></p>
+ * 
  * <pre>
  * // At some place: 
  * TAtomicBuffer myBuf = new TAtomicBuffer (ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnNull)
@@ -123,6 +134,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * // Now do nifty stuff with the sample chunk. 
  * </pre>
+ * <p><br/></p>
  * 
  * For synchronization between producer and consumer the <code>TAtomicBuffer</code>
  * makes use of an {@link AtomicInteger} flag; more specifically, the 
@@ -260,6 +272,7 @@ public class TAtomicBuffer
      * Returns the newest sample data. Meant for the consumer thread.
      * Note that at some stage there's a deep copying;
      * therefore we will never return the original {@link FloatBuffer} object. 
+     * <p><br/></p>
      *
      * If there was no new sample data (i.e. stale data = that particular chunk has 
      * already been collected before) or if there was contention with the producer
