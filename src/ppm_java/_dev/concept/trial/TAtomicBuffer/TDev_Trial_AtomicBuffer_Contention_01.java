@@ -20,961 +20,1062 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
 
 /**
  * Test result:
  * 
- * Test running - will take a while. Go, make coffee!
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 48; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 48; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 33; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 33; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 33; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 33; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 14; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 14; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 21; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 31; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 31; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 33; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 32; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 32; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 30; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 30; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 30; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 30; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 30; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 26; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 26; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 26; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 26; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 26; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 26; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 20; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 20; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 20; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 20; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 20; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 20; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 24; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 25; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 16; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 14; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 17; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 14; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 1
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 2
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 3
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 10; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 4
- * --------------------------------------------------------------------------------------
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 12; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 5
- * --------------------------------------------------------------------------------------
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 13; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 6
- * --------------------------------------------------------------------------------------
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 15; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 7
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 9; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 7; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 8
- * --------------------------------------------------------------------------------------
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 11; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 9
- * --------------------------------------------------------------------------------------
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 5; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 3; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * 
- * --------------------------------------------------------------------------------------
- * TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 10
- * --------------------------------------------------------------------------------------
- * Consumer [3]: Finished (ok           ): Consumer #3; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
- * Consumer [7]: Finished (ok           ): Consumer #7; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [8]: Finished (ok           ): Consumer #8; nCorruptions: 0; nEmptyFrames: 4; Consumed a few empty frames (not critical)
- * Consumer [1]: Finished (ok           ): Consumer #1; nCorruptions: 0; nEmptyFrames: 2; Consumed a few empty frames (not critical)
- * Consumer [5]: Finished (ok           ): Consumer #5; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [9]: Finished (ok           ): Consumer #9; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [0]: Finished (ok           ): Consumer #0; nCorruptions: 0; nEmptyFrames: 8; Consumed a few empty frames (not critical)
- * Consumer [2]: Finished (ok           ): Consumer #2; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [6]: Finished (ok           ): Consumer #6; nCorruptions: 0; nEmptyFrames: 1; Consumed a few empty frames (not critical)
- * Consumer [4]: Finished (ok           ): Consumer #4; nCorruptions: 0; nEmptyFrames: 6; Consumed a few empty frames (not critical)
+Test running - will take a while. Go, make coffee!
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 46, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 146, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 75; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 73; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 246, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 79; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 346, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 446, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 546, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 646, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 746, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 846, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 1; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 946, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 31, underruns: 46, contentions: 50
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 74; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 72; Consumed a few empty frames (not critical)
+Stat counters: overruns: 27, underruns: 146, contentions: 54
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 78; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 81; Consumed a few empty frames (not critical)
+Stat counters: overruns: 56, underruns: 246, contentions: 25
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Stat counters: overruns: 56, underruns: 346, contentions: 25
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 78; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 83; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Stat counters: overruns: 58, underruns: 446, contentions: 23
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Stat counters: overruns: 43, underruns: 546, contentions: 38
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 74, underruns: 646, contentions: 7
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Stat counters: overruns: 47, underruns: 746, contentions: 34
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Stat counters: overruns: 52, underruns: 845, contentions: 28
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 2; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 56, underruns: 946, contentions: 25
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 112, underruns: 46, contentions: 37
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 68; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 78; Consumed a few empty frames (not critical)
+Stat counters: overruns: 129, underruns: 146, contentions: 20
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 79; Consumed a few empty frames (not critical)
+Stat counters: overruns: 118, underruns: 246, contentions: 31
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Stat counters: overruns: 127, underruns: 346, contentions: 22
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Stat counters: overruns: 121, underruns: 446, contentions: 28
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 119, underruns: 546, contentions: 30
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 120, underruns: 645, contentions: 28
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 143, underruns: 746, contentions: 6
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 113, underruns: 846, contentions: 36
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 3; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 136, underruns: 945, contentions: 12
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 203, underruns: 46, contentions: 14
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 75; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 71; Consumed a few empty frames (not critical)
+Stat counters: overruns: 175, underruns: 146, contentions: 42
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 83; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 81; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Stat counters: overruns: 160, underruns: 246, contentions: 57
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Stat counters: overruns: 168, underruns: 345, contentions: 48
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Stat counters: overruns: 112, underruns: 446, contentions: 105
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Stat counters: overruns: 128, underruns: 546, contentions: 89
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 157, underruns: 646, contentions: 60
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 181, underruns: 746, contentions: 36
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 155, underruns: 845, contentions: 61
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 4; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Stat counters: overruns: 136, underruns: 946, contentions: 81
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 230, underruns: 46, contentions: 55
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 72; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 74; Consumed a few empty frames (not critical)
+Stat counters: overruns: 197, underruns: 146, contentions: 88
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 76; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Stat counters: overruns: 240, underruns: 245, contentions: 44
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Stat counters: overruns: 238, underruns: 346, contentions: 47
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Stat counters: overruns: 178, underruns: 446, contentions: 107
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 83; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Stat counters: overruns: 179, underruns: 546, contentions: 106
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 81; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 268, underruns: 644, contentions: 15
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Stat counters: overruns: 213, underruns: 745, contentions: 71
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Stat counters: overruns: 199, underruns: 846, contentions: 86
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = 5; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 231, underruns: 946, contentions: 54
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 46, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 72; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 74; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 121, contentions: 25
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 72; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 148, contentions: 98
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 159, contentions: 187
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 83; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 275, contentions: 171
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 393, contentions: 153
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 485, contentions: 161
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 579, contentions: 167
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 77; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 78; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 648, contentions: 198
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 1; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Stat counters: overruns: 13, underruns: 758, contentions: 188
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 46, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 73; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 73; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 114, contentions: 32
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 74; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 169, contentions: 77
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 81; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 169, contentions: 177
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 277, contentions: 169
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 354, contentions: 192
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 454, contentions: 192
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 517, contentions: 229
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 675, contentions: 171
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 2; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 81, underruns: 802, contentions: 144
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 46, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 66; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 76, contentions: 70
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 73; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 77; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 167, contentions: 79
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 83; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 247, contentions: 99
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Stat counters: overruns: 148, underruns: 268, contentions: 177
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 77; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 437, contentions: 109
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 470, contentions: 176
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Stat counters: overruns: 148, underruns: 594, contentions: 151
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Stat counters: overruns: 149, underruns: 663, contentions: 183
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 3; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 148, underruns: 812, contentions: 133
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 46, contentions: 0
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 70; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 76; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 95, contentions: 51
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 80; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 77; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 155, contentions: 91
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 181, contentions: 165
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 81; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 294, contentions: 152
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 78; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Stat counters: overruns: 216, underruns: 334, contentions: 211
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 85; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 482, contentions: 164
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Stat counters: overruns: 216, underruns: 579, contentions: 166
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 664, contentions: 182
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 4; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 99; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 217, underruns: 731, contentions: 215
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 1
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 46; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 45, contentions: 1
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 2
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 72; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 74; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 126, contentions: 20
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 3
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 65; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 156, contentions: 90
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 4
+--------------------------------------------------------------------------------------
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 82; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 152, contentions: 194
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 5
+--------------------------------------------------------------------------------------
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 275, contentions: 171
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 6
+--------------------------------------------------------------------------------------
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 90; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 382, contentions: 164
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 7
+--------------------------------------------------------------------------------------
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 86; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 455, contentions: 191
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 8
+--------------------------------------------------------------------------------------
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 94; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 555, contentions: 191
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 9
+--------------------------------------------------------------------------------------
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 93; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 97; Consumed a few empty frames (not critical)
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 91; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 87; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 89; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Stat counters: overruns: 285, underruns: 692, contentions: 154
+
+--------------------------------------------------------------------------------------
+TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = 5; nConsumers = 10
+--------------------------------------------------------------------------------------
+Consumer [8]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [0]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [3]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 88; Consumed a few empty frames (not critical)
+Consumer [2]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 84; Consumed a few empty frames (not critical)
+Consumer [1]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 92; Consumed a few empty frames (not critical)
+Consumer [5]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Consumer [4]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 100; Consumed a few empty frames (not critical)
+Consumer [6]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 96; Consumed a few empty frames (not critical)
+Consumer [7]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 95; Consumed a few empty frames (not critical)
+Consumer [9]: Finished (ok           ): nCorruptions: 0; nEmptyFrames: 98; Consumed a few empty frames (not critical)
+Stat counters: overruns: 283, underruns: 760, contentions: 184
  */
 
 /**
@@ -1011,14 +1112,7 @@ import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
  * counter which clients can query 
  * ({@link TAtomicBuffer#GetNumUnderruns()}). 
  * If everything works, the underrun counter should stay at zero value.
- * 
- * 
- * 
- * one doesn't stop the consumer thread 
- * when the producer thread hits a breakpoint - but it has a design
- * it'll just 
- * increment the underrun counter and deliver empty frames. 
- * 
+ *  
  * @author peter
  */
 public class TDev_Trial_AtomicBuffer_Contention_01
@@ -1120,7 +1214,10 @@ public class TDev_Trial_AtomicBuffer_Contention_01
                 for (i = gkNNums-1; i >= 1; i--)
                 {
                     /* Corruption check - difference between sample[i] and 
-                     * sample[i-1] must be 1.
+                     * sample[i-1] must be 1. If the tested buffer isn't 
+                     * thread safe then with some likelihood there will be 
+                     * another thread corrupting the order and the 
+                     * aforementioned difference would be disturbed.
                      */
                     x0      = fb.get (i-1);
                     x1      = fb.get (i);
@@ -1181,7 +1278,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
                 postAmble = "";
             }
             
-            logMessage = preamble + "Consumer #" + fID + "; nCorruptions: " + fNCorruptions + "; nEmptyFrames: " + fNEmptyFrames + postAmble;
+            logMessage = preamble + "nCorruptions: " + fNCorruptions + "; nEmptyFrames: " + fNEmptyFrames + postAmble;
             
             PrintLogEntry (logMessage);
         }
@@ -1250,7 +1347,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
         System.out.println ("--------------------------------------------------------------------------------------");
         prWorkers   = new Thread [nProducers];
         cnWorkers   = new Thread [nConsumers];
-        ab          = new TAtomicBuffer (cPol);
+        ab          = new TAtomicBuffer (cPol, EIfInvalidPolicy.kReturnEmpty);
         for (i = 0; i < nProducers; i++)
         {
             prWorkers [i] = new Thread (new TProducer (ab));
@@ -1282,6 +1379,12 @@ public class TDev_Trial_AtomicBuffer_Contention_01
                 doWait = false;
             }
         }
+        System.out.println 
+        (
+            "Stat counters: overruns: " + ab.GetNumOverruns () + 
+            ", underruns: " + ab.GetNumUnderruns () +
+            ", contentions: " + ab.GetNumContentions ()
+        );
     }
 }
 

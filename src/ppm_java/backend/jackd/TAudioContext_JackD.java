@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.jackd;
 
 import java.nio.FloatBuffer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import de.gulden.framework.jjack.JJackAudioEvent;
 import de.gulden.framework.jjack.JJackAudioProcessor;
@@ -47,7 +48,200 @@ public final class TAudioContext_JackD
         gContext = new TAudioContext_JackD (idClient);
     }
     
+    public static boolean GetStats_IsWorking ()
+    {
+        boolean ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.IsWorking ();
+        }
+        else
+        {
+            ret = false;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_NumContentions_In (int iPort)
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumContentions_In (iPort);
+        }
+        else
+        {
+            ret = 0;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_NumContentions_Out (int iPort)
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumContentions_Out (iPort);
+        }
+        else
+        {
+            ret = 0;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_NumFrames ()
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumFrames ();
+        }
+        else
+        {
+            ret = 0;
+        }
+            
+        return ret;
+    }
+    
+    public static int GetStats_NumOverruns_In (int iPort)
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumOverruns_In (iPort);
+        }
+        else
+        {
+            ret = 0;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_NumOverruns_Out (int iPort)
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumOverruns_Out (iPort);
+        }
+        else
+        {
+            ret = 0;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_NumPortsIn ()
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumPortsIn ();
+        }
+        else
+        {
+            ret = 0;
+        }
+            
+        return ret;
+    }
+    
+    public static int GetStats_NumPortsOut ()
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumPortsOut ();
+        }
+        else
+        {
+            ret = 0;
+        }
+            
+        return ret;
+    }
+    
+    public static int GetStats_NumUnderruns_In (int iPort)
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumUnderruns_In (iPort);
+        }
+        else
+        {
+            ret = 0;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_NumUnderruns_Out (int iPort)
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetNumUnderruns_Out (iPort);
+        }
+        else
+        {
+            ret = 0;
+        }
+        
+        return ret;
+    }
+    
+    public static int GetStats_SampleRate ()
+    {
+        int ret;
+        
+        if (gContext != null)
+        {
+            ret = gContext.GetSampleRate ();
+        }
+        else
+        {
+            ret = 0;
+        }
+            
+        return ret;
+    }
+    
+    public static void Stats_Clear_In (int iPort)
+    {
+        if (gContext != null)
+        {
+            gContext.ClearStats_In (iPort);
+        }
+    }
+    
+    public static void Stats_Clear_Out (int iPort)
+    {
+        if (gContext != null)
+        {
+            gContext.ClearStats_Out (iPort);
+        }
+    }
+    
     boolean                                     fIsWorking;
+    private AtomicInteger                       fNumFrames;
     private int                                 fSampleRate;
     
     private TAudioContext_JackD (String idClient)
@@ -57,6 +251,23 @@ public final class TAudioContext_JackD
         TLogger.LogMessage ("Creating JackD bridge (singleton)", this, "cTor ('" + idClient + ")");
         fSampleRate      = -1;
         fIsWorking       = false;
+        fNumFrames       = new AtomicInteger (0);
+    }
+    
+    public void ClearStats_In (int iPort)
+    {
+        TAudioContext_Endpoint_Input    p;
+        
+        p = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
+        p.ClearStats ();
+    }
+    
+    public void ClearStats_Out (int iPort)
+    {
+        TAudioContext_Endpoint_Output    p;
+        
+        p = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
+        p.ClearStats ();
     }
     
     /* (non-Javadoc)
@@ -86,7 +297,112 @@ public final class TAudioContext_JackD
         p = new TAudioContext_Endpoint_Output (id, this);
         AddPortOut (p);
     }
+    
+    /**
+     * @param iPort
+     * @return
+     */
+    public int GetNumContentions_In (int iPort)
+    {
+        TAudioContext_Endpoint_Input    p;
+        int                             ret;
+        
+        p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
+        ret = p.GetNumContentions ();
+        
+        return ret;
+    }
+    
+    /**
+     * @param iPort
+     * @return
+     */
+    public int GetNumContentions_Out (int iPort)
+    {
+        TAudioContext_Endpoint_Output   p;
+        int                             ret;
+        
+        p   = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
+        ret = p.GetNumContentions ();
+        
+        return ret;
+    }
+    
+    /**
+     * @return
+     */
+    public int GetNumFrames ()
+    {
+        int ret;
+        
+        ret = fNumFrames.getAndAdd (0);
+        
+        return ret;
+    }
+    
+    /**
+     * @param iPort
+     * @return
+     */
+    public int GetNumOverruns_In (int iPort)
+    {
+        TAudioContext_Endpoint_Input    p;
+        int                             ret;
+        
+        p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
+        ret = p.GetNumOverruns ();
+        
+        return ret;
+    }
+    
+    /**
+     * @param iPort
+     * @return
+     */
+    public int GetNumOverruns_Out (int iPort)
+    {
+        TAudioContext_Endpoint_Output   p;
+        int                             ret;
+        
+        p   = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
+        ret = p.GetNumOverruns ();
+        
+        return ret;
+    }
+    
+    /**
+     * @param iPort
+     * @return
+     */
+    public int GetNumUnderruns_In (int iPort)
+    {
+        TAudioContext_Endpoint_Input    p;
+        int                             ret;
+        
+        p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
+        ret = p.GetNumUnderruns ();
+        
+        return ret;
+    }
+    
+    /**
+     * @param iPort
+     * @return
+     */
+    public int GetNumUnderruns_Out (int iPort)
+    {
+        TAudioContext_Endpoint_Output   p;
+        int                             ret;
+        
+        p   = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
+        ret = p.GetNumUnderruns ();
+        
+        return ret;
+    }
 
+    /**
+     * @return
+     */
     public int GetSampleRate ()
     {
         return fSampleRate;
@@ -123,33 +439,14 @@ public final class TAudioContext_JackD
     @Override
     public void process (JJackAudioEvent e)
     {
-        TAudioContext_Endpoint_Output   portOut;
-        int                             nPorts;
-        int                             i;
-        FloatBuffer                     b;
+        _ProcessStats (e);
+        _ProcessOutputs (e);
+        _ProcessInputs (e);
+    }
 
-        nPorts = GetNumPortsOut ();
-        if (nPorts >= 1)
-        {
-            for (i = 0; i < nPorts; i++)
-            {
-                portOut = (TAudioContext_Endpoint_Output) GetPortOut (i);
-                b       = e.getInput (i);
-                portOut.PushPacket (b);
-            }
-        }
-    }
-    
     /**
-     * @param samples
+     * 
      */
-    public void Receive (FloatBuffer samples, int iPort)
-    {
-        //x="error to get a marker";
-        // TODO Auto-generated method stub
-        
-    }
-    
     private void _LoadDriver ()
     {
         String  idClient;
@@ -180,7 +477,7 @@ public final class TAudioContext_JackD
         if (fIsWorking)
         {
             fSampleRate = JJackSystem.getSampleRate ();
-            
+
             /* Plug this instance into JackD. From now on process(JJackAudioEvent) 
              * will be called by JackD, in regular intervals. */
             TLogger.LogMessage ("Activating JackD driver.", this, "_LoadDriver");
@@ -193,7 +490,111 @@ public final class TAudioContext_JackD
             TLogger.LogError ("JackD driver did not load successfully", this, "_LoadDriver");
         }
     }
+    
+    /**
+     * Processes data ready to be sent to the Jack driver i.e. towards the JackD server). 
+     * This sounds paradox, but we define ports as INPUTS which receive data from our  
+     * program and send it to the JackD server.
+     * 
+     * We use a very crude overflow protection - this saves us lots of code which has
+     * to deal with exceptions, resp. loop over the buffered samples etc. This is 
+     * time critical data handling, therefore we want to keep it as simple as possible.
+     * 
+     * The client program is responsible to ensure that data frames don't exceed the 
+     * prescribed buffer length.
+     *  
+     * @param e     The handle allowing access to the input buffers.
+     */
+    private void _ProcessInputs (JJackAudioEvent e)
+    {
+        TAudioContext_Endpoint_Input    portIn;
+        int                             nPorts;
+        int                             i;
+        int                             nSampIn;
+        int                             nSampOut;
+        FloatBuffer                     bIn;
+        FloatBuffer                     bOut;
+        
+        nPorts = GetNumPortsIn ();
+        if (nPorts >= 1)
+        {
+            for (i = 0; i < nPorts; i++)
+            {
+                portIn      = (TAudioContext_Endpoint_Input) GetPortIn (i);
+                bIn         = portIn._RetrieveSamples ();
+                bOut        = e.getOutput (i);
+                nSampIn     = bIn.capacity ();
+                nSampOut    = bOut.capacity ();
+                
+                /* [100] */
+                if (nSampIn <= nSampOut)
+                {
+                    bOut.rewind ();
+                    bOut.put (bIn);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Processes data ready to be retrieved from the Jack driver i.e. away from
+     * the JackD server and towards the client program. 
+     * This sounds paradox, but we define ports as OUTPUTS which receive data 
+     * from the JackD server and send it to the client program.
+     *  
+     * @param e     The handle allowing access to the output buffers.
+     */
+    private void _ProcessOutputs (JJackAudioEvent e)
+    {
+        TAudioContext_Endpoint_Output   portOut;
+        int                             nPorts;
+        int                             i;
+        FloatBuffer                     b;
+        
+        nPorts = GetNumPortsOut ();
+        if (nPorts >= 1)
+        {
+            for (i = 0; i < nPorts; i++)
+            {
+                portOut = (TAudioContext_Endpoint_Output) GetPortOut (i);
+                b       = e.getInput (i);
+                portOut.PushPacket (b);
+            }
+        }
+    }
+    
+    /**
+     * Retrieves various runtime statistics which can be queried by the
+     * client program.
+     * 
+     * @param e     The handle allowing access to some of the statistics data.
+     */
+    private void _ProcessStats (JJackAudioEvent e)
+    {
+        FloatBuffer     b;
+        int             nPortsIn;
+        int             nPortsOut;
+        int             nSamp;
+        
+        nPortsIn    = GetNumPortsIn ();
+        nPortsOut   = GetNumPortsOut ();
+        if (nPortsIn >= 1)
+        {
+            b       = e.getInput (0);
+            nSamp   = b.capacity ();
+            fNumFrames.getAndSet (nSamp);
+        }
+        else if (nPortsOut >= 1)
+        {
+            b       = e.getOutput (0);
+            nSamp   = b.capacity ();
+            fNumFrames.getAndSet (nSamp);
+        }
+    }
 
+    /**
+     * 
+     */
     private void _StopDriver ()
     {
         try
@@ -209,3 +610,11 @@ public final class TAudioContext_JackD
     }
 }
 
+/*
+[100]   We simply discard longer input buffers. This saves us having to 
+        deal with a BufferOverflowException or having to execute code which
+        puts data up to a limit etc. This is time critical code, the less
+        it has to do the better! 
+        The client is responsible to ensure that the number of frames is
+        correct. 
+*/

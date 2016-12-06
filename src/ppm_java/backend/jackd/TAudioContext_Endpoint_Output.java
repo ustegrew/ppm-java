@@ -36,6 +36,38 @@ public class TAudioContext_Endpoint_Output extends VAudioPort_Output_Chunks
         fBuffer = new TAtomicBuffer (ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnEmpty);
     }
 
+    public void ClearStats ()
+    {
+        fBuffer.ClearStats ();
+    }
+
+    public int GetNumContentions ()
+    {
+        int ret;
+        
+        ret = fBuffer.GetNumContentions ();
+        
+        return ret;
+    }
+    
+    public int GetNumOverruns ()
+    {
+        int ret;
+        
+        ret = fBuffer.GetNumOverruns ();
+        
+        return ret;
+    }
+    
+    public int GetNumUnderruns ()
+    {
+        int ret;
+        
+        ret = fBuffer.GetNumOverruns ();
+        
+        return ret;
+    }
+    
     /* (non-Javadoc)
      * @see ppm_java._framework.typelib.VAudioPort_Output_Chunks#PushPacket(java.nio.FloatBuffer)
      */
