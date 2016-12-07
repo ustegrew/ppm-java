@@ -17,7 +17,6 @@ package ppm_java.backend.jackd;
 
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import de.gulden.framework.jjack.JJackAudioEvent;
 import de.gulden.framework.jjack.JJackAudioProcessor;
 import de.gulden.framework.jjack.JJackException;
@@ -52,14 +51,7 @@ public final class TAudioContext_JackD
     {
         boolean ret;
         
-        if (gContext != null)
-        {
-            ret = gContext.IsWorking ();
-        }
-        else
-        {
-            ret = false;
-        }
+        ret = (gContext != null)  ?  gContext.IsWorking ()  :  false;
         
         return ret;
     }
@@ -67,15 +59,8 @@ public final class TAudioContext_JackD
     public static int GetStats_NumContentions_In (int iPort)
     {
         int ret;
-        
-        if (gContext != null)
-        {
-            ret = gContext.GetNumContentions_In (iPort);
-        }
-        else
-        {
-            ret = 0;
-        }
+
+        ret = (gContext != null)  ?  gContext.GetNumContentions_In (iPort)  :  0;
         
         return ret;
     }
@@ -84,14 +69,7 @@ public final class TAudioContext_JackD
     {
         int ret;
         
-        if (gContext != null)
-        {
-            ret = gContext.GetNumContentions_Out (iPort);
-        }
-        else
-        {
-            ret = 0;
-        }
+        ret = (gContext != null)  ?  gContext.GetNumContentions_Out (iPort)  :  0;
         
         return ret;
     }
@@ -100,14 +78,7 @@ public final class TAudioContext_JackD
     {
         int ret;
         
-        if (gContext != null)
-        {
-            ret = gContext.GetNumFrames ();
-        }
-        else
-        {
-            ret = 0;
-        }
+        ret = (gContext != null)  ?  gContext.GetNumFrames ()  :  0;
             
         return ret;
     }
@@ -116,14 +87,7 @@ public final class TAudioContext_JackD
     {
         int ret;
         
-        if (gContext != null)
-        {
-            ret = gContext.GetNumOverruns_In (iPort);
-        }
-        else
-        {
-            ret = 0;
-        }
+        ret = (gContext != null)  ?  gContext.GetNumOverruns_In (iPort)  :  0;
         
         return ret;
     }
@@ -131,15 +95,8 @@ public final class TAudioContext_JackD
     public static int GetStats_NumOverruns_Out (int iPort)
     {
         int ret;
-        
-        if (gContext != null)
-        {
-            ret = gContext.GetNumOverruns_Out (iPort);
-        }
-        else
-        {
-            ret = 0;
-        }
+
+        ret = (gContext != null)  ?  gContext.GetNumOverruns_Out (iPort)  :  0;;
         
         return ret;
     }
@@ -147,15 +104,8 @@ public final class TAudioContext_JackD
     public static int GetStats_NumPortsIn ()
     {
         int ret;
-        
-        if (gContext != null)
-        {
-            ret = gContext.GetNumPortsIn ();
-        }
-        else
-        {
-            ret = 0;
-        }
+
+        ret = (gContext != null)  ?  gContext.GetNumPortsIn ()  :  0;
             
         return ret;
     }
@@ -163,15 +113,8 @@ public final class TAudioContext_JackD
     public static int GetStats_NumPortsOut ()
     {
         int ret;
-        
-        if (gContext != null)
-        {
-            ret = gContext.GetNumPortsOut ();
-        }
-        else
-        {
-            ret = 0;
-        }
+
+        ret = (gContext != null)  ?  gContext.GetNumPortsOut ()  :  0;
             
         return ret;
     }
@@ -179,15 +122,8 @@ public final class TAudioContext_JackD
     public static int GetStats_NumUnderruns_In (int iPort)
     {
         int ret;
-        
-        if (gContext != null)
-        {
-            ret = gContext.GetNumUnderruns_In (iPort);
-        }
-        else
-        {
-            ret = 0;
-        }
+
+        ret = (gContext != null)  ?  gContext.GetNumUnderruns_In (iPort)  :  0;
         
         return ret;
     }
@@ -195,15 +131,8 @@ public final class TAudioContext_JackD
     public static int GetStats_NumUnderruns_Out (int iPort)
     {
         int ret;
-        
-        if (gContext != null)
-        {
-            ret = gContext.GetNumUnderruns_Out (iPort);
-        }
-        else
-        {
-            ret = 0;
-        }
+
+        ret = (gContext != null)  ?  gContext.GetNumUnderruns_Out (iPort)  :  0;
         
         return ret;
     }
@@ -212,14 +141,7 @@ public final class TAudioContext_JackD
     {
         int ret;
         
-        if (gContext != null)
-        {
-            ret = gContext.GetSampleRate ();
-        }
-        else
-        {
-            ret = 0;
-        }
+        ret = (gContext != null)  ?  gContext.GetSampleRate ()  :  0;
             
         return ret;
     }
