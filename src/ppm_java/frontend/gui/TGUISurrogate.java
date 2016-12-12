@@ -14,12 +14,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui;
 
-import ppm_java._framework.typelib.IEvented;
-import ppm_java._framework.typelib.VEvent;
+import ppm_java._framework.typelib.IControllable;
 import ppm_java._framework.typelib.VFrontend;
 import ppm_java.backend.server.TController;
-import ppm_java.backend.server.TEventStart;
-import ppm_java.backend.server.TEventStop;
 
 /**
  *
@@ -27,7 +24,7 @@ import ppm_java.backend.server.TEventStop;
  */
 public class TGUISurrogate 
     extends     VFrontend 
-    implements  IEvented
+    implements  IControllable
 {
     public static enum EClipType
     {
@@ -80,15 +77,6 @@ public class TGUISurrogate
         throw new IllegalStateException ("This is a front end class - it doesn't use output ports.");
     }
     
-    public void OnEvent (VEvent e)
-    {
-        if (e.IsType (TEventStart.kID))
-        {
-            fGUI.setVisible (true);
-            fGUI.setLocationRelativeTo (null);
-        }
-    }
-    
     /**
      * @param data
      */
@@ -121,11 +109,30 @@ public class TGUISurrogate
         fGUI.SetLevel (lDisp, iChannel);
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java._framework.typelib.IControllable#Start()
+     */
+    @Override
+    public void Start ()
+    {
+        fGUI.setVisible (true);
+        fGUI.setLocationRelativeTo (null);
+    }
+    
+    /* (non-Javadoc)
+     * @see ppm_java._framework.typelib.IControllable#Stop()
+     */
+    @Override
+    public void Stop ()
+    {
+        // Do nothing
+    }
+
     void OnSigClip_Click ()
     {
         fGUI.ClippingSet (EClipType.kClear, -1);
     }
-    
+
     void OnTerminate ()
     {
         TController.OnTerminate (GetID ());

@@ -18,7 +18,6 @@ package ppm_java.stream.control.bus;
 import ppm_java._aux.storage.TAtomicArrayMap;
 import ppm_java._framework.typelib.IEvented;
 import ppm_java._framework.typelib.VBrowseable;
-import ppm_java._framework.typelib.VEvent;
 
 /**
  * Receives events and sends them to subscribed clients.
@@ -29,6 +28,11 @@ import ppm_java._framework.typelib.VEvent;
  */
 public class TBroker
 {
+    /* [100] */
+    private static final int    gkArgsNone              = 0;
+    private static final int    gkArgsOneInt            = 10;
+    private static final int    gkArgsOneString         = 20;
+    
     private TAtomicArrayMap<TBrokerSubscriptionList>    fSubscriptions;
     
     public TBroker ()
@@ -36,17 +40,30 @@ public class TBroker
         fSubscriptions = new TAtomicArrayMap<> ();
     }
     
-    public void Broker (VEvent e)
+    public void Broker (int e, String idSource)
     {
-        String                  keyFrom;
+        _Broker (e, idSource, gkArgsNone, 0, null);
+    }
+    
+    public void Broker (int e, String idSource, int arg0)
+    {
+        _Broker (e, idSource, gkArgsOneInt, arg0, null);
+    }
+    
+    public void Broker (int e, String idSource, String arg0)
+    {
+        _Broker (e, idSource, gkArgsOneString, 0, arg0);
+    }
+    
+    private void _Broker (int e, String idSource, int argsType, int arg_0_0, String arg_1_0)
+    {
         TBrokerSubscription     subscr;
         TBrokerSubscriptionList subscrList;
         int                     i;
         int                     n;
         IEvented                receiver;
         
-        keyFrom     = e.GetSource ();
-        subscrList  = fSubscriptions.Get (keyFrom);
+        subscrList  = fSubscriptions.Get (idSource);
         n           = subscrList.GetNumElements ();
         if (n >= 1)
         {
@@ -54,10 +71,22 @@ public class TBroker
             {
                 subscr      = subscrList.Get (i);
                 receiver    = (IEvented) subscr.GetSubscriber ();
-                receiver.OnEvent (e);
+                if (argsType == gkArgsNone)                             /* [100] */
+                {
+                    receiver.OnEvent (e);
+                }
+                else if (argsType == gkArgsOneInt)
+                {
+                    receiver.OnEvent (e, arg_0_0);
+                }
+                else if (argsType == gkArgsOneString)
+                {
+                    receiver.OnEvent (e, arg_1_0);
+                }
             }
         }
     }
+    
     
     public void Subscribe (VBrowseable subscribed, IEvented subscriber)
     {
@@ -82,3 +111,13 @@ public class TBroker
         subscrList.Add (subscr);  
     }
 }
+
+/*
+[100]   Bit daft to have to use a flag to denote which method to call, but 
+        we chose a design where events are passed as integer ID plus optional
+        parameters, and with this design, I had to have _Broker(...) receive all
+        possible parameters - i.e. can't overload _Broker (...).
+        I didn't want to write three public Broker(...) methods with different
+        function signatures - that would have meant a threefold repetition of
+        the event routing code (even more daft!).      
+*/

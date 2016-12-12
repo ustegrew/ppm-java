@@ -13,19 +13,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java._framework.typelib;
+package ppm_java.stream.node.scaler;
 
-import ppm_java.stream.node.bufferedPipe.TNodeBufferedPipe;
+import ppm_java._framework.typelib.VAudioPort_Output_Chunks;
 
 /**
- * A Node or other object that provides some service or data upon an external
- * "trigger pulse" (= call to {@link #Trigger()}. For example, the 
- * {@link TNodeBufferedPipe} requires an external {@link #Trigger()}.
- * stimulus for each time buffered data should be passed on to the consumer. 
- * 
  * @author peter
+ *
  */
-public interface ITriggerable
+public class TNodeScaler_Endpoint_Out extends VAudioPort_Output_Chunks
 {
-    public void Trigger ();
+    /**
+     * @param id
+     * @param host
+     */
+    protected TNodeScaler_Endpoint_Out (String id, TNodeScaler host)
+    {
+        super (id, host);
+    }
 }

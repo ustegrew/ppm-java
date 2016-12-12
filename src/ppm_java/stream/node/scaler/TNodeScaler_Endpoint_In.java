@@ -13,24 +13,37 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.backend.server;
+package ppm_java.stream.node.scaler;
 
-import ppm_java._framework.typelib.VEvent;
+import java.nio.FloatBuffer;
+
+import ppm_java._framework.typelib.VAudioPort_Input_Chunks;
 
 /**
  * @author peter
  *
  */
-public class TEventStart extends VEvent
+public class TNodeScaler_Endpoint_In extends VAudioPort_Input_Chunks
 {
-    public static final String      kID = TEventStart.class.getCanonicalName ();
-    
     /**
-     * @param keyFrom
+     * @param id
+     * @param host
+     * @param iPort
      */
-    public TEventStart (String keyFrom)
+    protected TNodeScaler_Endpoint_In (String id, TNodeScaler host, int iPort)
     {
-        super (keyFrom);
+        super (id, host, iPort);
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java._framework.typelib.VAudioPort_Input_Chunks#ReceivePacket(java.nio.FloatBuffer)
+     */
+    @Override
+    public void ReceivePacket (FloatBuffer chunk)
+    {
+        TNodeScaler     host;
+        
+        host = (TNodeScaler) _GetHost ();
+        host.Receive (chunk);
+    }
 }

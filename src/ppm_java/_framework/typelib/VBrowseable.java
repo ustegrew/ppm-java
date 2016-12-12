@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java._framework.typelib;
 
-import ppm_java._aux.logging.TLogger;
 import ppm_java.backend.server.TController;
 
 /**
@@ -35,10 +34,5 @@ public abstract class VBrowseable
     public String GetID ()
     {
         return fID;
-    }
-    
-    public void Start ()
-    {
-        TLogger.LogError ("This class isn't starteable", this, "Start ()");
     }
 }

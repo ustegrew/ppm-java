@@ -13,23 +13,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.backend.server;
-
-import ppm_java._framework.typelib.VEvent;
+package ppm_java._framework.typelib;
 
 /**
+ * A module or construct which can receive some low level 
+ * control commands (start/stop etc.).
+ * 
  * @author peter
- *
  */
-public class TEventStop extends VEvent
+public interface IControllable
 {
-    public static final String      kID = TEventStop.class.getCanonicalName ();
+    /**
+     * Starts the module.
+     */
+    public void Start ();
     
     /**
-     * @param keyFrom
+     * Stops the module.
      */
-    public TEventStop (String keyFrom)
-    {
-        super (keyFrom);
-    }
+    public void Stop ();
 }

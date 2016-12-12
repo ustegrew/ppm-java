@@ -17,27 +17,39 @@ package ppm_java.backend.jackd;
 
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import de.gulden.framework.jjack.JJackAudioEvent;
 import de.gulden.framework.jjack.JJackAudioProcessor;
 import de.gulden.framework.jjack.JJackException;
 import de.gulden.framework.jjack.JJackSystem;
 import ppm_java._aux.logging.TLogger;
-import ppm_java._framework.typelib.IEvented;
+import ppm_java._aux.storage.TAtomicBuffer;
+import ppm_java._framework.TRegistry;
+import ppm_java._framework.typelib.IControllable;
 import ppm_java._framework.typelib.VAudioDriver;
-import ppm_java._framework.typelib.VEvent;
-import ppm_java.backend.server.TEventStart;
-import ppm_java.backend.server.TEventStop;
 
 /**
+ * Audio driver for the JackD server.
+ * 
  * @author peter
- *
  */
 public final class TAudioContext_JackD 
     extends     VAudioDriver 
-    implements  JJackAudioProcessor, IEvented
+    implements  JJackAudioProcessor, IControllable
 {
+    /**
+     * The JackD driver singleton.
+     */
     private static TAudioContext_JackD          gContext = null;
     
+    /**
+     * Creates the JackD audio driver instance. Must only be called once.
+     * 
+     * @param   idClient                Unique ID as which the JackD driver's instance can be
+     *                                  accessed in the global Registry.
+     * @throws  IllegalStateException   If this method has been called before.
+     * @see     {@link TRegistry#GetAudioDriver()}, {@link TRegistry#GetObject(String)}
+     */
     public static void CreateInstance (String idClient)
     {
         if (gContext != null)
@@ -47,125 +59,37 @@ public final class TAudioContext_JackD
         gContext = new TAudioContext_JackD (idClient);
     }
     
-    public static boolean GetStats_IsWorking ()
-    {
-        boolean ret;
-        
-        ret = (gContext != null)  ?  gContext.IsWorking ()  :  false;
-        
-        return ret;
-    }
+    /**
+     * <code>true</code> if this driver is in working order, i.e. ready to 
+     * connect to a client.<br/>
+     * Read-only access via {@link #IsWorking()}.
+     */
+    private boolean fIsWorking;
     
-    public static int GetStats_NumContentions_In (int iPort)
-    {
-        int ret;
-
-        ret = (gContext != null)  ?  gContext.GetNumContentions_In (iPort)  :  0;
-        
-        return ret;
-    }
+    /**
+     * Number of frames submitted and received during the last call to 
+     * {@link #process(JJackAudioEvent)}. Whilst this number is refreshed
+     * with each call to {@link #process(JJackAudioEvent)}, we expect it
+     * to be constant over the lifetime of this client (It depends on the
+     * settings of the running JackD instance).<br/>
+     * Read-only access via {@link #GetNumFrames()}.
+     */
+    private AtomicInteger fNumFrames;
     
-    public static int GetStats_NumContentions_Out (int iPort)
-    {
-        int ret;
-        
-        ret = (gContext != null)  ?  gContext.GetNumContentions_Out (iPort)  :  0;
-        
-        return ret;
-    }
+    /**
+     * Sample rate (samp/sec) as determined by the running instance of JackD.<br/>
+     * Read-only access via {@link #GetSampleRate()}.
+     */
+    private int fSampleRate;
     
-    public static int GetStats_NumFrames ()
-    {
-        int ret;
-        
-        ret = (gContext != null)  ?  gContext.GetNumFrames ()  :  0;
-            
-        return ret;
-    }
-    
-    public static int GetStats_NumOverruns_In (int iPort)
-    {
-        int ret;
-        
-        ret = (gContext != null)  ?  gContext.GetNumOverruns_In (iPort)  :  0;
-        
-        return ret;
-    }
-    
-    public static int GetStats_NumOverruns_Out (int iPort)
-    {
-        int ret;
-
-        ret = (gContext != null)  ?  gContext.GetNumOverruns_Out (iPort)  :  0;;
-        
-        return ret;
-    }
-    
-    public static int GetStats_NumPortsIn ()
-    {
-        int ret;
-
-        ret = (gContext != null)  ?  gContext.GetNumPortsIn ()  :  0;
-            
-        return ret;
-    }
-    
-    public static int GetStats_NumPortsOut ()
-    {
-        int ret;
-
-        ret = (gContext != null)  ?  gContext.GetNumPortsOut ()  :  0;
-            
-        return ret;
-    }
-    
-    public static int GetStats_NumUnderruns_In (int iPort)
-    {
-        int ret;
-
-        ret = (gContext != null)  ?  gContext.GetNumUnderruns_In (iPort)  :  0;
-        
-        return ret;
-    }
-    
-    public static int GetStats_NumUnderruns_Out (int iPort)
-    {
-        int ret;
-
-        ret = (gContext != null)  ?  gContext.GetNumUnderruns_Out (iPort)  :  0;
-        
-        return ret;
-    }
-    
-    public static int GetStats_SampleRate ()
-    {
-        int ret;
-        
-        ret = (gContext != null)  ?  gContext.GetSampleRate ()  :  0;
-            
-        return ret;
-    }
-    
-    public static void Stats_Clear_In (int iPort)
-    {
-        if (gContext != null)
-        {
-            gContext.ClearStats_In (iPort);
-        }
-    }
-    
-    public static void Stats_Clear_Out (int iPort)
-    {
-        if (gContext != null)
-        {
-            gContext.ClearStats_Out (iPort);
-        }
-    }
-    
-    boolean                                     fIsWorking;
-    private AtomicInteger                       fNumFrames;
-    private int                                 fSampleRate;
-    
+    /**
+     * cTor. Creates a new instance and registers it with the global 
+     * {@link TRegistry} under the given id.
+     * 
+     * @param   idClient                Unique ID as which the JackD driver's instance can be
+     *                                  accessed in the global Registry.
+     * @see     {@link TRegistry}
+     */
     private TAudioContext_JackD (String idClient)
     {
         super (idClient, -1, -1);
@@ -176,6 +100,12 @@ public final class TAudioContext_JackD
         fNumFrames       = new AtomicInteger (0);
     }
     
+    /**
+     * Clears the various operational statistics of the end point connected 
+     * as input port #<code>iPort</code>.
+     * 
+     * @param iPort     The number of the port of which we'd like to clear the statistics.
+     */
     public void ClearStats_In (int iPort)
     {
         TAudioContext_Endpoint_Input    p;
@@ -184,6 +114,12 @@ public final class TAudioContext_JackD
         p.ClearStats ();
     }
     
+    /**
+     * Clears the various operational statistics of the end point connected 
+     * as output port #<code>iPort</code>.
+     * 
+     * @param iPort     The number of the output port of which we'd like to clear the statistics.
+     */
     public void ClearStats_Out (int iPort)
     {
         TAudioContext_Endpoint_Output    p;
@@ -221,8 +157,15 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @param iPort
-     * @return
+     * Operational statistics, Input #<code>iPort</code>: Number of contentions 
+     * between the thread producing packets and the thread (this driver) collecting them.
+     * 
+     * @param   iPort   The number of the input port of which we'd like to 
+     *                  acquire the number of contentions.
+     * @return          The total number of contentions on the designated input 
+     *                  since the start of this driver or the last call to 
+     *                  {@link #ClearStats_In(int)}.
+     * @see             {@link TAtomicBuffer#GetNumContentions()}
      */
     public int GetNumContentions_In (int iPort)
     {
@@ -236,8 +179,15 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @param iPort
-     * @return
+     * Operational statistics, Output #<code>iPort</code>: Number of contentions 
+     * between the thread collecting packets and the thread (this driver) producing them.
+     * 
+     * @param   iPort   The number of the output port of which we'd like to 
+     *                  acquire the number of contentions.
+     * @return          The total number of contentions on the designated output. 
+     *                  since the start of this driver or the last call to 
+     *                  {@link #ClearStats_Out(int)}.
+     * @see             {@link TAtomicBuffer#GetNumContentions()}
      */
     public int GetNumContentions_Out (int iPort)
     {
@@ -251,7 +201,15 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @return
+     * Operational statistics: Number of frames produced and collected during the last 
+     * call to {@link #process(JJackAudioEvent)}.<br/>
+     * Note that this number may or may not change during the session - it depends 
+     * on the JackD server. In prctice it's unlikely, but it's recommended that
+     * clients have some mechanism in place to compensate for dynamic frame number 
+     * changes.
+     * 
+     * @return  Number of frames processed during last execution of 
+     *          {@link #process(JJackAudioEvent)}
      */
     public int GetNumFrames ()
     {
@@ -263,8 +221,18 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @param iPort
-     * @return
+     * Operational statistics, Input #<code>iPort</code>: Number of overruns 
+     * between the thread producing packets and the thread (this driver) 
+     * collecting them. For an input, overruns are an indicator that the 
+     * producer thread is delivering more packets than the consumer 
+     * (this driver) can process.
+     * 
+     * @param   iPort   The number of the input port of which we'd like to 
+     *                  acquire the number of overruns.
+     * @return          The total number of overruns on the designated input 
+     *                  since the start of this driver or the last call to 
+     *                  {@link #ClearStats_In(int)}.
+     * @see             {@link TAtomicBuffer#GetNumOverruns()()}
      */
     public int GetNumOverruns_In (int iPort)
     {
@@ -278,8 +246,18 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @param iPort
-     * @return
+     * Operational statistics, Output #<code>iPort</code>: Number of overruns 
+     * between the thread producing packets (this driver) and the thread 
+     * collecting them. For an output, overruns are an indicator that the 
+     * producer thread (this driver) is delivering more packets than the 
+     * consumer can process.
+     * 
+     * @param   iPort   The number of the output port of which we'd like to 
+     *                  acquire the number of overruns.
+     * @return          The total number of overruns on the designated output. 
+     *                  since the start of this driver or the last call to 
+     *                  {@link #ClearStats_Out(int)}.
+     * @see             {@link TAtomicBuffer#GetNumOverruns()}
      */
     public int GetNumOverruns_Out (int iPort)
     {
@@ -293,8 +271,18 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @param iPort
-     * @return
+     * Operational statistics, Input #<code>iPort</code>: Number of underruns 
+     * between the thread producing packets and the thread (this driver) 
+     * collecting them. For an input, underruns are an indicator that the 
+     * producer thread is delivering less packets than the consumer 
+     * (this driver) requires, leading to consumer starvation.
+     * 
+     * @param   iPort   The number of the input port of which we'd like to 
+     *                  acquire the number of underruns.
+     * @return          The total number of underruns on the designated input 
+     *                  since the start of this driver or the last call to 
+     *                  {@link #ClearStats_In(int)}.
+     * @see             {@link TAtomicBuffer#GetNumUnderruns()}
      */
     public int GetNumUnderruns_In (int iPort)
     {
@@ -308,8 +296,18 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * @param iPort
-     * @return
+     * Operational statistics, Output #<code>iPort</code>: Number of underruns 
+     * between the thread producing packets (this driver) and the thread 
+     * collecting them. For an output, underruns are an indicator that the 
+     * producer thread (this driver) is delivering less packets than the 
+     * consumer requires, leading to consumer starvation.
+     * 
+     * @param   iPort   The number of the output port of which we'd like to 
+     *                  acquire the number of underruns.
+     * @return          The total number of underruns on the designated output. 
+     *                  since the start of this driver or the last call to 
+     *                  {@link #ClearStats_Out(int)}.
+     * @see             {@link TAtomicBuffer#GetNumUnderruns()}`
      */
     public int GetNumUnderruns_Out (int iPort)
     {
@@ -323,7 +321,7 @@ public final class TAudioContext_JackD
     }
 
     /**
-     * @return
+     * @return      The sample rate (in samples / sec) during this session.
      */
     public int GetSampleRate ()
     {
@@ -340,22 +338,6 @@ public final class TAudioContext_JackD
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.IEvented#OnEvent(ppm_java._framework.typelib.VEvent)
-     */
-    @Override
-    public void OnEvent (VEvent e)
-    {
-        if (e.IsType (TEventStart.kID))
-        {
-            _LoadDriver ();
-        }
-        else if (e.IsType (TEventStop.kID))
-        {
-            _StopDriver ();
-        }
-    }
-
-    /* (non-Javadoc)
      * @see de.gulden.framework.jjack.JJackAudioProcessor#process(de.gulden.framework.jjack.JJackAudioEvent)
      */
     @Override
@@ -365,9 +347,19 @@ public final class TAudioContext_JackD
         _ProcessOutputs (e);
         _ProcessInputs (e);
     }
+    
+    public void Start ()
+    {
+        _LoadDriver ();
+    }
+    
+    public void Stop ()
+    {
+        _StopDriver ();
+    }
 
     /**
-     * 
+     * Loads and initializes the JackD driver.
      */
     private void _LoadDriver ()
     {
@@ -515,7 +507,7 @@ public final class TAudioContext_JackD
     }
 
     /**
-     * 
+     * Stops the JackD driver.  
      */
     private void _StopDriver ()
     {

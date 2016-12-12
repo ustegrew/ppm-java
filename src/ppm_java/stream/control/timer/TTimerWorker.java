@@ -25,7 +25,7 @@ import ppm_java._aux.logging.TLogger;
  */
 class TTimerWorker extends Thread
 {
-    private static final int        gkLoopInterval          = 1;
+    private static final int        gkLoopIntervalMin       = 1;
     private static final int        gkStateRun              = 1;
     private static final int        gkStateStop             = 2;
     private static final int        gkStateWait             = 0;
@@ -41,21 +41,9 @@ class TTimerWorker extends Thread
     {
         fHost  = host;
         fState = new AtomicInteger (gkStateWait);
-        if (delayMs >= gkLoopInterval)
-        {
-            fDelayMs = delayMs;
-        }
-        else
-        {
-            TLogger.LogError 
-            (
-                "For timer '" + host.GetID () + "': Given interval must be >= " + 
-                gkLoopInterval + ". Given: " + delayMs + 
-                ". Set to " + fDelayMs, this, "cTor"
-            );
-        }
+        _SetInterval (delayMs);
     }
-
+    
     /* (non-Javadoc)
      * @see java.lang.Runnable#run()
      */
@@ -71,7 +59,7 @@ class TTimerWorker extends Thread
         t0 = System.currentTimeMillis ();
         do
         {
-            try {Thread.sleep (gkLoopInterval);} catch (InterruptedException e) {}
+            try {Thread.sleep (gkLoopIntervalMin);} catch (InterruptedException e) {}
 
             t1 = System.currentTimeMillis ();
             dt = t1 - t0;
@@ -84,9 +72,31 @@ class TTimerWorker extends Thread
         } while (state == gkStateRun);
     }
     
+    void SetDelayInterval (int delayMs)
+    {
+        _SetInterval (delayMs);
+    }
+
     void Stop ()
     {
         fState.compareAndSet (gkStateRun, gkStateStop);
+    }
+    
+    private void _SetInterval (int delayMs)
+    {
+        if (delayMs >= gkLoopIntervalMin)
+        {
+            fDelayMs = delayMs;
+        }
+        else
+        {
+            TLogger.LogError 
+            (
+                "For timer '" + fHost.GetID () + "': Given interval must be >= " + 
+                gkLoopIntervalMin + ". Given: " + delayMs + 
+                ". Set to " + fDelayMs, this, "cTor"
+            );
+        }
     }
 }
 

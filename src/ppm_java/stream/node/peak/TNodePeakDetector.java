@@ -64,7 +64,7 @@ public class TNodePeakDetector extends VAudioProcessor
         AddPortOut (fOutput);
     }
 
-    void Receive (FloatBuffer data)
+    void Receive (FloatBuffer samples)
     {
         int             n;
         int             i;
@@ -72,12 +72,12 @@ public class TNodePeakDetector extends VAudioProcessor
         float           pk;
         
         pk  = 0;
-        n   = data.capacity ();
+        n   = samples.capacity ();
         if (n >= 1)
         {
             for (i = 0; i < n; i++)
             {
-                x   = data.get (i);
+                x   = samples.get (i);
                 
                 if (x < 0)
                 {

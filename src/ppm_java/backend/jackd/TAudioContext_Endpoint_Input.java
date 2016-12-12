@@ -28,7 +28,7 @@ import ppm_java._framework.typelib.VAudioPort_Input_Chunks;
  */
 public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks
 {
-    TAtomicBuffer               fBuffer;
+    private TAtomicBuffer       fBuffer;
     
     protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host, int iPort)
     {

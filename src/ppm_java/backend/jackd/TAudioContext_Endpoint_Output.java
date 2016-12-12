@@ -24,11 +24,10 @@ import ppm_java._framework.typelib.VAudioPort_Output_Chunks;
 
 /**
  * @author peter
- *
  */
 public class TAudioContext_Endpoint_Output extends VAudioPort_Output_Chunks
 {
-    private TAtomicBuffer               fBuffer;
+    private TAtomicBuffer       fBuffer;
     
     protected TAudioContext_Endpoint_Output (String id, TAudioContext_JackD host)
     {

@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.gui;
 
-import ppm_java._framework.TTraits;
 import ppm_java._framework.typelib.VAudioPort_Input_Samples;
 
 /**
@@ -24,19 +23,11 @@ import ppm_java._framework.typelib.VAudioPort_Input_Samples;
  */
 public class TGUI_Endpoint extends VAudioPort_Input_Samples
 {
-    private int                     fIChannel;
-    
     public TGUI_Endpoint (String id, TGUISurrogate host, int iChannel)
     {
-        super (id, new TTraits (false, false, false), host);
-        fIChannel = iChannel;
+        super (id, host, iChannel);
     }
 
-    public int GetIChannel ()
-    {
-        return fIChannel;
-    }
-    
     /* (non-Javadoc)
      * @see ppm_java.stream.stream.VConnectible#SampleReceive(float)
      */
@@ -44,8 +35,10 @@ public class TGUI_Endpoint extends VAudioPort_Input_Samples
     public void ReceiveSample (float sample)
     {
         TGUISurrogate   host;
+        int             iPort;
         
-        host = (TGUISurrogate) _GetHost ();
-        host.SetLevel (sample, fIChannel);
+        host    = (TGUISurrogate) _GetHost ();
+        iPort   = GetPortNum ();
+        host.SetLevel (sample, iPort);
     }
 }

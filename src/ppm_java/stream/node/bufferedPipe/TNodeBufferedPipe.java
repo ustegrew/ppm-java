@@ -16,10 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.stream.node.bufferedPipe;
 
 import java.nio.FloatBuffer;
-
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java._framework.typelib.ITriggerable;
+import ppm_java._framework.typelib.IEvented;
 import ppm_java._framework.typelib.VAudioProcessor;
 
 /**
@@ -40,7 +39,7 @@ import ppm_java._framework.typelib.VAudioProcessor;
  */
 public class TNodeBufferedPipe 
     extends     VAudioProcessor
-    implements  ITriggerable
+    implements  IEvented
 {
     public static void CreateInstance (String id, ECopyPolicy copyPolicy)
     {
@@ -82,18 +81,38 @@ public class TNodeBufferedPipe
         AddPortOut (fOutput);
     }
     
-    /**
-     * Pushes data to the receiving thread (via the output). Must be 
-     * called by some timer event handler.
+    /* (non-Javadoc)
+     * @see ppm_java._framework.typelib.IEvented#OnEvent(int)
      */
-    public void Trigger ()
+    @Override
+    public void OnEvent (int e)
     {
-        FloatBuffer     b;
-        
-        b = fBuffer.Get ();
-        fOutput.PushPacket (b);
+        if (e == gkEventTimer)
+        {
+            _Trigger ();
+        }
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java._framework.typelib.IEvented#OnEvent(int, int)
+     */
+    @Override
+    public void OnEvent (int e, int arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._framework.typelib.IEvented#OnEvent(int, java.lang.String)
+     */
+    @Override
+    public void OnEvent (int e, String arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
     /**
      * Receives data from the sending thread (via the input endpoint)
      * @param chunk 
@@ -101,5 +120,17 @@ public class TNodeBufferedPipe
     void Receive (FloatBuffer chunk)
     {
         fBuffer.Set (chunk);
+    }
+
+    /**
+     * Pushes data to the receiving thread (via the output). Must be 
+     * called by some timer event handler.
+     */
+    private void _Trigger ()
+    {
+        FloatBuffer     b;
+        
+        b = fBuffer.Get ();
+        fOutput.PushPacket (b);
     }
 }

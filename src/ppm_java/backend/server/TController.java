@@ -19,12 +19,11 @@ import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._framework.TConnection;
 import ppm_java._framework.TRegistry;
+import ppm_java._framework.typelib.IControllable;
 import ppm_java._framework.typelib.IEvented;
-import ppm_java._framework.typelib.ITriggerable;
 import ppm_java._framework.typelib.VAudioObject;
 import ppm_java._framework.typelib.VAudioProcessor;
 import ppm_java._framework.typelib.VBrowseable;
-import ppm_java._framework.typelib.VEvent;
 import ppm_java.backend.jackd.TAudioContext_JackD;
 import ppm_java.frontend.gui.TGUISurrogate;
 import ppm_java.stream.control.bus.TBroker;
@@ -39,13 +38,10 @@ import ppm_java.stream.node.peak.TNodePeakDetector;
 public final class TController
 {
     private static TController          gController   = new TController ();
-    private static final String         gkID          = TController.class.getCanonicalName ();
     
     /**
-     * @param string
-     * @param string2
-     * @param string3
-     * @param string4
+     * @param idFromPort
+     * @param idToPort
      */
     public static void Connect (String idFromPort, String idToPort)
     {
@@ -128,9 +124,9 @@ public final class TController
     /**
      * @param e
      */
-    public static void PostEvent (VEvent e)
+    public static void PostEvent (int e, String idSource)
     {
-        gController._PostEvent (e);
+        gController._PostEvent (e, idSource);
     }
     
     /**
@@ -170,9 +166,9 @@ public final class TController
         return ret;
     }
     
-    private void _PostEvent (VEvent e)
+    private void _PostEvent (int e, String idSource)
     {
-        fEventBus.Broker (e);
+        fEventBus.Broker (e, idSource);
     }
 
     private void _Register (VBrowseable b)
@@ -183,10 +179,10 @@ public final class TController
 
     private void _Start (String id)
     {
-        VBrowseable  module;
+        IControllable  module;
         
         TLogger.LogMessage ("Starting module '" + id + "'", this, "_Start ('" + id + "')");
-        module = fRegistry.GetObject (id);
+        module = (IControllable) fRegistry.GetObject (id);
         module.Start ();
     }
 
@@ -202,12 +198,10 @@ public final class TController
 
     private void _SystemTerminate ()
     {
-        TEventStop                  eStop;
-        TAudioContext_JackD         audioDriver;
+        TAudioContext_JackD audioDriver;
         
-        eStop       = new TEventStop (gkID);
         audioDriver = (TAudioContext_JackD) fRegistry.GetAudioDriver ();
-        audioDriver.OnEvent (eStop);
+        audioDriver.Stop ();
         try {Thread.sleep (1000);} catch (InterruptedException e) {e.printStackTrace();}
         TLogger.LogMessage ("Terminating application", this, "_SystemTerminate ()");
         System.exit (0);
