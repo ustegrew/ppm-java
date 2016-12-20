@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.gui;
 
-import ppm_java._framework.typelib.VAudioPort_Input_Samples;
+import ppm_java._aux.typelib.VAudioPort_Input_Samples;
 
 /**
  * @author peter

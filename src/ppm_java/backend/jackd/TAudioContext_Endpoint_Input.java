@@ -15,74 +15,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.backend.jackd;
 
-import java.nio.FloatBuffer;
-
-import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
-import ppm_java._framework.typelib.VAudioPort_Input_Chunks;
+import ppm_java._aux.typelib.VAudioPort_Input_Chunks_Buffered;
 
 /**
  * @author peter
  *
  */
-public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks
+public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffered
 {
-    private TAtomicBuffer       fBuffer;
-    
     protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host, int iPort)
     {
-        super (id, host, iPort);
-        fBuffer = new TAtomicBuffer (ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);
-    }
-    
-    public void ClearStats ()
-    {
-        fBuffer.ClearStats ();
-    }
-
-    public int GetNumContentions ()
-    {
-        int ret;
-        
-        ret = fBuffer.GetNumContentions ();
-        
-        return ret;
-    }
-    
-    public int GetNumOverruns ()
-    {
-        int ret;
-        
-        ret = fBuffer.GetNumOverruns ();
-        
-        return ret;
-    }
-    
-    public int GetNumUnderruns ()
-    {
-        int ret;
-        
-        ret = fBuffer.GetNumOverruns ();
-        
-        return ret;
-    }
-    
-    /* (non-Javadoc)
-     * @see ppm_java.stream.stream.VAudioPort_Output_Chunks#ReceivePacket(java.nio.FloatBuffer)
-     */
-    @Override
-    public void ReceivePacket (FloatBuffer samples)
-    {
-        fBuffer.Set (samples);
-    }
-    
-    FloatBuffer _RetrieveSamples ()
-    {
-        FloatBuffer ret;
-        
-        ret = fBuffer.Get ();
-        
-        return ret;
+        super (id, host, iPort, ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);
     }
 }

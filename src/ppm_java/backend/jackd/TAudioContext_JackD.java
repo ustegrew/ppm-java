@@ -24,9 +24,9 @@ import de.gulden.framework.jjack.JJackException;
 import de.gulden.framework.jjack.JJackSystem;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.storage.TAtomicBuffer;
-import ppm_java._framework.TRegistry;
-import ppm_java._framework.typelib.IControllable;
-import ppm_java._framework.typelib.VAudioDriver;
+import ppm_java._aux.typelib.IControllable;
+import ppm_java._aux.typelib.VAudioDriver;
+import ppm_java.backend.server.TRegistry;
 
 /**
  * Audio driver for the JackD server.
@@ -114,22 +114,8 @@ public final class TAudioContext_JackD
         p.ClearStats ();
     }
     
-    /**
-     * Clears the various operational statistics of the end point connected 
-     * as output port #<code>iPort</code>.
-     * 
-     * @param iPort     The number of the output port of which we'd like to clear the statistics.
-     */
-    public void ClearStats_Out (int iPort)
-    {
-        TAudioContext_Endpoint_Output    p;
-        
-        p = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
-        p.ClearStats ();
-    }
-    
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
+     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
      */
     @Override
     public void CreatePort_In (String id)
@@ -144,7 +130,7 @@ public final class TAudioContext_JackD
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
+     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
      */
     @Override
     public void CreatePort_Out (String id)
@@ -173,28 +159,6 @@ public final class TAudioContext_JackD
         int                             ret;
         
         p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
-        ret = p.GetNumContentions ();
-        
-        return ret;
-    }
-    
-    /**
-     * Operational statistics, Output #<code>iPort</code>: Number of contentions 
-     * between the thread collecting packets and the thread (this driver) producing them.
-     * 
-     * @param   iPort   The number of the output port of which we'd like to 
-     *                  acquire the number of contentions.
-     * @return          The total number of contentions on the designated output. 
-     *                  since the start of this driver or the last call to 
-     *                  {@link #ClearStats_Out(int)}.
-     * @see             {@link TAtomicBuffer#GetNumContentions()}
-     */
-    public int GetNumContentions_Out (int iPort)
-    {
-        TAudioContext_Endpoint_Output   p;
-        int                             ret;
-        
-        p   = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
         ret = p.GetNumContentions ();
         
         return ret;
@@ -246,31 +210,6 @@ public final class TAudioContext_JackD
     }
     
     /**
-     * Operational statistics, Output #<code>iPort</code>: Number of overruns 
-     * between the thread producing packets (this driver) and the thread 
-     * collecting them. For an output, overruns are an indicator that the 
-     * producer thread (this driver) is delivering more packets than the 
-     * consumer can process.
-     * 
-     * @param   iPort   The number of the output port of which we'd like to 
-     *                  acquire the number of overruns.
-     * @return          The total number of overruns on the designated output. 
-     *                  since the start of this driver or the last call to 
-     *                  {@link #ClearStats_Out(int)}.
-     * @see             {@link TAtomicBuffer#GetNumOverruns()}
-     */
-    public int GetNumOverruns_Out (int iPort)
-    {
-        TAudioContext_Endpoint_Output   p;
-        int                             ret;
-        
-        p   = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
-        ret = p.GetNumOverruns ();
-        
-        return ret;
-    }
-    
-    /**
      * Operational statistics, Input #<code>iPort</code>: Number of underruns 
      * between the thread producing packets and the thread (this driver) 
      * collecting them. For an input, underruns are an indicator that the 
@@ -290,31 +229,6 @@ public final class TAudioContext_JackD
         int                             ret;
         
         p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
-        ret = p.GetNumUnderruns ();
-        
-        return ret;
-    }
-    
-    /**
-     * Operational statistics, Output #<code>iPort</code>: Number of underruns 
-     * between the thread producing packets (this driver) and the thread 
-     * collecting them. For an output, underruns are an indicator that the 
-     * producer thread (this driver) is delivering less packets than the 
-     * consumer requires, leading to consumer starvation.
-     * 
-     * @param   iPort   The number of the output port of which we'd like to 
-     *                  acquire the number of underruns.
-     * @return          The total number of underruns on the designated output. 
-     *                  since the start of this driver or the last call to 
-     *                  {@link #ClearStats_Out(int)}.
-     * @see             {@link TAtomicBuffer#GetNumUnderruns()}`
-     */
-    public int GetNumUnderruns_Out (int iPort)
-    {
-        TAudioContext_Endpoint_Output   p;
-        int                             ret;
-        
-        p   = (TAudioContext_Endpoint_Output) GetPortOut (iPort);
         ret = p.GetNumUnderruns ();
         
         return ret;
@@ -435,7 +349,7 @@ public final class TAudioContext_JackD
             for (i = 0; i < nPorts; i++)
             {
                 portIn      = (TAudioContext_Endpoint_Input) GetPortIn (i);
-                bIn         = portIn._RetrieveSamples ();
+                bIn         = portIn.FetchPacket ();
                 bOut        = e.getOutput (i);
                 nSampIn     = bIn.capacity ();
                 nSampOut    = bOut.capacity ();
@@ -443,7 +357,6 @@ public final class TAudioContext_JackD
                 /* [100] */
                 if (nSampIn <= nSampOut)
                 {
-                    bOut.rewind ();
                     bOut.put (bIn);
                 }
             }

@@ -50,7 +50,7 @@ var activeTableTab = "activeTableTab";
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../ppm_java/stream/control/bus/TBrokerSubscription.html" title="class in ppm_java.stream.control.bus"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../ppm_java/stream/control/bus/TBrokerSubscription.html" title="class in ppm_java.backend.server.event"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?ppm_java/stream/control/bus/TBroker.html" target="_top">Frames</a></li>
@@ -92,7 +92,7 @@ var activeTableTab = "activeTableTab";
 <!-- ========= END OF TOP NAVBAR ========= -->
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="subTitle">ppm_java.stream.control.bus</div>
+<div class="subTitle">ppm_java.backend.server.event</div>
 <h2 title="Class TBroker" class="title">Class TBroker</h2>
 </div>
 <div class="contentContainer">
@@ -100,7 +100,7 @@ var activeTableTab = "activeTableTab";
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>ppm_java.stream.control.bus.TBroker</li>
+<li>ppm_java.backend.server.event.TBroker</li>
 </ul>
 </li>
 </ul>
@@ -137,7 +137,7 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Field and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>private <a href="../../../../ppm_java/_aux/storage/TAtomicArrayMap.html" title="class in ppm_java._aux.storage">TAtomicArrayMap</a>&lt;<a href="../../../../ppm_java/stream/control/bus/TBrokerSubscriptionList.html" title="class in ppm_java.stream.control.bus">TBrokerSubscriptionList</a>&gt;</code></td>
+<td class="colFirst"><code>private <a href="../../../../ppm_java/_aux/storage/TAtomicArrayMap.html" title="class in ppm_java._aux.storage">TAtomicArrayMap</a>&lt;<a href="../../../../ppm_java/stream/control/bus/TBrokerSubscriptionList.html" title="class in ppm_java.backend.server.event">TBrokerSubscriptionList</a>&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../ppm_java/stream/control/bus/TBroker.html#fSubscriptions">fSubscriptions</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -174,12 +174,12 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../ppm_java/stream/control/bus/TBroker.html#Broker-ppm_java._framework.typelib.VEvent-">Broker</a></span>(<a href="../../../../ppm_java/_framework/typelib/VEvent.html" title="class in ppm_java._framework.typelib">VEvent</a>&nbsp;e)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../ppm_java/stream/control/bus/TBroker.html#Broker-ppm_java._aux.typelib.VEvent-">Broker</a></span>(<a href="../../../../ppm_java/_framework/typelib/VEvent.html" title="class in ppm_java._aux.typelib">VEvent</a>&nbsp;e)</code>&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../ppm_java/stream/control/bus/TBroker.html#Subscribe-ppm_java._framework.typelib.VBrowseable-ppm_java._framework.typelib.IEvented-">Subscribe</a></span>(<a href="../../../../ppm_java/_framework/typelib/VBrowseable.html" title="class in ppm_java._framework.typelib">VBrowseable</a>&nbsp;subscribed,
-         <a href="../../../../ppm_java/_framework/typelib/IEvented.html" title="interface in ppm_java._framework.typelib">IEvented</a>&nbsp;subscriber)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../ppm_java/stream/control/bus/TBroker.html#Subscribe-ppm_java._aux.typelib.VBrowseable-ppm_java._aux.typelib.IEvented-">Subscribe</a></span>(<a href="../../../../ppm_java/_framework/typelib/VBrowseable.html" title="class in ppm_java._aux.typelib">VBrowseable</a>&nbsp;subscribed,
+         <a href="../../../../ppm_java/_framework/typelib/IEvented.html" title="interface in ppm_java._aux.typelib">IEvented</a>&nbsp;subscriber)</code>&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -209,7 +209,7 @@ extends java.lang.Object</pre>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>fSubscriptions</h4>
-<pre>private&nbsp;<a href="../../../../ppm_java/_aux/storage/TAtomicArrayMap.html" title="class in ppm_java._aux.storage">TAtomicArrayMap</a>&lt;<a href="../../../../ppm_java/stream/control/bus/TBrokerSubscriptionList.html" title="class in ppm_java.stream.control.bus">TBrokerSubscriptionList</a>&gt; fSubscriptions</pre>
+<pre>private&nbsp;<a href="../../../../ppm_java/_aux/storage/TAtomicArrayMap.html" title="class in ppm_java._aux.storage">TAtomicArrayMap</a>&lt;<a href="../../../../ppm_java/stream/control/bus/TBrokerSubscriptionList.html" title="class in ppm_java.backend.server.event">TBrokerSubscriptionList</a>&gt; fSubscriptions</pre>
 </li>
 </ul>
 </li>
@@ -237,23 +237,23 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a name="Broker-ppm_java._framework.typelib.VEvent-">
+<a name="Broker-ppm_java._aux.typelib.VEvent-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>Broker</h4>
-<pre>public&nbsp;void&nbsp;Broker(<a href="../../../../ppm_java/_framework/typelib/VEvent.html" title="class in ppm_java._framework.typelib">VEvent</a>&nbsp;e)</pre>
+<pre>public&nbsp;void&nbsp;Broker(<a href="../../../../ppm_java/_framework/typelib/VEvent.html" title="class in ppm_java._aux.typelib">VEvent</a>&nbsp;e)</pre>
 </li>
 </ul>
-<a name="Subscribe-ppm_java._framework.typelib.VBrowseable-ppm_java._framework.typelib.IEvented-">
+<a name="Subscribe-ppm_java._aux.typelib.VBrowseable-ppm_java._aux.typelib.IEvented-">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Subscribe</h4>
-<pre>public&nbsp;void&nbsp;Subscribe(<a href="../../../../ppm_java/_framework/typelib/VBrowseable.html" title="class in ppm_java._framework.typelib">VBrowseable</a>&nbsp;subscribed,
-                      <a href="../../../../ppm_java/_framework/typelib/IEvented.html" title="interface in ppm_java._framework.typelib">IEvented</a>&nbsp;subscriber)</pre>
+<pre>public&nbsp;void&nbsp;Subscribe(<a href="../../../../ppm_java/_framework/typelib/VBrowseable.html" title="class in ppm_java._aux.typelib">VBrowseable</a>&nbsp;subscribed,
+                      <a href="../../../../ppm_java/_framework/typelib/IEvented.html" title="interface in ppm_java._aux.typelib">IEvented</a>&nbsp;subscriber)</pre>
 </li>
 </ul>
 </li>
@@ -285,7 +285,7 @@ extends java.lang.Object</pre>
 <div class="subNav">
 <ul class="navList">
 <li>Prev&nbsp;Class</li>
-<li><a href="../../../../ppm_java/stream/control/bus/TBrokerSubscription.html" title="class in ppm_java.stream.control.bus"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
+<li><a href="../../../../ppm_java/stream/control/bus/TBrokerSubscription.html" title="class in ppm_java.backend.server.event"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
 </ul>
 <ul class="navList">
 <li><a href="../../../../index.html?ppm_java/stream/control/bus/TBroker.html" target="_top">Frames</a></li>

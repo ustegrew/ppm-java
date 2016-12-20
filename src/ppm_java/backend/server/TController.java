@@ -15,70 +15,60 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.backend.server;
 
+import java.util.ArrayList;
+
 import ppm_java._aux.logging.TLogger;
-import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java._framework.TConnection;
-import ppm_java._framework.TRegistry;
-import ppm_java._framework.typelib.IControllable;
-import ppm_java._framework.typelib.IEvented;
-import ppm_java._framework.typelib.VAudioObject;
-import ppm_java._framework.typelib.VAudioProcessor;
-import ppm_java._framework.typelib.VBrowseable;
+import ppm_java._aux.typelib.IControllable;
+import ppm_java._aux.typelib.IEvented;
+import ppm_java._aux.typelib.VAudioObject;
+import ppm_java._aux.typelib.VAudioProcessor;
+import ppm_java._aux.typelib.VBrowseable;
 import ppm_java.backend.jackd.TAudioContext_JackD;
+import ppm_java.backend.server.event.TBroker;
+import ppm_java.backend.server.module.ppm.TNodePPMProcessor;
+import ppm_java.backend.server.module.timer.TTimer;
 import ppm_java.frontend.gui.TGUISurrogate;
-import ppm_java.stream.control.bus.TBroker;
-import ppm_java.stream.control.timer.TTimer;
-import ppm_java.stream.node.bufferedPipe.TNodeBufferedPipe;
-import ppm_java.stream.node.peak.TNodePeakDetector;
 
 /**
  * @author peter
- *
  */
 public final class TController
 {
-    private static TController          gController   = new TController ();
+    private static TController gController = new TController ();
+    
+    public static void Create_AudioContext (String id, int sampleRate, int bufferSize)
+    {
+        TAudioContext_JackD.CreateInstance (id);
+    }
     
     /**
      * @param idFromPort
      * @param idToPort
      */
-    public static void Connect (String idFromPort, String idToPort)
+    public static void Create_Connection_Data (String idFromPort, String idToPort)
     {
         TConnection.CreateInstance (idFromPort, idToPort);
     }
     
-    public static void Create_AudioContext (String idClient, int sampleRate, int bufferSize)
+    public static void Create_Connection_Events (String idSource, String idRecipient)
     {
-        TAudioContext_JackD.CreateInstance (idClient);
+        gController._SubscribeToEvents (idSource, idRecipient);
     }
     
     /**
      * @param string
      */
-    public static void Create_Frontend_GUI (String idGUI, int nChanInMax)
+    public static void Create_Frontend_GUI (String id, int nChanInMax)
     {
-        TGUISurrogate.CreateInstance (idGUI, nChanInMax);
+        TGUISurrogate.CreateInstance (id, nChanInMax);
     }
     
-    /**
-     * @param string
-     * @param kcopyonget
-     */
-    public static void Create_Node_BufferedPipe (String id, ECopyPolicy copyPolicy)
+    public static void Create_Module_PPMProcessor (String id)
     {
-        TNodeBufferedPipe.CreateInstance (id, copyPolicy);
+        TNodePPMProcessor.CreateInstance (id);
     }
     
-    /**
-     * @param string
-     */
-    public static void Create_Node_PeakDetector (String id)
-    {
-        TNodePeakDetector.CreateInstance (id);
-    }
-    
-    public static void Create_Node_Timer (String id, int intervalMs)
+    public static void Create_Module_Timer (String id, int intervalMs)
     {
         TTimer.CreateInstance (id, intervalMs);
     }
@@ -87,11 +77,11 @@ public final class TController
      * @param string
      * @param string2
      */
-    public static void Create_Port_In (String idProcessor, String idPort)
+    public static void Create_Port_In (String idModule, String idPort)
     {
         VAudioProcessor         proc;
         
-        proc = (VAudioProcessor) gController._GetAudioObject (idProcessor);
+        proc = (VAudioProcessor) gController._GetAudioObject (idModule);
         proc.CreatePort_In (idPort);
     }
     
@@ -99,14 +89,39 @@ public final class TController
      * @param string
      * @param string2
      */
-    public static void Create_Port_Out (String idProcessor, String idPort)
+    public static void Create_Port_Out (String idModule, String idPort)
     {
         VAudioProcessor         proc;
         
-        proc = (VAudioProcessor) gController._GetAudioObject (idProcessor);
+        proc = (VAudioProcessor) gController._GetAudioObject (idModule);
         proc.CreatePort_Out (idPort);
     }
     
+    /**
+     * @param idModuleToStart
+     */
+    public static void Create_StartListEntry (String idModuleToStart)
+    {
+        gController._Create_StartListEntry (idModuleToStart);
+    }
+
+    /**
+     * @param string
+     */
+    public static void Create_StopListEntry (String idModuleToStop)
+    {
+        gController._Create_StopListEntry (idModuleToStop);
+    }
+    
+    public static TAudioContext_JackD GetAudioDriver ()
+    {
+        TAudioContext_JackD ret;
+        
+        ret = gController._GetAudioDriver ();
+        
+        return ret;
+    }
+
     public static VAudioObject GetObject (String id)
     {
         VAudioObject ret;
@@ -136,27 +151,55 @@ public final class TController
     {
         gController._Register (object);
     }
-    
-    public static final void Start (String id)
+
+    /**
+     * 
+     */
+    public static void Start ()
     {
-        gController._Start (id);
+        gController._StartStop (true);
     }
     
-    public static void SubscribeToEvents (String keySubscribed, String keySubscriber)
-    {
-        gController._SubscribeToEvents (keySubscribed, keySubscriber);
-    }
-    
+    private static final int            gkTimeBetweenStartOrStop = 500;
+
     private TBroker                     fEventBus;
+    private ArrayList<String>           fListIDModulesStart;
+    private ArrayList<String>           fListIDModulesStop;
     private TRegistry                   fRegistry;
     
     private TController ()
     {
         TLogger.LogMessage ("Creating controller (singleton)", this, "cTor()");
-        fRegistry = new TRegistry   ();
-        fEventBus = new TBroker     ();
+        fRegistry           = new TRegistry   ();
+        fEventBus           = new TBroker     ();
+        fListIDModulesStart = new ArrayList<> ();
+        fListIDModulesStop  = new ArrayList<> ();
+    }
+    /**
+     * @param idModuleToStart
+     */
+    private void _Create_StartListEntry (String idModuleToStart)
+    {
+        fListIDModulesStart.add (idModuleToStart);
     }
     
+    /**
+     * @param idModuleToStop
+     */
+    private void _Create_StopListEntry (String idModuleToStop)
+    {
+        fListIDModulesStop.add (idModuleToStop);
+    }
+    
+    private TAudioContext_JackD _GetAudioDriver ()
+    {
+        TAudioContext_JackD ret;
+        
+        ret = (TAudioContext_JackD) fRegistry.GetAudioDriver ();
+        
+        return ret;
+    }
+
     private VAudioObject _GetAudioObject (String id)
     {
         VAudioObject        ret;
@@ -165,25 +208,48 @@ public final class TController
         
         return ret;
     }
-    
+
     private void _PostEvent (int e, String idSource)
     {
         fEventBus.Broker (e, idSource);
     }
-
+    
     private void _Register (VBrowseable b)
     {
         TLogger.LogMessage ("Registering object: '" + b.GetID () + "'", this, "_Register (VBrowseable b)");
         fRegistry.Register (b);
     }
-
-    private void _Start (String id)
+    
+    private void _StartStop (boolean doStart)
     {
-        IControllable  module;
+        int                 i;
+        int                 n;
+        String              verb;
+        String              id;
+        ArrayList<String>   list;
+        IControllable       mod;
         
-        TLogger.LogMessage ("Starting module '" + id + "'", this, "_Start ('" + id + "')");
-        module = (IControllable) fRegistry.GetObject (id);
-        module.Start ();
+        verb = doStart  ?  "starting"          :  "stopping";
+        list = doStart  ?  fListIDModulesStart : fListIDModulesStop;
+        n    = list.size ();
+        if (n >= 1)
+        {
+            for (i = 0; i < n; i++)
+            {
+                id  = list.get (i);
+                TLogger.LogMessage (verb + ": module " + id);
+                mod = (IControllable) fRegistry.GetObject (id);
+                if (doStart)
+                {
+                    mod.Start ();
+                }
+                else
+                {
+                    mod.Stop ();
+                }
+                try {Thread.sleep (gkTimeBetweenStartOrStop);} catch (InterruptedException e) {}
+            }
+        }
     }
 
     private void _SubscribeToEvents (String keySubscribed, String keySubscriber)
@@ -198,11 +264,7 @@ public final class TController
 
     private void _SystemTerminate ()
     {
-        TAudioContext_JackD audioDriver;
-        
-        audioDriver = (TAudioContext_JackD) fRegistry.GetAudioDriver ();
-        audioDriver.Stop ();
-        try {Thread.sleep (1000);} catch (InterruptedException e) {e.printStackTrace();}
+        _StartStop (false);
         TLogger.LogMessage ("Terminating application", this, "_SystemTerminate ()");
         System.exit (0);
     }

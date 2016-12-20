@@ -14,8 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui;
 
-import ppm_java._framework.typelib.IControllable;
-import ppm_java._framework.typelib.VFrontend;
+import ppm_java._aux.typelib.IControllable;
+import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.server.TController;
 
 /**
@@ -55,7 +55,7 @@ public class TGUISurrogate
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
+     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
      */
     @Override
     public void CreatePort_In (String id)
@@ -69,7 +69,7 @@ public class TGUISurrogate
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
+     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
      */
     @Override
     public void CreatePort_Out (String id)
@@ -77,40 +77,8 @@ public class TGUISurrogate
         throw new IllegalStateException ("This is a front end class - it doesn't use output ports.");
     }
     
-    /**
-     * @param data
-     */
-    public void SetLevel (float level, int iChannel)
-    {
-        int lDisp;
-        
-        if (level >= kLvlClip)
-        {
-            fGUI.ClippingSet (EClipType.kError, iChannel);
-        }
-        else if (level >= kLvlWarn)
-        {
-            fGUI.ClippingSet (EClipType.kWarn, iChannel);
-        }
-        
-        if (level < 0)
-        {
-            lDisp = 0;
-        }
-        else if (level > 1)
-        {
-            lDisp = 100;
-        }
-        else
-        {
-            lDisp = (int) (100.0f * level); /* TODO: make level logarithmic, in dB */
-        }
-        
-        fGUI.SetLevel (lDisp, iChannel);
-    }
-
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.IControllable#Start()
+     * @see ppm_java._aux.typelib.IControllable#Start()
      */
     @Override
     public void Start ()
@@ -118,16 +86,16 @@ public class TGUISurrogate
         fGUI.setVisible (true);
         fGUI.setLocationRelativeTo (null);
     }
-    
+
     /* (non-Javadoc)
-     * @see ppm_java._framework.typelib.IControllable#Stop()
+     * @see ppm_java._aux.typelib.IControllable#Stop()
      */
     @Override
     public void Stop ()
     {
-        // Do nothing
+        fGUI.setVisible (false);
     }
-
+    
     void OnSigClip_Click ()
     {
         fGUI.ClippingSet (EClipType.kClear, -1);
@@ -137,4 +105,71 @@ public class TGUISurrogate
     {
         TController.OnTerminate (GetID ());
     }
+
+    /**
+     * @param data
+     */
+    void SetLevel (float level, int iChannel)
+    {
+        float   div;
+        int     lDisp;
+        
+        /* Set clipping indicators. */
+        if (level >= kLvlClip)
+        {
+            fGUI.ClippingSet (EClipType.kError, iChannel);
+        }
+        else if (level >= kLvlWarn)
+        {
+            fGUI.ClippingSet (EClipType.kWarn, iChannel);
+        }
+        
+        /* PPM II has seven divisions on the scale. We map to a progress bar with 100 divisions. */
+        div = 100 / 7;  
+        
+        /* Compute progress bar value */
+        if (level > 0)
+        {   /* ]0, ...] dB => hard limit to 100 */
+            lDisp = 100;
+        }
+        else if (level >= -24)
+        {   /* [-24, 0] dB => working range 1..7 */                     /* [100] */
+            lDisp = (int) (100 + div * level / 4 + 0.5);
+        }
+        else if (level >= -130)
+        {
+            /* [-130, -24[ dB => range 0..1 */                          /* [110] */
+            lDisp = (int) (level/106 + 1.226 + 0.5);
+        }
+        else
+        {
+            /* below -130dB => hard limit to zero */
+            lDisp = 0;
+        }
+        
+        fGUI.SetLevel (lDisp, iChannel);
+    }
 }
+
+
+/*
+[100]   Each marker on a PPM scale means 4dB rise and maps to a step size of 100/7 on the GUI meter,
+        i.e. 100/7  stands for 4dB. Also, scale value 1 maps to -24 dB. Hence
+        x_gui = 100 + (lv_dB/4)  *  (100/7)
+        
+        e.g. for -24dB, x_gui = 100 + (-24/4) * (100/7) = 100 - 6*100/7 = 14.28
+        
+        Before the cast to integer we also add 0.5 to get a round figure. 
+        
+[110]   Similar calculations, except dB values between -130dB and -24dB 
+        map to PPM range 0..1, i.e. 0*100/7 ... 1*100/7
+        
+        We translate level by 130dB and cover a dynamic range from 
+        130dB - 24dB = 106dB and compute our PPM value so that 
+        -130dB => PPM(0), -24dB => PPM (1). 
+        lDisp = (level + 130) / 106 => We optimize to
+        lDisp = level/106 + 130/106
+              = level/106 + 1.226
+        
+        Before the cast to integer we also add 0.5 to get a round figure. 
+*/

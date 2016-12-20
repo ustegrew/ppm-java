@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java;
 
-import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.backend.server.TController;
 
 /**
@@ -24,7 +23,10 @@ import ppm_java.backend.server.TController;
  */
 public class TMain
 {
-    public static final int         kNChanGUIMax = 2; 
+    public static final int         gkAudioFrameSize    =  1024;
+    public static final int         gkAudioSampleRate   = 44100;
+    public static final int         gkGUINChanMax       =     2;
+    public static final int         gkTimerIntervalMs   =    30; 
     
     /**
      * @param args
@@ -36,35 +38,45 @@ public class TMain
     
     private static void _Setup ()
     {
-        TController.Create_AudioContext         ("ppm", 44100, 1024);
+        /* Create modules */
+        TController.Create_AudioContext             ("driver",          gkAudioSampleRate, gkAudioFrameSize     );
+        TController.Create_Frontend_GUI             ("gui",             gkGUINChanMax                           );
+        TController.Create_Module_PPMProcessor      ("ppm.l"                                                    );
+        TController.Create_Module_PPMProcessor      ("ppm.r"                                                    );
+        TController.Create_Module_Timer             ("timer",           gkTimerIntervalMs                       );
         
-        TController.Create_Node_BufferedPipe    ("pDecoupler_l", ECopyPolicy.kCopyOnGet);
-        TController.Create_Node_BufferedPipe    ("pDecoupler_r", ECopyPolicy.kCopyOnGet);
+        /* For each module, create in/out ports */
+        TController.Create_Port_Out                 ("driver",          "driver.out.l"                          );
+        TController.Create_Port_Out                 ("driver",          "driver.out.r"                          );
         
-        TController.Create_Frontend_GUI         ("gui", kNChanGUIMax);
-        TController.Create_Node_PeakDetector    ("pk_l");
-        TController.Create_Node_PeakDetector    ("pk_r");
-        TController.Create_Node_Timer           ("tmrFontendClock", 20);
+        TController.Create_Port_In                  ("ppm.l",           "ppm.l.in"                              );
+        TController.Create_Port_Out                 ("ppm.l",           "ppm.l.out"                             );
         
-        TController.Create_Port_Out             ("ppm",         "ppm.in_l");
-        TController.Create_Port_Out             ("ppm",         "ppm.in_r");
-        TController.Create_Port_In              ("gui",         "gui.in_l");
-        TController.Create_Port_In              ("gui",         "gui.in_r");
-        TController.Create_Port_In              ("pk_l",        "pk_l.in");
-        TController.Create_Port_Out             ("pk_l",        "pk_l.out");
-        TController.Create_Port_In              ("pk_r",        "pk_r.in");
-        TController.Create_Port_Out             ("pk_r",        "pk_r.out");
+        TController.Create_Port_In                  ("ppm.r",           "ppm.r.in"                              );
+        TController.Create_Port_Out                 ("ppm.r",           "ppm.r.out"                             );
         
-        TController.Connect                     ("ppm.in_l",    "pk_l.in");
-        TController.Connect                     ("ppm.in_r",    "pk_r.in");
-        TController.Connect                     ("pk_l.out",    "gui.in_l");
-        TController.Connect                     ("pk_r.out",    "gui.in_r");
+        TController.Create_Port_In                  ("gui",             "gui.in_l"                              );
+        TController.Create_Port_In                  ("gui",             "gui.in_r"                              );
         
-        TController.SubscribeToEvents           ("tmrFrontendClock", "pDecoupler_l");
-        TController.SubscribeToEvents           ("tmrFrontendClock", "pDecoupler_r");
+        /* Connect modules */
+        TController.Create_Connection_Data          ("driver.out.l",    "ppm.l.in"                              );
+        TController.Create_Connection_Data          ("driver.out.r",    "ppm.r.in"                              );
+        TController.Create_Connection_Data          ("ppm.l.out",       "gui.in.l"                              );
+        TController.Create_Connection_Data          ("ppm.r.out",       "gui.in.r"                              );
         
-        TController.Start                       ("ppm");
-        TController.Start                       ("gui");
-        TController.Start                       ("tmrFontendClock");
+        /* Subscribe PPM processor to timer events */
+        TController.Create_Connection_Events        ("timer",           "ppm.l"                                 );
+        TController.Create_Connection_Events        ("timer",           "ppm.r"                                 );
+        
+        /* Create start and stop lists */
+        TController.Create_StartListEntry           ("gui");                 
+        TController.Create_StartListEntry           ("timer");                 
+        TController.Create_StartListEntry           ("driver");
+        TController.Create_StopListEntry            ("timer");                 
+        TController.Create_StopListEntry            ("driver");
+        TController.Create_StopListEntry            ("gui");                 
+        
+        /* Start all modules */
+        TController.Start ();
     }
 }
