@@ -65,7 +65,7 @@ public class TNodePPMProcessor
         fPeak               = 0;
         fTLast              = 0;                                        /* [140] */
         drv                 = TController.GetAudioDriver ();
-        fSampleRate         = drv.GetSampleRate ();
+        fSampleRate         = -1;
         fHasInitialTime     = false;                                    /* [140] */
     }
 
@@ -153,6 +153,7 @@ public class TNodePPMProcessor
      */
     private void _ProcessChunk ()
     {
+        TAudioContext_JackD                 drv;
         TNodePPMProcessor_Endpoint_In       in;
         TNodePPMProcessor_Endpoint_Out      out;
         FloatBuffer                         packetNew;
@@ -166,10 +167,13 @@ public class TNodePPMProcessor
         long                                nSamples;
         int                                 nRem;
         
+        drv                 = TController.GetAudioDriver ();
         nowT                = System.currentTimeMillis ();
         dT                  = nowT - fTLast;
+        fTLast              = nowT;
+        fSampleRate         = drv.GetSampleRate ();
         fNSamplesPerCycle   = dT * fSampleRate / 1000;
-        
+
         /* Analyze next chunk of data. */
         in          = (TNodePPMProcessor_Endpoint_In) GetPortIn (0);
         packetNew   = in.FetchPacket ();
@@ -177,6 +181,7 @@ public class TNodePPMProcessor
         {
             /* We have fresh data. Do analysis with that one. */
             fInPacket  = packetNew;
+            fInPacket.rewind ();
             nSamples   = fInPacket.limit ();
             if (nSamples > fNSamplesPerCycle)
             {
@@ -229,7 +234,6 @@ public class TNodePPMProcessor
             /* Same value as before */
             pProj = p;
         }
-        
         
         /* Convert approximated peak value to dB */                     /* [120] */
         if (pProj <= gkMinThreshold)

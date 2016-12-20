@@ -146,7 +146,7 @@ public class TGUISurrogate
             /* below -130dB => hard limit to zero */
             lDisp = 0;
         }
-        
+
         fGUI.SetLevel (lDisp, iChannel);
     }
 

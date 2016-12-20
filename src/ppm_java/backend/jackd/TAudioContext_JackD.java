@@ -16,8 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.jackd;
 
 import java.nio.FloatBuffer;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import de.gulden.framework.jjack.JJackAudioEvent;
 import de.gulden.framework.jjack.JJackAudioProcessor;
 import de.gulden.framework.jjack.JJackException;
@@ -68,16 +66,6 @@ public final class TAudioContext_JackD
     private boolean fIsWorking;
     
     /**
-     * Number of frames submitted and received during the last call to 
-     * {@link #process(JJackAudioEvent)}. Whilst this number is refreshed
-     * with each call to {@link #process(JJackAudioEvent)}, we expect it
-     * to be constant over the lifetime of this client (It depends on the
-     * settings of the running JackD instance).<br/>
-     * Read-only access via {@link #GetNumFrames()}.
-     */
-    private AtomicInteger fNumFrames;
-    
-    /**
      * Sample rate (samp/sec) as determined by the running instance of JackD.<br/>
      * Read-only access via {@link #GetSampleRate()}.
      */
@@ -98,7 +86,6 @@ public final class TAudioContext_JackD
         TLogger.LogMessage ("Creating JackD bridge (singleton)", this, "cTor ('" + idClient + ")");
         fSampleRate      = -1;
         fIsWorking       = false;
-        fNumFrames       = new AtomicInteger (0);
     }
     
     /**
@@ -161,26 +148,6 @@ public final class TAudioContext_JackD
         
         p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
         ret = p.GetNumContentions ();
-        
-        return ret;
-    }
-    
-    /**
-     * Operational statistics: Number of frames produced and collected during the last 
-     * call to {@link #process(JJackAudioEvent)}.<br/>
-     * Note that this number may or may not change during the session - it depends 
-     * on the JackD server. In prctice it's unlikely, but it's recommended that
-     * clients have some mechanism in place to compensate for dynamic frame number 
-     * changes.
-     * 
-     * @return  Number of frames processed during last execution of 
-     *          {@link #process(JJackAudioEvent)}
-     */
-    public int GetNumFrames ()
-    {
-        int ret;
-        
-        ret = fNumFrames.getAndAdd (0);
         
         return ret;
     }
@@ -258,7 +225,6 @@ public final class TAudioContext_JackD
     @Override
     public void process (JJackAudioEvent e)
     {
-        _ProcessStats (e);
         _ProcessOutputs (e);
         _ProcessInputs (e);
     }
@@ -387,7 +353,7 @@ public final class TAudioContext_JackD
         int                             nPorts;
         int                             i;
         FloatBuffer                     b;
-        
+
         nPorts = GetNumPortsOut ();
         if (nPorts >= 1)
         {
@@ -397,35 +363,6 @@ public final class TAudioContext_JackD
                 b       = e.getInput (i);
                 portOut.PushPacket (b);
             }
-        }
-    }
-    
-    /**
-     * Retrieves various runtime statistics which can be queried by the
-     * client program.
-     * 
-     * @param e     The handle allowing access to some of the statistics data.
-     */
-    private void _ProcessStats (JJackAudioEvent e)
-    {
-        FloatBuffer     b;
-        int             nPortsIn;
-        int             nPortsOut;
-        int             nSamp;
-        
-        nPortsIn    = GetNumPortsIn ();
-        nPortsOut   = GetNumPortsOut ();
-        if (nPortsIn >= 1)
-        {
-            b       = e.getInput (0);
-            nSamp   = b.capacity ();
-            fNumFrames.getAndSet (nSamp);
-        }
-        else if (nPortsOut >= 1)
-        {
-            b       = e.getOutput (0);
-            nSamp   = b.capacity ();
-            fNumFrames.getAndSet (nSamp);
         }
     }
 

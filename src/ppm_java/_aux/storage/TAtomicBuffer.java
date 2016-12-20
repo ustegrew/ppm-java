@@ -481,7 +481,7 @@ public class TAtomicBuffer
 
         /* Mark data as stale. For simplicity we ignore whatever fHasBeenCollected was before */
         fHasBeenCollected = true;
-        
+
         return ret;
     }
     
@@ -523,14 +523,21 @@ public class TAtomicBuffer
      */
     private FloatBuffer _GetDeepCopy (FloatBuffer fb)
     {
+        int         i;
         int         nNums;
-        float[]     values;
+        float       v;
         FloatBuffer ret;
         
         nNums   = fb.capacity ();
-        values  = fb.array ();
         ret     = FloatBuffer.allocate (nNums);
-        ret.put (values);
+        if (nNums >= 1)
+        {
+            for (i = 0; i < nNums; i++)
+            {
+                v = fb.get (i);
+                ret.put (v);
+            }
+        }
                 
         return ret;
     }

@@ -37,7 +37,7 @@ public class TGUI_Endpoint extends VAudioPort_Input_Samples
     {
         TGUISurrogate   host;
         int             iPort;
-        
+
         host    = (TGUISurrogate) _GetHost ();
         iPort   = GetPortNum ();
         host.SetLevel (sample, iPort);
