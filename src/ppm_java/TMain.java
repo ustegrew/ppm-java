@@ -55,8 +55,8 @@ public class TMain
         TController.Create_Port_In                  ("ppm.r",           "ppm.r.in"                              );
         TController.Create_Port_Out                 ("ppm.r",           "ppm.r.out"                             );
         
-        TController.Create_Port_In                  ("gui",             "gui.in_l"                              );
-        TController.Create_Port_In                  ("gui",             "gui.in_r"                              );
+        TController.Create_Port_In                  ("gui",             "gui.in.l"                              );
+        TController.Create_Port_In                  ("gui",             "gui.in.r"                              );
         
         /* Connect modules */
         TController.Create_Connection_Data          ("driver.out.l",    "ppm.l.in"                              );
@@ -74,7 +74,6 @@ public class TMain
         TController.Create_StartListEntry           ("driver");
         TController.Create_StopListEntry            ("timer");                 
         TController.Create_StopListEntry            ("driver");
-        TController.Create_StopListEntry            ("gui");                 
         
         /* Start all modules */
         TController.Start ();

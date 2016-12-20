@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.frontend.gui;
 
 import ppm_java._aux.typelib.VAudioPort_Input_Samples;
+import ppm_java.backend.server.TController;
 
 /**
  * @author peter
@@ -40,5 +41,14 @@ public class TGUI_Endpoint extends VAudioPort_Input_Samples
         host    = (TGUISurrogate) _GetHost ();
         iPort   = GetPortNum ();
         host.SetLevel (sample, iPort);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
     }
 }

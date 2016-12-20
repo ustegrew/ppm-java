@@ -149,6 +149,15 @@ public class TGUISurrogate
         
         fGUI.SetLevel (lDisp, iChannel);
     }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
+    }
 }
 
 

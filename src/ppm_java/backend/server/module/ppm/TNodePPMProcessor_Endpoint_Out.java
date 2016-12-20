@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.server.module.ppm;
 
 import ppm_java._aux.typelib.VAudioPort_Output_Samples;
+import ppm_java.backend.server.TController;
 
 /**
  * @author peter
@@ -30,5 +31,14 @@ public class TNodePPMProcessor_Endpoint_Out extends VAudioPort_Output_Samples
     public TNodePPMProcessor_Endpoint_Out (String id, TNodePPMProcessor host)
     {
         super (id, host);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
     }
 }

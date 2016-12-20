@@ -92,6 +92,15 @@ public class TTimer
         /* [100] */
         TController.PostEvent (IEvented.gkEventTimer, fID);
     }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
+    }
 }
 
 /*

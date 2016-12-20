@@ -19,7 +19,7 @@ package ppm_java._aux.typelib;
  * @author peter
  *
  */
-public class VAudioPort extends VAudioObject
+public abstract class VAudioPort extends VAudioObject
 {
     public static enum EConnectibleType
     {

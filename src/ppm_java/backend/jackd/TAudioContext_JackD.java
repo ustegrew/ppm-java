@@ -26,6 +26,7 @@ import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.VAudioDriver;
+import ppm_java.backend.server.TController;
 import ppm_java.backend.server.TRegistry;
 
 /**
@@ -270,6 +271,15 @@ public final class TAudioContext_JackD
     public void Stop ()
     {
         _StopDriver ();
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
     }
 
     /**

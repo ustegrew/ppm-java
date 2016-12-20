@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IEvented;
+import ppm_java._aux.typelib.VAudioDriver;
 import ppm_java._aux.typelib.VAudioObject;
 import ppm_java._aux.typelib.VAudioProcessor;
 import ppm_java._aux.typelib.VBrowseable;
+import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.jackd.TAudioContext_JackD;
 import ppm_java.backend.server.event.TBroker;
 import ppm_java.backend.server.module.ppm.TNodePPMProcessor;
@@ -147,11 +149,27 @@ public final class TController
     /**
      * @param object
      */
+    public static void Register (VAudioDriver driver)
+    {
+        gController._Register (driver);
+    }
+    
+    /**
+     * @param object
+     */
     public static void Register (VBrowseable object)
     {
         gController._Register (object);
     }
-
+    
+    /**
+     * @param object
+     */
+    public static void Register (VFrontend fe)
+    {
+        gController._Register (fe);
+    }
+    
     /**
      * 
      */
@@ -214,10 +232,22 @@ public final class TController
         fEventBus.Broker (e, idSource);
     }
     
+    private void _Register (VAudioDriver d)
+    {
+        TLogger.LogMessage ("Registering object: '" + d.GetID () + "'", this, "_Register (VAudioDriver d)");
+        fRegistry.Register (d);
+    }
+    
     private void _Register (VBrowseable b)
     {
         TLogger.LogMessage ("Registering object: '" + b.GetID () + "'", this, "_Register (VBrowseable b)");
         fRegistry.Register (b);
+    }
+    
+    private void _Register (VFrontend fe)
+    {
+        TLogger.LogMessage ("Registering object: '" + fe.GetID () + "'", this, "_Register (VFrontend fe)");
+        fRegistry.Register (fe);
     }
     
     private void _StartStop (boolean doStart)

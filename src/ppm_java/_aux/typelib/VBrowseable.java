@@ -15,8 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java._aux.typelib;
 
-import ppm_java.backend.server.TController;
-
 /**
  * @author peter
  *
@@ -28,11 +26,13 @@ public abstract class VBrowseable
     public VBrowseable (String id)
     {
         fID         = id;
-        TController.Register (this);
+        _Register ();
     }
     
     public String GetID ()
     {
         return fID;
     }
+    
+    protected abstract void _Register ();
 }

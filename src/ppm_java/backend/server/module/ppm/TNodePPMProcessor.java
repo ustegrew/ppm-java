@@ -134,6 +134,15 @@ public class TNodePPMProcessor
     {
         // Do nothing
     }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
+    }
     
     /**
      * The central computation piece of the PPM level meter. Sends one level update
@@ -192,10 +201,7 @@ public class TNodePPMProcessor
         }
         
         /* Integration part - compute new peak value with given PPM ballistics. */
-        nowT    = System.currentTimeMillis ();
-        dT      = nowT - fTLast;
-        dY      = p - fPeak;
-        fTLast  = dT;
+        dY = p - fPeak;
         
         /* Interpolate next meter point. We use a simple linear interpolation. */
         if (dY > 0)

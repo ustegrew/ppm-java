@@ -19,7 +19,7 @@ package ppm_java._aux.typelib;
  * @author peter
  *
  */
-public class VAudioObject extends VBrowseable
+public abstract class VAudioObject extends VBrowseable
 {
     public VAudioObject (String id)
     {

@@ -18,6 +18,7 @@ package ppm_java.backend.jackd;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
 import ppm_java._aux.typelib.VAudioPort_Input_Chunks_Buffered;
+import ppm_java.backend.server.TController;
 
 /**
  * @author peter
@@ -28,5 +29,14 @@ public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffer
     protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host, int iPort)
     {
         super (id, host, iPort, ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
     }
 }
