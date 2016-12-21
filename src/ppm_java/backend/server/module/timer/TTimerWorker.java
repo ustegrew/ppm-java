@@ -25,7 +25,7 @@ import ppm_java._aux.logging.TLogger;
  */
 class TTimerWorker extends Thread
 {
-    private static final int        gkLoopIntervalMin       = 1;
+    private static final int        gkLoopIntervalMin       = 10;
     private static final int        gkStateRun              = 1;
     private static final int        gkStateStop             = 2;
     private static final int        gkStateWait             = 0;

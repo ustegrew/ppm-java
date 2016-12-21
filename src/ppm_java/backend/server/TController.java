@@ -17,6 +17,7 @@ package ppm_java.backend.server;
 
 import java.util.ArrayList;
 
+import ppm_java._aux.debug.TTimerDebugUpdate;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IEvented;
@@ -212,15 +213,17 @@ public final class TController
     private ArrayList<String>           fListIDModulesStop;
     private TRegistry                   fRegistry;
     private ArrayList<IStatEnabled>     fStatProviders;
+    private TTimerDebugUpdate           fDebugUpdateWorker;
     
     private TController ()
     {
         TLogger.LogMessage ("Creating controller (singleton)", this, "cTor()");
-        fRegistry           = new TRegistry   ();
-        fEventBus           = new TBroker     ();
-        fListIDModulesStart = new ArrayList<> ();
-        fListIDModulesStop  = new ArrayList<> ();
-        fStatProviders      = new ArrayList<> ();
+        fRegistry           = new TRegistry             ();
+        fEventBus           = new TBroker               ();
+        fListIDModulesStart = new ArrayList<>           ();
+        fListIDModulesStop  = new ArrayList<>           ();
+        fStatProviders      = new ArrayList<>           ();
+        fDebugUpdateWorker  = new TTimerDebugUpdate     ();
     }
     
     /**
@@ -309,6 +312,15 @@ public final class TController
                 }
                 try {Thread.sleep (gkTimeBetweenStartOrStop);} catch (InterruptedException e) {}
             }
+        }
+        
+        if (doStart)
+        {
+            fDebugUpdateWorker.start ();
+        }
+        else
+        {
+            fDebugUpdateWorker.Stop ();
         }
     }
 

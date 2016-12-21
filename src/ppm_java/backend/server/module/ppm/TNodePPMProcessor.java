@@ -45,14 +45,14 @@ public class TNodePPMProcessor
         private TAtomicDouble           fLastPeakValue;
         private TAtomicDouble           fLastPeakProjectedValue;
         private AtomicLong              fNumSamplesPerCycle;
-        private AtomicInteger           fSampleRate;
+        private AtomicLong              fSampleRate;
         private AtomicLong              fTimeCycle;
         
         public TStats_TNodePPMProcessor (TNodePPMProcessor host)
         {
             fHost                   = host;
             fTimeCycle              = new AtomicLong (0);
-            fSampleRate             = new AtomicInteger (0);
+            fSampleRate             = new AtomicLong (0);
             fNumSamplesPerCycle     = new AtomicLong (0);
             fLastDBValue            = new TAtomicDouble ();
             fLastPeakValue          = new TAtomicDouble ();
@@ -103,7 +103,7 @@ public class TNodePPMProcessor
             fLastPeakProjectedValue.Set (pvp);
         }
         
-        public void SetSampleRate (int sr)
+        public void SetSampleRate (long sr)
         {
             fSampleRate.getAndSet (sr);
         }
@@ -122,8 +122,8 @@ public class TNodePPMProcessor
     private boolean                             fHasInitialTime;
     private FloatBuffer                         fInPacket;
     private long                                fNSamplesPerCycle;
-    private float                               fPeak;
-    private int                                 fSampleRate;
+    private double                              fPeak;
+    private long                                fSampleRate;
     private TStats_TNodePPMProcessor            fStats;
     private long                                fTLast;
     
@@ -315,7 +315,7 @@ public class TNodePPMProcessor
         else if (fInPacket != null)
         {
             /* No fresh data available, but the previous packet still has unresolved data */
-            p = _FindPeak (fInPacket, fNSamplesPerCycle);
+            p    = _FindPeak (fInPacket, fNSamplesPerCycle);
             nRem = fInPacket.remaining ();
             if (nRem <= 0)
             {
@@ -331,13 +331,14 @@ public class TNodePPMProcessor
         fStats.SetPeakValue (p);
         
         /* Integration part - compute new peak value with given PPM ballistics. */
-        dY = p - fPeak;
+        dY      = p - fPeak;
+        fPeak   = p;
         
         /* Interpolate next meter point. We use a simple linear interpolation. */
         if (dY > 0)
         {
             /* Value is rising. Use value-rise ballistics.  */
-            pProj = p + gkIntegrTimeRise * dY / dT;
+            pProj = p + dY / (gkIntegrTimeRise * dT);
             /* Limiter */
             if (pProj > p)
             {
@@ -347,7 +348,7 @@ public class TNodePPMProcessor
         else if (dY < 0)
         {
             /* Value is falling. Use value-fall ballistics. */
-            pProj = p + gkIntegrTimeFall * dY / dT;
+            pProj = p + dY / (gkIntegrTimeFall * dT);
             /* Limiter */
             if (pProj < p)
             {

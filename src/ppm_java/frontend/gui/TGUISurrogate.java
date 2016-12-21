@@ -14,9 +14,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
+import ppm_java._aux.storage.TAtomicDouble;
 import ppm_java._aux.typelib.IControllable;
+import ppm_java._aux.typelib.IStatEnabled;
+import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.server.TController;
 
@@ -26,53 +30,128 @@ import ppm_java.backend.server.TController;
  */
 public class TGUISurrogate 
     extends     VFrontend 
-    implements  IControllable
+    implements  IControllable, IStatEnabled
 {
-    private static class TTimerDebugUpdate extends Thread
-    {
-        private AtomicInteger           fDoRun;
-        
-        /**
-         * 
-         */
-        public TTimerDebugUpdate ()
-        {
-            fDoRun = new AtomicInteger (0);
-        }
-        
-        public void Stop ()
-        {
-            fDoRun.getAndSet (0);
-        }
-        
-        /* (non-Javadoc)
-         * @see java.lang.Thread#start()
-         */
-        @Override
-        public void run ()
-        {
-            String  stats;
-            int     doRun;
-            
-            TWndDebug.Show ();
-            
-            fDoRun.getAndSet (1);
-            doRun = 1;
-            while (doRun == 1)
-            {
-                stats = TController.StatGetDumpStr ();
-                TWndDebug.SetText (stats);
-                try {Thread.sleep (1000);} catch (InterruptedException e) {}
-                doRun = fDoRun.addAndGet (0);
-            }
-        }
-    }
-
     public static enum EClipType
     {
         kClear,
         kError,
         kWarn
+    }
+    
+    private static final class TStat_TGUISurrogate_Record
+    {
+        private TAtomicDouble            fLastDBValue;
+        private TAtomicDouble            fLastDisplayValue;
+        
+        public TStat_TGUISurrogate_Record ()
+        {
+            fLastDBValue        = new TAtomicDouble ();
+            fLastDisplayValue   = new TAtomicDouble ();
+        }
+        
+        public void SetDBValue (double dBv)
+        {
+            fLastDBValue.Set (dBv);
+        }
+        
+        public void SetDisplayValue (double dv)
+        {
+            fLastDisplayValue.Set (dv);
+        }
+        
+        public String GetDumpStr ()
+        {
+            String ret;
+            
+            ret = "            peak [dB]            = " + fLastDBValue.Get ()       + "\n" +
+                  "            displayValue         = " + fLastDisplayValue.Get ()  + "\n";
+            
+            return ret;
+        }
+    }
+    
+    public static final class TStat_TGUISurrogate implements IStats
+    {
+        private TGUISurrogate                               fHost;
+        private long                                        fT0;
+        private AtomicLong                                  fTimeCycle;
+        private ArrayList<TStat_TGUISurrogate_Record>       fStatChannels;
+        
+        public TStat_TGUISurrogate (TGUISurrogate host)
+        {
+            fHost               = host;
+            fTimeCycle          = new AtomicLong (0);
+            fT0                 = System.currentTimeMillis ();
+            fStatChannels       = new ArrayList<> ();
+        }
+        
+        public void AddChannel ()
+        {
+            TStat_TGUISurrogate_Record  r;
+            
+            r = new TStat_TGUISurrogate_Record ();
+            fStatChannels.add (r);
+        }
+
+        public void OnCycleTick ()
+        {
+            long    dT;
+            long    tNow;
+            
+            tNow            = System.currentTimeMillis ();
+            dT              = tNow - fT0;
+            fT0             = tNow;
+            fTimeCycle.getAndSet (dT);
+        }
+        
+        public void SetDBValue (int iChannel, double dBv)
+        {
+            TStat_TGUISurrogate_Record  r;
+            
+            r = fStatChannels.get (iChannel);
+            r.SetDBValue (dBv);
+        }
+        
+        public void SetDisplayValue (int iChannel, double dv)
+        {
+            TStat_TGUISurrogate_Record  r;
+            
+            r = fStatChannels.get (iChannel);
+            r.SetDisplayValue (dv);
+        }
+        
+        /* (non-Javadoc)
+         * @see ppm_java._aux.typelib.IStats#GetDumpStr()
+         */
+        @Override
+        public String GetDumpStr ()
+        {
+            int                                 i;
+            int                                 n;
+            TStat_TGUISurrogate_Record          r;
+            String                              ret;
+
+            ret = "GUI [" + fHost.GetID () + "]:\n" +  
+                    "    cycleTime [ms]               = " + fTimeCycle.getAndAdd (0)  + "\n";
+
+            n = fStatChannels.size ();
+            if (n >= 1)
+            {
+                ret += "    Channels:\n";
+                for (i = 0; i < n; i++)
+                {
+                    r       = fStatChannels.get (i);
+                    ret    += "        Channel [" + i + "]:\n" + r.GetDumpStr ();
+                }
+            }
+            else
+            {
+                ret += "    Channels: None\n";
+            }
+            
+            return ret;
+        }
     }
     
     private static TGUISurrogate        gGUI        = null;
@@ -89,13 +168,14 @@ public class TGUISurrogate
     }
     
     private TWndPPM             fGUI;
-    private TTimerDebugUpdate   fDebugUpdateWorker;
+    private TStat_TGUISurrogate fStat;
     
     private TGUISurrogate (String id, int nMaxChanIn)
     {
         super (id, nMaxChanIn, 0);
-        fGUI                = new TWndPPM (this);
-        fDebugUpdateWorker  = new TTimerDebugUpdate ();
+        fGUI = new TWndPPM (this);
+        fStat = new TStat_TGUISurrogate (this);
+        TController.StatAddProvider (this);
     }
     
     /* (non-Javadoc)
@@ -109,6 +189,7 @@ public class TGUISurrogate
         
         iPort   = GetNumPortsIn ();
         port    = new TGUI_Endpoint (id, this, iPort);
+        fStat.AddChannel ();
         AddPortIn (port);
     }
     
@@ -129,9 +210,18 @@ public class TGUISurrogate
     {
         fGUI.setVisible (true);
         fGUI.setLocationRelativeTo (null);
-        fDebugUpdateWorker.start ();
     }
 
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
+     */
+    @Override
+    public TStat_TGUISurrogate StatsGet ()
+    {
+        return fStat;
+    }
+    
     /* (non-Javadoc)
      * @see ppm_java._aux.typelib.IControllable#Stop()
      */
@@ -139,7 +229,6 @@ public class TGUISurrogate
     public void Stop ()
     {
         fGUI.setVisible (false);
-        fDebugUpdateWorker.Stop ();
     }
     
     void OnSigClip_Click ()
@@ -159,6 +248,9 @@ public class TGUISurrogate
     {
         float   div;
         int     lDisp;
+
+        if (iChannel == 0)
+            fStat.OnCycleTick ();
         
         /* Set clipping indicators. */
         if (level >= kLvlClip)
@@ -193,7 +285,10 @@ public class TGUISurrogate
             lDisp = 0;
         }
 
-        fGUI.SetLevel (lDisp, iChannel);
+        fStat.SetDBValue        (iChannel, level);
+        fStat.SetDisplayValue   (iChannel, lDisp);
+
+        fGUI.SetLevel           (lDisp, iChannel);
     }
 
     /* (non-Javadoc)

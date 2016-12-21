@@ -1,4 +1,5 @@
-A prototype of the [PPM](https://github.com/ustegrew/PPM) project. I find it easier to use Java for prototyping. I intend to port to C++/QT later.
+A prototype of the [PPM](https://github.com/ustegrew/PPM) project. I find it easier to use Java for prototyping. 
+I intend to port to C++/QT later.
  
 2016-12-12: Redesign of streaming API needed. Concept so far - every processing 
 step is designed as a separate module. Unfortunately, this will lead to a lot of 
