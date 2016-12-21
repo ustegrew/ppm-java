@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java._aux.storage.TStats_TAtomicBuffer;
+import ppm_java._aux.storage.TStats_TAtomicBuffer.TRecord;
 
 /**
  * Test result:
@@ -1333,13 +1335,15 @@ public class TDev_Trial_AtomicBuffer_Contention_01
     
     private static void _RunTest (String comment, int nProducers, int nConsumers, ECopyPolicy cPol)
     {
-        int                 i;
-        Thread[]            prWorkers;
-        Thread[]            cnWorkers;
-        TAtomicBuffer       ab;
-        int                 nRunningProducers;
-        int                 nRunningConsumers;
-        boolean             doWait;
+        int                     i;
+        Thread[]                prWorkers;
+        Thread[]                cnWorkers;
+        TAtomicBuffer           ab;
+        int                     nRunningProducers;
+        int                     nRunningConsumers;
+        boolean                 doWait;
+        TStats_TAtomicBuffer    stats;
+        TRecord                 stRec;
 
         System.out.println ();
         System.out.println ("--------------------------------------------------------------------------------------");
@@ -1348,6 +1352,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
         prWorkers   = new Thread [nProducers];
         cnWorkers   = new Thread [nConsumers];
         ab          = new TAtomicBuffer (cPol, EIfInvalidPolicy.kReturnEmpty);
+        stats       = ab.StatsGet ();
         for (i = 0; i < nProducers; i++)
         {
             prWorkers [i] = new Thread (new TProducer (ab));
@@ -1379,11 +1384,13 @@ public class TDev_Trial_AtomicBuffer_Contention_01
                 doWait = false;
             }
         }
+        
+        stRec = stats.GetRecord ();
         System.out.println 
         (
-            "Stat counters: overruns: " + ab.GetNumOverruns () + 
-            ", underruns: " + ab.GetNumUnderruns () +
-            ", contentions: " + ab.GetNumContentions ()
+            "Stat counters: overruns: "     + stRec.fNumOverruns + 
+            ", underruns: "                 + stRec.fNumUnderruns +
+            ", contentions: "               + stRec.fNumContentions
         );
     }
 }

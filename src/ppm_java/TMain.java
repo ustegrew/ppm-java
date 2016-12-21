@@ -39,41 +39,41 @@ public class TMain
     private static void _Setup ()
     {
         /* Create modules */
-        TController.Create_AudioContext             ("driver",          gkAudioSampleRate, gkAudioFrameSize     );
+        TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );
         TController.Create_Frontend_GUI             ("gui",             gkGUINChanMax                           );
-        TController.Create_Module_PPMProcessor      ("ppm.l"                                                    );
-        TController.Create_Module_PPMProcessor      ("ppm.r"                                                    );
+        TController.Create_Module_PPMProcessor      ("ppp.l"                                                    );
+        TController.Create_Module_PPMProcessor      ("ppp.r"                                                    );
         TController.Create_Module_Timer             ("timer",           gkTimerIntervalMs                       );
         
         /* For each module, create in/out ports */
-        TController.Create_Port_Out                 ("driver",          "driver.out.l"                          );
-        TController.Create_Port_Out                 ("driver",          "driver.out.r"                          );
+        TController.Create_Port_Out                 ("ppm",             "ppm.out.l"                             );
+        TController.Create_Port_Out                 ("ppm",             "ppm.out.r"                             );
         
-        TController.Create_Port_In                  ("ppm.l",           "ppm.l.in"                              );
-        TController.Create_Port_Out                 ("ppm.l",           "ppm.l.out"                             );
+        TController.Create_Port_In                  ("ppp.l",           "ppp.l.in"                              );
+        TController.Create_Port_Out                 ("ppp.l",           "ppp.l.out"                             );
         
-        TController.Create_Port_In                  ("ppm.r",           "ppm.r.in"                              );
-        TController.Create_Port_Out                 ("ppm.r",           "ppm.r.out"                             );
+        TController.Create_Port_In                  ("ppp.r",           "ppp.r.in"                              );
+        TController.Create_Port_Out                 ("ppp.r",           "ppp.r.out"                             );
         
         TController.Create_Port_In                  ("gui",             "gui.in.l"                              );
         TController.Create_Port_In                  ("gui",             "gui.in.r"                              );
         
         /* Connect modules */
-        TController.Create_Connection_Data          ("driver.out.l",    "ppm.l.in"                              );
-        TController.Create_Connection_Data          ("driver.out.r",    "ppm.r.in"                              );
-        TController.Create_Connection_Data          ("ppm.l.out",       "gui.in.l"                              );
-        TController.Create_Connection_Data          ("ppm.r.out",       "gui.in.r"                              );
+        TController.Create_Connection_Data          ("ppm.out.l",       "ppp.l.in"                              );
+        TController.Create_Connection_Data          ("ppm.out.r",       "ppp.r.in"                              );
+        TController.Create_Connection_Data          ("ppp.l.out",       "gui.in.l"                              );
+        TController.Create_Connection_Data          ("ppp.r.out",       "gui.in.r"                              );
         
         /* Subscribe PPM processor to timer events */
-        TController.Create_Connection_Events        ("timer",           "ppm.l"                                 );
-        TController.Create_Connection_Events        ("timer",           "ppm.r"                                 );
+        TController.Create_Connection_Events        ("timer",           "ppp.l"                                 );
+        TController.Create_Connection_Events        ("timer",           "ppp.r"                                 );
         
         /* Create start and stop lists */
         TController.Create_StartListEntry           ("gui");                 
         TController.Create_StartListEntry           ("timer");                 
-        TController.Create_StartListEntry           ("driver");
+        TController.Create_StartListEntry           ("ppm");
         TController.Create_StopListEntry            ("timer");                 
-        TController.Create_StopListEntry            ("driver");
+        TController.Create_StopListEntry            ("ppm");
         
         /* Start all modules */
         TController.Start ();

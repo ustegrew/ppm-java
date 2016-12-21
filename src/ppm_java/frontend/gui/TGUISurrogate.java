@@ -14,6 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.server.TController;
@@ -26,6 +28,46 @@ public class TGUISurrogate
     extends     VFrontend 
     implements  IControllable
 {
+    private static class TTimerDebugUpdate extends Thread
+    {
+        private AtomicInteger           fDoRun;
+        
+        /**
+         * 
+         */
+        public TTimerDebugUpdate ()
+        {
+            fDoRun = new AtomicInteger (0);
+        }
+        
+        public void Stop ()
+        {
+            fDoRun.getAndSet (0);
+        }
+        
+        /* (non-Javadoc)
+         * @see java.lang.Thread#start()
+         */
+        @Override
+        public void run ()
+        {
+            String  stats;
+            int     doRun;
+            
+            TWndDebug.Show ();
+            
+            fDoRun.getAndSet (1);
+            doRun = 1;
+            while (doRun == 1)
+            {
+                stats = TController.StatGetDumpStr ();
+                TWndDebug.SetText (stats);
+                try {Thread.sleep (1000);} catch (InterruptedException e) {}
+                doRun = fDoRun.addAndGet (0);
+            }
+        }
+    }
+
     public static enum EClipType
     {
         kClear,
@@ -47,11 +89,13 @@ public class TGUISurrogate
     }
     
     private TWndPPM             fGUI;
+    private TTimerDebugUpdate   fDebugUpdateWorker;
     
     private TGUISurrogate (String id, int nMaxChanIn)
     {
         super (id, nMaxChanIn, 0);
-        fGUI = new TWndPPM (this   );
+        fGUI                = new TWndPPM (this);
+        fDebugUpdateWorker  = new TTimerDebugUpdate ();
     }
     
     /* (non-Javadoc)
@@ -85,6 +129,7 @@ public class TGUISurrogate
     {
         fGUI.setVisible (true);
         fGUI.setLocationRelativeTo (null);
+        fDebugUpdateWorker.start ();
     }
 
     /* (non-Javadoc)
@@ -94,6 +139,7 @@ public class TGUISurrogate
     public void Stop ()
     {
         fGUI.setVisible (false);
+        fDebugUpdateWorker.Stop ();
     }
     
     void OnSigClip_Click ()

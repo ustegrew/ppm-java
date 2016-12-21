@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IEvented;
+import ppm_java._aux.typelib.IStatEnabled;
+import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VAudioDriver;
 import ppm_java._aux.typelib.VAudioObject;
 import ppm_java._aux.typelib.VAudioProcessor;
@@ -30,6 +32,7 @@ import ppm_java.backend.server.event.TBroker;
 import ppm_java.backend.server.module.ppm.TNodePPMProcessor;
 import ppm_java.backend.server.module.timer.TTimer;
 import ppm_java.frontend.gui.TGUISurrogate;
+import ppm_java.frontend.gui.TWndDebug;
 
 /**
  * @author peter
@@ -115,6 +118,16 @@ public final class TController
         gController._Create_StopListEntry (idModuleToStop);
     }
     
+    public static void DebugWindowShow ()
+    {
+        TWndDebug.Show ();
+    }
+
+    public static void DebugWindowSetText (String text)
+    {
+        TWndDebug.SetText (text);
+    }
+    
     public static TAudioContext_JackD GetAudioDriver ()
     {
         TAudioContext_JackD ret;
@@ -178,12 +191,27 @@ public final class TController
         gController._StartStop (true);
     }
     
+    public static void StatAddProvider (IStatEnabled p)
+    {
+        gController._StatCreateProviderListEntry (p);
+    }
+    
+    public static String StatGetDumpStr ()
+    {
+        String ret;
+        
+        ret = gController._StatGetDumpStr ();
+        
+        return ret;
+    }
+    
     private static final int            gkTimeBetweenStartOrStop = 500;
 
     private TBroker                     fEventBus;
     private ArrayList<String>           fListIDModulesStart;
     private ArrayList<String>           fListIDModulesStop;
     private TRegistry                   fRegistry;
+    private ArrayList<IStatEnabled>     fStatProviders;
     
     private TController ()
     {
@@ -192,7 +220,9 @@ public final class TController
         fEventBus           = new TBroker     ();
         fListIDModulesStart = new ArrayList<> ();
         fListIDModulesStop  = new ArrayList<> ();
+        fStatProviders      = new ArrayList<> ();
     }
+    
     /**
      * @param idModuleToStart
      */
@@ -226,7 +256,7 @@ public final class TController
         
         return ret;
     }
-
+    
     private void _PostEvent (int e, String idSource)
     {
         fEventBus.Broker (e, idSource);
@@ -280,6 +310,41 @@ public final class TController
                 try {Thread.sleep (gkTimeBetweenStartOrStop);} catch (InterruptedException e) {}
             }
         }
+    }
+
+    private void _StatCreateProviderListEntry (IStatEnabled sp)
+    {
+        fStatProviders.add (sp);
+    }
+    
+    private String _StatGetDumpStr ()
+    {
+        int             i;
+        int             n;
+        IStatEnabled    se;
+        IStats          st;
+        String          ret;
+        
+        n = fStatProviders.size ();
+        if (n >= 1)
+        {
+            ret = "";
+            for (i = 0; i < n; i++)
+            {
+                se      = fStatProviders.get (i);
+                st      = se.StatsGet ();
+                ret    += st.GetDumpStr () +
+                          "\n" +
+                          "=============================================================================\n" +
+                          "\n\n";
+            }
+        }
+        else
+        {
+            ret = "No statistics available";
+        }
+        
+        return ret;
     }
 
     private void _SubscribeToEvents (String keySubscribed, String keySubscriber)

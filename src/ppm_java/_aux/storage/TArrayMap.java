@@ -64,6 +64,18 @@ public class TArrayMap<T>
         return ret;
     }
     
+    public String GetKey (int i)
+    {
+        TNode<T>    nd;
+        String      ret;
+        
+        _AssertInRange (i);
+        nd  = fList.get (i);
+        ret = nd.fKey;
+        
+        return ret;
+    }
+    
     public int GetNumElements ()
     {
         return fNElements;

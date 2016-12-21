@@ -20,6 +20,7 @@ import java.nio.FloatBuffer;
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java._aux.storage.TStats_TAtomicBuffer;
 
 /**
  * @author peter
@@ -42,11 +43,6 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         fBuffer = new TAtomicBuffer (copyPolicy, ifInvalidPolicy);
     }
     
-    public void ClearStats ()
-    {
-        fBuffer.ClearStats ();
-    }
-    
     public FloatBuffer FetchPacket ()
     {
         FloatBuffer     ret;
@@ -55,36 +51,23 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         
         return ret;
     }
-
-    public int GetNumContentions ()
-    {
-        int ret;
-        
-        ret = fBuffer.GetNumContentions ();
-        
-        return ret;
-    }
-    
-    public int GetNumOverruns ()
-    {
-        int ret;
-        
-        ret = fBuffer.GetNumOverruns ();
-        
-        return ret;
-    }
-    
-    public int GetNumUnderruns ()
-    {
-        int ret;
-        
-        ret = fBuffer.GetNumOverruns ();
-        
-        return ret;
-    }
     
     public void ReceivePacket (FloatBuffer chunk)
     {
         fBuffer.Set (chunk);
+    }
+
+    public void StatsClear ()
+    {
+        fBuffer.StatsClear ();
+    }
+    
+    public TStats_TAtomicBuffer StatsGet ()
+    {
+        TStats_TAtomicBuffer ret;
+        
+        ret = fBuffer.StatsGet ();
+        
+        return ret;
     }
 }

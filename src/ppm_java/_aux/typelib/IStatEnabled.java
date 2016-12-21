@@ -13,28 +13,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.backend.jackd;
-
-import ppm_java._aux.typelib.VAudioPort_Input_Chunks_Buffered;
-import ppm_java._aux.typelib.VAudioPort_Output_Chunks_NeedsBuffer;
-import ppm_java.backend.server.TController;
+package ppm_java._aux.typelib;
 
 /**
  * @author peter
+ *
  */
-public class TAudioContext_Endpoint_Output extends VAudioPort_Output_Chunks_NeedsBuffer
+public interface IStatEnabled
 {
-    protected TAudioContext_Endpoint_Output (String id, TAudioContext_JackD host)
-    {
-        super (id, host);
-    }
-
-    /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VBrowseable#_Register()
-     */
-    @Override
-    protected void _Register ()
-    {
-        TController.Register (this);
-    }
+    public IStats StatsGet ();
 }

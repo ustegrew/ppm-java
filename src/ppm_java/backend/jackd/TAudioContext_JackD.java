@@ -16,13 +16,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.jackd;
 
 import java.nio.FloatBuffer;
+
 import de.gulden.framework.jjack.JJackAudioEvent;
 import de.gulden.framework.jjack.JJackAudioProcessor;
 import de.gulden.framework.jjack.JJackException;
 import de.gulden.framework.jjack.JJackSystem;
 import ppm_java._aux.logging.TLogger;
-import ppm_java._aux.storage.TAtomicBuffer;
+import ppm_java._aux.storage.TStats_TAtomicBuffer;
 import ppm_java._aux.typelib.IControllable;
+import ppm_java._aux.typelib.IStatEnabled;
+import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VAudioDriver;
 import ppm_java.backend.server.TController;
 import ppm_java.backend.server.TRegistry;
@@ -34,8 +37,78 @@ import ppm_java.backend.server.TRegistry;
  */
 public final class TAudioContext_JackD 
     extends     VAudioDriver 
-    implements  JJackAudioProcessor, IControllable
+    implements  JJackAudioProcessor, IControllable, IStatEnabled
 {
+    public static final class TStats_TAudioContext_JackD implements IStats
+    {
+        private TAudioContext_JackD                     fHost;
+        
+        public TStats_TAudioContext_JackD (TAudioContext_JackD host)
+        {
+            fHost = host;
+        }
+        
+        public String GetDumpStr ()
+        {
+            int                             i;
+            int                             n;
+            String                          id;
+            TAudioContext_Endpoint_Input    ip;
+            TAudioContext_Endpoint_Output   op;
+            TStats_TAtomicBuffer            s;
+            String                          ret;
+            
+            /* First dump line */
+            id      = fHost.GetID ();
+            ret     = "JackD_driver ["      + id + 
+                      "]: sampleRate="      + fHost.GetSampleRate () +
+                      ", isWorking="        + fHost.IsWorking () +
+                      "\n";
+
+            /* Add one line of statistics per input port. */
+            n = fHost.GetNumPortsIn ();
+            if (n >= 1)
+            {
+                ret += "    Inputs:\n";
+                for (i = 0; i < n; i++)
+                {
+                    ip          = (TAudioContext_Endpoint_Input) fHost.GetPortIn (i);
+                    s           = ip.StatsGet ();
+                    id          = ip.GetID ();
+                    ret        += "        i/p [" + id              +
+                                  "]: "           + s.GetDumpStr () + 
+                                  "\n";
+                }
+            }
+            else
+            {
+                ret += "    Inputs: None\n";
+            }
+            
+            /* Add one line of statistics per output port. */
+            n = fHost.GetNumPortsOut ();
+            if (n >= 1)
+            {
+                ret += "    Outputs:\n";
+                for (i = 0; i < n; i++)
+                {
+                    op          = (TAudioContext_Endpoint_Output) fHost.GetPortOut (i);
+                    s           = op.TargetStatsGet ();
+                    id          = op.GetID ();
+                    ret        += "        o/p [" + id              +
+                                  "]: "           + s.GetDumpStr () + 
+                                  "\n";
+                }
+            }
+            else
+            {
+                ret += "    Outputs: None\n";
+            }
+            
+            return ret;
+        }
+    }
+
     /**
      * The JackD driver singleton.
      */
@@ -72,6 +145,11 @@ public final class TAudioContext_JackD
     private int fSampleRate;
     
     /**
+     * Runtime statistics for diagnostic and debugging purposes.
+     */
+    private TStats_TAudioContext_JackD     fStats;
+    
+    /**
      * cTor. Creates a new instance and registers it with the global 
      * {@link TRegistry} under the given id.
      * 
@@ -84,22 +162,10 @@ public final class TAudioContext_JackD
         super (idClient, -1, -1);
         
         TLogger.LogMessage ("Creating JackD bridge (singleton)", this, "cTor ('" + idClient + ")");
-        fSampleRate      = -1;
-        fIsWorking       = false;
-    }
-    
-    /**
-     * Clears the various operational statistics of the end point connected 
-     * as input port #<code>iPort</code>.
-     * 
-     * @param iPort     The number of the port of which we'd like to clear the statistics.
-     */
-    public void ClearStats_In (int iPort)
-    {
-        TAudioContext_Endpoint_Input    p;
-        
-        p = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
-        p.ClearStats ();
+        fStats          = new TStats_TAudioContext_JackD (this);
+        fSampleRate     = -1;
+        fIsWorking      = false;
+        TController.StatAddProvider (this);
     }
     
     /* (non-Javadoc)
@@ -126,82 +192,10 @@ public final class TAudioContext_JackD
         TAudioContext_Endpoint_Output       p;
         
         TLogger.LogMessage ("Creating output port '" + id + "'", this, "CreatePort_Out ('" + id + "')");
-        p = new TAudioContext_Endpoint_Output (id, this);
+        p   = new TAudioContext_Endpoint_Output (id, this);
         AddPortOut (p);
     }
     
-    /**
-     * Operational statistics, Input #<code>iPort</code>: Number of contentions 
-     * between the thread producing packets and the thread (this driver) collecting them.
-     * 
-     * @param   iPort   The number of the input port of which we'd like to 
-     *                  acquire the number of contentions.
-     * @return          The total number of contentions on the designated input 
-     *                  since the start of this driver or the last call to 
-     *                  {@link #ClearStats_In(int)}.
-     * @see             {@link TAtomicBuffer#GetNumContentions()}
-     */
-    public int GetNumContentions_In (int iPort)
-    {
-        TAudioContext_Endpoint_Input    p;
-        int                             ret;
-        
-        p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
-        ret = p.GetNumContentions ();
-        
-        return ret;
-    }
-    
-    /**
-     * Operational statistics, Input #<code>iPort</code>: Number of overruns 
-     * between the thread producing packets and the thread (this driver) 
-     * collecting them. For an input, overruns are an indicator that the 
-     * producer thread is delivering more packets than the consumer 
-     * (this driver) can process.
-     * 
-     * @param   iPort   The number of the input port of which we'd like to 
-     *                  acquire the number of overruns.
-     * @return          The total number of overruns on the designated input 
-     *                  since the start of this driver or the last call to 
-     *                  {@link #ClearStats_In(int)}.
-     * @see             {@link TAtomicBuffer#GetNumOverruns()()}
-     */
-    public int GetNumOverruns_In (int iPort)
-    {
-        TAudioContext_Endpoint_Input    p;
-        int                             ret;
-        
-        p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
-        ret = p.GetNumOverruns ();
-        
-        return ret;
-    }
-    
-    /**
-     * Operational statistics, Input #<code>iPort</code>: Number of underruns 
-     * between the thread producing packets and the thread (this driver) 
-     * collecting them. For an input, underruns are an indicator that the 
-     * producer thread is delivering less packets than the consumer 
-     * (this driver) requires, leading to consumer starvation.
-     * 
-     * @param   iPort   The number of the input port of which we'd like to 
-     *                  acquire the number of underruns.
-     * @return          The total number of underruns on the designated input 
-     *                  since the start of this driver or the last call to 
-     *                  {@link #ClearStats_In(int)}.
-     * @see             {@link TAtomicBuffer#GetNumUnderruns()}
-     */
-    public int GetNumUnderruns_In (int iPort)
-    {
-        TAudioContext_Endpoint_Input    p;
-        int                             ret;
-        
-        p   = (TAudioContext_Endpoint_Input) GetPortIn (iPort);
-        ret = p.GetNumUnderruns ();
-        
-        return ret;
-    }
-
     /**
      * @return      The sample rate (in samples / sec) during this session.
      */
@@ -232,6 +226,14 @@ public final class TAudioContext_JackD
     public void Start ()
     {
         _LoadDriver ();
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
+     */
+    public TStats_TAudioContext_JackD StatsGet ()
+    {
+        return fStats;
     }
     
     public void Stop ()

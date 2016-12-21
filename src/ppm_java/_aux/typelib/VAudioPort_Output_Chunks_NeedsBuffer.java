@@ -17,6 +17,8 @@ package ppm_java._aux.typelib;
 
 import java.nio.FloatBuffer;
 
+import ppm_java._aux.storage.TStats_TAtomicBuffer;
+
 /**
  * An output that connects to a buffered input. 
  * Should be used as output for audio processors 
@@ -44,5 +46,24 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     public void SetTarget (VAudioPort_Input_Chunks_Buffered target)
     {
         super.SetTarget (target);
+    }
+    
+    public void TargetStatsClear ()
+    {
+        VAudioPort_Input_Chunks_Buffered    target;
+        
+        target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
+        target.StatsClear ();
+    }
+
+    public TStats_TAtomicBuffer TargetStatsGet ()
+    {
+        VAudioPort_Input_Chunks_Buffered    target;
+        TStats_TAtomicBuffer                ret;
+        
+        target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
+        ret    = target.StatsGet ();
+        
+        return ret;
     }
 }

@@ -212,9 +212,7 @@ public class TAtomicBuffer
     private AtomicInteger                   fFlag;
     private boolean                         fHasBeenCollected;
     private EIfInvalidPolicy                fIfInvalidPolicy;
-    private AtomicInteger                   fNumContentions;
-    private AtomicInteger                   fNumOverruns;
-    private AtomicInteger                   fNumUnderruns;
+    private TStats_TAtomicBuffer            fStats;
     
     /**
      * Creates a new atomic buffer with default policies:
@@ -258,17 +256,6 @@ public class TAtomicBuffer
     }
     
     /**
-     * Clears the overrun, underrun and contention counter.
-     * Not thread safe!
-     */
-    public void ClearStats ()
-    {
-        fNumContentions.getAndSet (0);
-        fNumOverruns.getAndSet (0);
-        fNumUnderruns.getAndSet (0);
-    }
-    
-    /**
      * Returns the newest sample data. Meant for the consumer thread.
      * Note that at some stage there's a deep copying;
      * therefore we will never return the original {@link FloatBuffer} object. 
@@ -304,7 +291,7 @@ public class TAtomicBuffer
             {   /* Consumer clashed with producer. Increment 
                    contention counter and return empty chunk 
                    or null. */
-                fNumContentions.incrementAndGet ();
+                fStats.IncrementContentions ();
                 if (fIfInvalidPolicy == EIfInvalidPolicy.kReturnEmpty)
                 {
                     ret = FloatBuffer.allocate (0);
@@ -320,63 +307,27 @@ public class TAtomicBuffer
     }
     
     /**
-     * Returns the number of times the producer and the consumer clashed 
-     * when trying to acquire the critical section. It's likely that there will 
-     * be some contention, but a steep count rise means that producer/consumer 
-     * are too aggressively trying to acquire the critical section. 
-     * To reduce the rise of the contention count consider querying the lock 
-     * state by having producer or consumer call {@link #IsLocked()}
-     * before trying to get/set sample data. You can also try to reduce the 
-     * aggressiveness of both, the producer and the consumer - for example 
-     * by having them cycle fewer times per second.
+     * Clears the associated runtime statistics.
+     * Not thread safe, but good enough to use 
+     * for automatic compensation of problems.
      * 
-     * @return The current number of contentions between producer and consumer.
-     * @see    {@link #ClearStats()}
+     * @see TStats_TAtomicBuffer
      */
-    public int GetNumContentions ()
+    public void StatsClear ()
     {
-        int ret;
-        
-        ret = fNumContentions.getAndAdd (0);
-        
-        return ret;
+        fStats.Clear ();
     }
     
     /**
-     * Returns the number of overruns. Overruns happen if the producer 
-     * sets more chunks than the consumer collects, resulting in dropped 
-     * data (= data loss). See the {@link TAtomicBuffer introduction} 
-     * for an automated strategy to mitigate. 
+     * @return      The associated runtime statistics.
+     *              Not thread safe, but good enough to use 
+     *              for automatic compensation of problems.
      * 
-     * @return The current number of overruns.
-     * @see    {@link #ClearStats()}
+     * @see TStats_TAtomicBuffer
      */
-    public int GetNumOverruns ()
+    public TStats_TAtomicBuffer StatsGet ()
     {
-        int ret;
-        
-        ret = fNumOverruns.getAndAdd (0);
-        
-        return ret;
-    }
-    
-    /**
-     * Returns the number of underruns. Underruns happen if the consumer 
-     * tries to get more chunks than the producer submits, which leads 
-     * to consumer starvation (= data loss). See the 
-     * {@link TAtomicBuffer introduction} for an automated strategy to 
-     * mitigate. 
-     * 
-     * @return The current number of underruns.
-     * @see    {@link #ClearStats()}
-     */
-    public int GetNumUnderruns ()
-    {
-        int ret;
-        
-        ret = fNumUnderruns.getAndAdd (0);
-        
-        return ret;
+        return fStats;
     }
     
     /**
@@ -427,7 +378,7 @@ public class TAtomicBuffer
             }
             else
             {
-                fNumContentions.incrementAndGet ();                     /* [130] */
+                fStats.IncrementContentions ();                         /* [130] */ 
             }
         }
     }
@@ -468,7 +419,7 @@ public class TAtomicBuffer
         else
         {   /* Ouch! We are sitting on stale data! Increment underrun 
                counter and return empty chunk or null. */
-            fNumUnderruns.incrementAndGet ();
+            fStats.IncrementUnderruns ();
             if (fIfInvalidPolicy == EIfInvalidPolicy.kReturnEmpty)
             {
                 ret = FloatBuffer.allocate (0);    
@@ -508,7 +459,7 @@ public class TAtomicBuffer
         if (! fHasBeenCollected)
         {   /* Ouch! We were sitting on stale data which means the consumer 
                wasn't able to collect in time. Increment the overrun counter */
-            fNumOverruns.incrementAndGet ();
+            fStats.IncrementOverruns ();
         }
         
         /* Mark data as fresh. For simplicity we ignore whatever fHasBeenCollected was before */
@@ -550,9 +501,7 @@ public class TAtomicBuffer
      */
     private void _Init (ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
     {
-        fNumContentions     = new AtomicInteger (0);
-        fNumOverruns        = new AtomicInteger (0);
-        fNumUnderruns       = new AtomicInteger (0);
+        fStats              = new TStats_TAtomicBuffer ();
         fFlag               = new AtomicInteger (gkFree);
         fBuffer             = FloatBuffer.allocate (0);
         fCopyPolicy         = copyPolicy;

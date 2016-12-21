@@ -16,10 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.server.module.ppm;
 
 import java.nio.FloatBuffer;
-
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java._aux.storage.TAtomicDouble;
 import ppm_java._aux.typelib.IEvented;
+import ppm_java._aux.typelib.IStatEnabled;
+import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VAudioProcessor;
 import ppm_java.backend.jackd.TAudioContext_JackD;
 import ppm_java.backend.server.TController;
@@ -32,10 +36,82 @@ import ppm_java.backend.server.TController;
  */
 public class TNodePPMProcessor 
     extends         VAudioProcessor
-    implements      IEvented
+    implements      IEvented, IStatEnabled
 {
-    private static final long       gkIntegrTimeRise    = 10;           /* [110] */
+    public static final class TStats_TNodePPMProcessor implements IStats
+    {
+        private TNodePPMProcessor       fHost;
+        private TAtomicDouble           fLastDBValue;
+        private TAtomicDouble           fLastPeakValue;
+        private TAtomicDouble           fLastPeakProjectedValue;
+        private AtomicLong              fNumSamplesPerCycle;
+        private AtomicInteger           fSampleRate;
+        private AtomicLong              fTimeCycle;
+        
+        public TStats_TNodePPMProcessor (TNodePPMProcessor host)
+        {
+            fHost                   = host;
+            fTimeCycle              = new AtomicLong (0);
+            fSampleRate             = new AtomicInteger (0);
+            fNumSamplesPerCycle     = new AtomicLong (0);
+            fLastDBValue            = new TAtomicDouble ();
+            fLastPeakValue          = new TAtomicDouble ();
+            fLastPeakProjectedValue = new TAtomicDouble ();
+        }
+        
+        /* (non-Javadoc)
+         * @see ppm_java._aux.typelib.IStats#GetDumpStr()
+         */
+        @Override
+        public String GetDumpStr ()
+        {
+            String ret;
+            
+            ret = "ppmProc [" + fHost.GetID () + "]:\n"        +
+                  "    last_peak            = " + fLastPeakValue.Get ()             + "\n" +
+                  "    last_peak_projected  = " + fLastPeakProjectedValue.Get ()    + "\n" +
+                  "    peak [dB]            = " + fLastDBValue.Get ()               + "\n" +
+                  "    cycleTime [ms]       = " + fTimeCycle.getAndAdd (0)          + "\n" +
+                  "    sampleRate [smp/sec] = " + fSampleRate.getAndAdd (0)         + "\n" +
+                  "    samplesPerCycle      = " + fNumSamplesPerCycle.getAndAdd (0) + "\n";
+                  
+            return ret;
+        }
+        
+        public void SetCycleTime (long ct)
+        {
+            fTimeCycle.getAndSet (ct);
+        }
+        
+        public void SetDBValue (double dB)
+        {
+            fLastDBValue.Set (dB);
+        }
+        
+        public void SetNumSamplesPerCycle (long nsc)
+        {
+            fNumSamplesPerCycle.getAndSet (nsc);
+        }
+        
+        public void SetPeakValue (double pv)
+        {
+            fLastPeakValue.Set (pv);
+        }
+        
+        public void SetPeakValueProjected (double pvp)
+        {
+            fLastPeakProjectedValue.Set (pvp);
+        }
+        
+        public void SetSampleRate (int sr)
+        {
+            fSampleRate.getAndSet (sr);
+        }
+        
+    }
+    
     private static final long       gkIntegrTimeFall    = 2800;         /* [110] */
+    private static final long       gkIntegrTimeRise    = 10;           /* [110] */
     private static final double     gkMinThreshold      = 3.16E-08f;    /* [120] */
     
     public static void CreateInstance (String id)
@@ -43,12 +119,13 @@ public class TNodePPMProcessor
         new TNodePPMProcessor (id, 1, 1);
     }
 
-    private long                                fTLast;
-    private long                                fNSamplesPerCycle;
-    private int                                 fSampleRate;
-    private FloatBuffer                         fInPacket;
-    private float                               fPeak;
     private boolean                             fHasInitialTime;
+    private FloatBuffer                         fInPacket;
+    private long                                fNSamplesPerCycle;
+    private float                               fPeak;
+    private int                                 fSampleRate;
+    private TStats_TNodePPMProcessor            fStats;
+    private long                                fTLast;
     
     /**
      * @param id
@@ -58,15 +135,14 @@ public class TNodePPMProcessor
     private TNodePPMProcessor (String id, int nMaxChanIn, int nMaxChanOut)
     {
         super (id, nMaxChanIn, nMaxChanOut);
-
-        TAudioContext_JackD         drv;
-
+        
+        fStats              = new TStats_TNodePPMProcessor (this);
         fInPacket           = null;
         fPeak               = 0;
         fTLast              = 0;                                        /* [140] */
-        drv                 = TController.GetAudioDriver ();
         fSampleRate         = -1;
         fHasInitialTime     = false;                                    /* [140] */
+        TController.StatAddProvider (this);
     }
 
     /* (non-Javadoc)
@@ -136,119 +212,21 @@ public class TNodePPMProcessor
     }
 
     /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
+     */
+    @Override
+    public IStats StatsGet ()
+    {
+        return fStats;
+    }
+
+    /* (non-Javadoc)
      * @see ppm_java._aux.typelib.VBrowseable#_Register()
      */
     @Override
     protected void _Register ()
     {
         TController.Register (this);
-    }
-    
-    /**
-     * The central computation piece of the PPM level meter. Sends one level update
-     * per cycle to the attached meter frontend. Output is one single floating 
-     * point value per cycle. Level value is in dB.<br/>
-     * 
-     * The method performs the necessary ballistics of a PPM meter:<br/>
-     */
-    private void _ProcessChunk ()
-    {
-        TAudioContext_JackD                 drv;
-        TNodePPMProcessor_Endpoint_In       in;
-        TNodePPMProcessor_Endpoint_Out      out;
-        FloatBuffer                         packetNew;
-        long                                nowT;
-        long                                dT;
-        double                              dY;
-        double                              p;
-        double                              pProj;
-        double                              pdB;
-        float                               pSend;
-        long                                nSamples;
-        int                                 nRem;
-        
-        drv                 = TController.GetAudioDriver ();
-        nowT                = System.currentTimeMillis ();
-        dT                  = nowT - fTLast;
-        fTLast              = nowT;
-        fSampleRate         = drv.GetSampleRate ();
-        fNSamplesPerCycle   = dT * fSampleRate / 1000;
-
-        /* Analyze next chunk of data. */
-        in          = (TNodePPMProcessor_Endpoint_In) GetPortIn (0);
-        packetNew   = in.FetchPacket ();
-        if (packetNew != null)
-        {
-            /* We have fresh data. Do analysis with that one. */
-            fInPacket  = packetNew;
-            fInPacket.rewind ();
-            nSamples   = fInPacket.limit ();
-            if (nSamples > fNSamplesPerCycle)
-            {
-                nSamples = fNSamplesPerCycle;
-            }
-            p = _FindPeak (fInPacket, nSamples);
-        }
-        else if (fInPacket != null)
-        {
-            /* No fresh data available, but the previous packet still has unresolved data */
-            p = _FindPeak (fInPacket, fNSamplesPerCycle);
-            nRem = fInPacket.remaining ();
-            if (nRem <= 0)
-            {
-                fInPacket = null;
-            }
-        }
-        else
-        {
-            /* No data available for analysis. Just rebroadcast previous peak value. */
-            p = fPeak;
-        }
-        
-        /* Integration part - compute new peak value with given PPM ballistics. */
-        dY = p - fPeak;
-        
-        /* Interpolate next meter point. We use a simple linear interpolation. */
-        if (dY > 0)
-        {
-            /* Value is rising. Use value-rise ballistics.  */
-            pProj = p + gkIntegrTimeRise * dY / dT;
-            /* Limiter */
-            if (pProj > p)
-            {
-                pProj = p;
-            }
-        }
-        else if (dY < 0)
-        {
-            /* Value is falling. Use value-fall ballistics. */
-            pProj = p + gkIntegrTimeFall * dY / dT;
-            /* Limiter */
-            if (pProj < p)
-            {
-                pProj = p;
-            }
-        }
-        else
-        {
-            /* Same value as before */
-            pProj = p;
-        }
-        
-        /* Convert approximated peak value to dB */                     /* [120] */
-        if (pProj <= gkMinThreshold)
-        {
-            pdB = -130; 
-        }
-        else
-        {
-            pdB = 20 * Math.log10 (pProj);
-        }
-        
-        /* Send peak value */
-        pSend = (float) pdB;                                            /* [130] */
-        out   = (TNodePPMProcessor_Endpoint_Out) GetPortOut (0);
-        out.PushSample (pSend);
     }
     
     private double _FindPeak (FloatBuffer b, long forNSamples)
@@ -283,6 +261,123 @@ public class TNodePPMProcessor
         }
         
         return ret;
+    }
+    
+    /**
+     * The central computation piece of the PPM level meter. Sends one level update
+     * per cycle to the attached meter frontend. Output is one single floating 
+     * point value per cycle. Level value is in dB.<br/>
+     * 
+     * The method performs the necessary ballistics of a PPM meter:<br/>
+     */
+    private void _ProcessChunk ()
+    {
+        TAudioContext_JackD                 drv;
+        TNodePPMProcessor_Endpoint_In       in;
+        TNodePPMProcessor_Endpoint_Out      out;
+        FloatBuffer                         packetNew;
+        long                                nowT;
+        long                                dT;
+        double                              dY;
+        double                              p;
+        double                              pProj;
+        double                              pdB;
+        float                               pSend;
+        long                                nSamples;
+        int                                 nRem;
+        
+        drv                 = TController.GetAudioDriver ();
+        nowT                = System.currentTimeMillis ();
+        dT                  = nowT - fTLast;
+        fTLast              = nowT;
+        fSampleRate         = drv.GetSampleRate ();
+        fNSamplesPerCycle   = dT * fSampleRate / 1000;
+        
+        fStats.SetCycleTime             (dT);
+        fStats.SetSampleRate            (fSampleRate);
+        fStats.SetNumSamplesPerCycle    (fNSamplesPerCycle);
+        
+        /* Analyze next chunk of data. */
+        in          = (TNodePPMProcessor_Endpoint_In) GetPortIn (0);
+        packetNew   = in.FetchPacket ();
+        if (packetNew != null)
+        {
+            /* We have fresh data. Do analysis with that one. */
+            fInPacket  = packetNew;
+            fInPacket.rewind ();
+            nSamples   = fInPacket.limit ();
+            if (nSamples > fNSamplesPerCycle)
+            {
+                nSamples = fNSamplesPerCycle;
+            }
+            p = _FindPeak (fInPacket, nSamples);
+        }
+        else if (fInPacket != null)
+        {
+            /* No fresh data available, but the previous packet still has unresolved data */
+            p = _FindPeak (fInPacket, fNSamplesPerCycle);
+            nRem = fInPacket.remaining ();
+            if (nRem <= 0)
+            {
+                fInPacket = null;
+            }
+        }
+        else
+        {
+            /* No data available for analysis. Just rebroadcast previous peak value. */
+            p = fPeak;
+        }
+        
+        fStats.SetPeakValue (p);
+        
+        /* Integration part - compute new peak value with given PPM ballistics. */
+        dY = p - fPeak;
+        
+        /* Interpolate next meter point. We use a simple linear interpolation. */
+        if (dY > 0)
+        {
+            /* Value is rising. Use value-rise ballistics.  */
+            pProj = p + gkIntegrTimeRise * dY / dT;
+            /* Limiter */
+            if (pProj > p)
+            {
+                pProj = p;
+            }
+        }
+        else if (dY < 0)
+        {
+            /* Value is falling. Use value-fall ballistics. */
+            pProj = p + gkIntegrTimeFall * dY / dT;
+            /* Limiter */
+            if (pProj < p)
+            {
+                pProj = p;
+            }
+        }
+        else
+        {
+            /* Same value as before */
+            pProj = p;
+        }
+        
+        fStats.SetPeakValueProjected (pProj);
+        
+        /* Convert approximated peak value to dB */                     /* [120] */
+        if (pProj <= gkMinThreshold)
+        {
+            pdB = -130; 
+        }
+        else
+        {
+            pdB = 20 * Math.log10 (pProj);
+        }
+        
+        fStats.SetDBValue (pdB);
+        
+        /* Send peak value */
+        pSend = (float) pdB;                                            /* [130] */
+        out   = (TNodePPMProcessor_Endpoint_Out) GetPortOut (0);
+        out.PushSample (pSend);
     }
 }
 
