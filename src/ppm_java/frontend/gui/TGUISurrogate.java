@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.frontend.gui;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import ppm_java._aux.storage.TAtomicDouble;
@@ -41,13 +42,20 @@ public class TGUISurrogate
     
     private static final class TStat_TGUISurrogate_Record
     {
+        private AtomicInteger            fCalcSection;
         private TAtomicDouble            fLastDBValue;
         private TAtomicDouble            fLastDisplayValue;
         
         public TStat_TGUISurrogate_Record ()
         {
+            fCalcSection        = new AtomicInteger (0);
             fLastDBValue        = new TAtomicDouble ();
             fLastDisplayValue   = new TAtomicDouble ();
+        }
+        
+        public void SetCalcSection (int s)
+        {
+            fCalcSection.getAndSet (s);
         }
         
         public void SetDBValue (double dBv)
@@ -65,7 +73,8 @@ public class TGUISurrogate
             String ret;
             
             ret = "            peak [dB]            = " + fLastDBValue.Get ()       + "\n" +
-                  "            displayValue         = " + fLastDisplayValue.Get ()  + "\n";
+                  "            displayValue         = " + fLastDisplayValue.Get ()  + "\n" +
+                  "            meter section        = " + fCalcSection.get ()       + "\n";
             
             return ret;
         }
@@ -103,6 +112,14 @@ public class TGUISurrogate
             dT              = tNow - fT0;
             fT0             = tNow;
             fTimeCycle.getAndSet (dT);
+        }
+        
+        public void SetCalcSection (int iChannel, int s)
+        {
+            TStat_TGUISurrogate_Record  r;
+            
+            r = fStatChannels.get (iChannel);
+            r.SetCalcSection (s);
         }
         
         public void SetDBValue (int iChannel, double dBv)
@@ -155,8 +172,8 @@ public class TGUISurrogate
     }
     
     private static TGUISurrogate        gGUI        = null;
-    private static final float          kLvlClip    = 0.95f;
-    private static final float          kLvlWarn    = 0.7f;
+    private static final float          gkLvlClip   = -1.0f;
+    private static final float          gkLvlWarn   = -3.0f;
     
     public static void CreateInstance (String id, int nMaxChanIn)
     {
@@ -253,11 +270,11 @@ public class TGUISurrogate
             fStat.OnCycleTick ();
         
         /* Set clipping indicators. */
-        if (level >= kLvlClip)
+        if (level >= gkLvlClip)
         {
             fGUI.ClippingSet (EClipType.kError, iChannel);
         }
-        else if (level >= kLvlWarn)
+        else if (level >= gkLvlWarn)
         {
             fGUI.ClippingSet (EClipType.kWarn, iChannel);
         }
@@ -268,20 +285,24 @@ public class TGUISurrogate
         /* Compute progress bar value */
         if (level > 0)
         {   /* ]0, ...] dB => hard limit to 100 */
+            fStat.SetCalcSection (iChannel, 3);
             lDisp = 100;
         }
         else if (level >= -24)
         {   /* [-24, 0] dB => working range 1..7 */                     /* [100] */
-            lDisp = (int) (100 + div * level / 4 + 0.5);
+            fStat.SetCalcSection (iChannel, 2);
+            lDisp = (int) (div * ((level + 24) / 4 + 1));
         }
         else if (level >= -130)
         {
             /* [-130, -24[ dB => range 0..1 */                          /* [110] */
-            lDisp = (int) (level/106 + 1.226 + 0.5);
+            fStat.SetCalcSection (iChannel, 1);
+            lDisp = (int) (div * (level + 130) / 130);
         }
         else
         {
             /* below -130dB => hard limit to zero */
+            fStat.SetCalcSection (iChannel, 0);
             lDisp = 0;
         }
 
@@ -305,6 +326,8 @@ public class TGUISurrogate
 /*
 [100]   Each marker on a PPM scale means 4dB rise and maps to a step size of 100/7 on the GUI meter,
         i.e. 100/7  stands for 4dB. Also, scale value 1 maps to -24 dB. Hence
+        
+        
         x_gui = 100 + (lv_dB/4)  *  (100/7)
         
         e.g. for -24dB, x_gui = 100 + (-24/4) * (100/7) = 100 - 6*100/7 = 14.28

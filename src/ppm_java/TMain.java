@@ -26,7 +26,7 @@ public class TMain
     public static final int         gkAudioFrameSize    =  1024;
     public static final int         gkAudioSampleRate   = 44100;
     public static final int         gkGUINChanMax       =     2;
-    public static final int         gkTimerIntervalMs   =    30; 
+    public static final int         gkTimerIntervalMs   =    20; 
     
     /**
      * @param args

@@ -110,8 +110,10 @@ public class TNodePPMProcessor
         
     }
     
-    private static final long       gkIntegrTimeFall    = 2800;         /* [110] */
-    private static final long       gkIntegrTimeRise    = 10;           /* [110] */
+    private static final double     gkIntegrRiseRangedB =   22;         /* [110] */
+    private static final double     gkIntegrFallRangedB =  -24;         /* [110] */
+    private static final long       gkIntegrFallTime    = 2800;         /* [110] */
+    private static final long       gkIntegrRiseTime    =   10;         /* [110] */
     private static final double     gkMinThreshold      = 3.16E-08f;    /* [120] */
     
     public static void CreateInstance (String id)
@@ -122,7 +124,10 @@ public class TNodePPMProcessor
     private boolean                             fHasInitialTime;
     private FloatBuffer                         fInPacket;
     private long                                fNSamplesPerCycle;
-    private double                              fPeak;
+    private double                              fPeak_dB;
+    private double                              fPeak_Raw;
+    private double                              fPeakDeltaRise;
+    private double                              fPeakDeltaFall;
     private long                                fSampleRate;
     private TStats_TNodePPMProcessor            fStats;
     private long                                fTLast;
@@ -137,11 +142,14 @@ public class TNodePPMProcessor
         super (id, nMaxChanIn, nMaxChanOut);
         
         fStats              = new TStats_TNodePPMProcessor (this);
+        fHasInitialTime     = false;                                    /* [140] */
+        fPeakDeltaRise      = gkIntegrRiseRangedB / gkIntegrRiseTime;   /* [110] */
+        fPeakDeltaFall      = gkIntegrFallRangedB / gkIntegrFallTime;   /* [110] */
         fInPacket           = null;
-        fPeak               = 0;
+        fPeak_dB            = 0;
+        fPeak_Raw           = 0;
         fTLast              = 0;                                        /* [140] */
         fSampleRate         = -1;
-        fHasInitialTime     = false;                                    /* [140] */
         TController.StatAddProvider (this);
     }
 
@@ -279,8 +287,7 @@ public class TNodePPMProcessor
         long                                nowT;
         long                                dT;
         double                              dY;
-        double                              p;
-        double                              pProj;
+        double                              dY_cycle;
         double                              pdB;
         float                               pSend;
         long                                nSamples;
@@ -310,12 +317,12 @@ public class TNodePPMProcessor
             {
                 nSamples = fNSamplesPerCycle;
             }
-            p = _FindPeak (fInPacket, nSamples);
+            fPeak_Raw = _FindPeak (fInPacket, nSamples);
         }
         else if (fInPacket != null)
         {
             /* No fresh data available, but the previous packet still has unresolved data */
-            p    = _FindPeak (fInPacket, fNSamplesPerCycle);
+            fPeak_Raw = _FindPeak (fInPacket, fNSamplesPerCycle);
             nRem = fInPacket.remaining ();
             if (nRem <= 0)
             {
@@ -325,71 +332,67 @@ public class TNodePPMProcessor
         else
         {
             /* No data available for analysis. Just rebroadcast previous peak value. */
-            p = fPeak;
         }
-        
-        fStats.SetPeakValue (p);
-        
-        /* Integration part - compute new peak value with given PPM ballistics. */
-        dY      = p - fPeak;
-        fPeak   = p;
-        
-        /* Interpolate next meter point. We use a simple linear interpolation. */
-        if (dY > 0)
-        {
-            /* Value is rising. Use value-rise ballistics.  */
-            pProj = p + dY / (gkIntegrTimeRise * dT);
-            /* Limiter */
-            if (pProj > p)
-            {
-                pProj = p;
-            }
-        }
-        else if (dY < 0)
-        {
-            /* Value is falling. Use value-fall ballistics. */
-            pProj = p + dY / (gkIntegrTimeFall * dT);
-            /* Limiter */
-            if (pProj < p)
-            {
-                pProj = p;
-            }
-        }
-        else
-        {
-            /* Same value as before */
-            pProj = p;
-        }
-        
-        fStats.SetPeakValueProjected (pProj);
         
         /* Convert approximated peak value to dB */                     /* [120] */
-        if (pProj <= gkMinThreshold)
+        if (fPeak_Raw <= gkMinThreshold)
         {
             pdB = -130; 
         }
         else
         {
-            pdB = 20 * Math.log10 (pProj);
+            pdB = 20 * Math.log10 (fPeak_Raw);
         }
         
-        fStats.SetDBValue (pdB);
+        fStats.SetPeakValue (fPeak_Raw);
+        fStats.SetDBValue   (pdB);
+        
+        /* Integration part - compute new peak value with given PPM ballistics. */
+        /* Interpolate next meter point. We use a simple linear interpolation. */
+        dY = pdB - fPeak_dB;
+        if (dY > 0)
+        {
+            /* Value is rising. Use value-rise ballistics.  */
+            dY_cycle    = dT * fPeakDeltaRise;
+            fPeak_dB    = fPeak_dB + dY_cycle;
+            
+            /* Limit peak value in case it's above given peak parameter */
+            if (fPeak_dB > pdB)
+            {
+                fPeak_dB = pdB;
+            }
+        }
+        else if (dY < 0)
+        {
+            /* Value is falling. Use value-fall ballistics. */
+            dY_cycle    = dT * fPeakDeltaFall;
+            fPeak_dB    = fPeak_dB + dY_cycle;
+            
+            /* Limit peak value in case it's below given peak parameter */
+            if (fPeak_dB < pdB)
+            {
+                fPeak_dB = pdB;
+            }
+        }
+        else
+        {
+            /* Same value as before */
+            fPeak_dB = pdB;
+        }
+        
+        fStats.SetPeakValueProjected (fPeak_dB);
         
         /* Send peak value */
-        pSend = (float) pdB;                                            /* [130] */
+        pSend = (float) fPeak_dB;                                       /* [130] */
         out   = (TNodePPMProcessor_Endpoint_Out) GetPortOut (0);
         out.PushSample (pSend);
     }
 }
 
 /* 
-[100]   Set arbitrarily: Highest frame rate: 20 frames / second, lowest frame rate: 5 frames / second.
-[110]   PPM type II ballistics:
-        Rise: -24dB -> - 2dB:   10  ms  ~  0.455 ms/dB
-        Fall:   0dB -> -24dB: 2800  ms  ~116.667 ms/dB
-        After harmonizing rise/fall times:
-        Rise: -24dB -> - 0dB:   10.91  ms   ~11 ms
-        Fall:   0dB -> -24dB: 2800     ms
+[110]   PPM type II ballistics (strict):
+        Rise: -24dB -> - 2dB:   10  ms  =  22dB /   10mS =  2        dB/mS 
+        Fall:   0dB -> -24dB: 2800  ms  = -24dB / 2800ms ~ -0.00857  dB/ms
 [120]   For each sample, JJack delivers a floating point value
         in the range [-1.0, 1.0] floating point units.
         For each frame, we map all negative values to the 

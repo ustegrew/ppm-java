@@ -74,28 +74,21 @@ class TWndPPM extends javax.swing.JFrame
      */
     public void SetLevel (int lvl, int iChannel)
     {
-        String                          s;
         javax.swing.JProgressBar        targetGUI;
-        javax.swing.JLabel              targetTxt;
         
         switch (iChannel)
         {
             case 0:
                 targetGUI   = fMeterL;
-                targetTxt   = fSigClipL;
                 break;
             case 1:
                 targetGUI   = fMeterR;
-                targetTxt   = fSigClipR;
                 break;
             default:
                 targetGUI = fMeterL;
-                targetTxt = fSigClipL;
         }
 
-        s = "" + lvl;
         targetGUI.setValue (lvl);
-        targetTxt.setText (s);
     }
     
     private void _OnSigClipLMouseClicked(java.awt.event.MouseEvent evt)
@@ -148,12 +141,12 @@ class TWndPPM extends javax.swing.JFrame
         
         if (sig != null)
         {
-            sig.setBackground (c);
+            sig.setForeground (c);
         }
         else
         {
-            fSigClipL.setBackground (c);
-            fSigClipR.setBackground (c);
+            fSigClipL.setForeground (c);
+            fSigClipR.setForeground (c);
         }
     }
     
@@ -266,6 +259,7 @@ class TWndPPM extends javax.swing.JFrame
         fSigClipR.setForeground(new java.awt.Color(204, 204, 204));
         fSigClipR.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         fSigClipR.setText("Clip");
+        fSigClipR.setToolTipText ("");
         fSigClipR.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mouseClicked(java.awt.event.MouseEvent evt)
