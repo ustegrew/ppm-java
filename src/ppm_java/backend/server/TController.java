@@ -316,11 +316,11 @@ public final class TController
         
         if (doStart)
         {
-            fDebugUpdateWorker.start ();
+            //fDebugUpdateWorker.start ();
         }
         else
         {
-            fDebugUpdateWorker.Stop ();
+            //fDebugUpdateWorker.Stop ();
         }
     }
 

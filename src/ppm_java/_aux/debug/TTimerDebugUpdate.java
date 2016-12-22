@@ -19,27 +19,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ppm_java.backend.server.TController;
 
 /**
- * A simple text dump window for runtime statistics. Updated in 
- * a regular interval. During run tests it turned out that 
- * the main UI (<code>TWndPPM</code> was very sluggish, but when 
- * I had this window open alongside the main UI and updated this 
- * window every 10ms then the main window was very responsive.
- *  
- * I assume it's to do with the way the swing framework updates 
- * its components. 
- * 
- * Since this is a concept application (ultimately ported to C++/QT)
- * and it's a swing internal issue I don't place high priority on
- * fixing the sluggish UI response - it works when I have this one open
- * and update it every 10ms. 
+ * Timer for updates of the runtime stats window.  
  * 
  * @author  peter
- * @see     TWndPPM
  */
 public class TTimerDebugUpdate extends Thread
 {
-    private static final int        gkFlagRun   = 1;
-    private static final int        gkFlagStop  = 0;
+    private static final int        gkFlagRun   =  1;
+    private static final int        gkFlagStop  =  0;
     private static final int        gkInterval  = 10;
     
     private AtomicInteger           fDoRun;

@@ -15,26 +15,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.frontend.gui;
 
 import java.awt.Color;
-
-import ppm_java._aux.debug.TWndDebug;
+import eu.hansolo.steelseries.gauges.LinearBargraph;
 import ppm_java.frontend.gui.TGUISurrogate.EClipType;
 
 /**
- * The PPM UI. Unfortunately, repaints are mostly slow, probably due to the way that 
- * the swing framework does repainting. It's much faster when, alongside this window,
- * I have another window with a JTextArea open which I update in high speed {@link TWndDebug}
- * filling it with a lot of text (>1024 chars? has to be new text each time?).
- * At the moment I don't otherwise know how to force a repaint with each level update.
- * I've tried <code>getContentPanel.repaint()</code>, setting UIManager properties
- * (<code>UIManager.put ("ProgressBar.repaintInterval", new Integer (10))</code and 
- * <code>UIManager.put ("ProgressBar.cycleTime", new Integer (10))</code>, 
- * updating the text on the clip indicators, but to no avail. Without that
- * extra debug window the UI remains sluggish.
+ * The PPM UI. 
  * 
- * Won't put much effort into resolving this, because this is just a proof of concept application.
- * Maybe I find some indicator component that does (forces?) fast repaint and can replace the 
- * JProgressBar component with minimal amount of coding. For now I will keep the debug window 
- * alongside this one. 
+ * Previously used the JProgressBar as level indicator. That one had problems [100]. 
+ * Replaced it with a steelseries-swing gauge LinearBargraph component 
+ * (https://github.com/HanSolo/SteelSeries-Swing) - which is very responsive. 
  * 
  * @author peter
  */
@@ -48,8 +37,8 @@ class TWndPPM extends javax.swing.JFrame
     private TGUISurrogate                   fConnector;
     private javax.swing.JLabel              fLblL;
     private javax.swing.JLabel              fLblR;
-    private javax.swing.JProgressBar        fMeterL;
-    private javax.swing.JProgressBar        fMeterR;
+    private LinearBargraph                  fMeterL;
+    private LinearBargraph                  fMeterR;
     private javax.swing.JPanel              fPnlMeterL;
     private javax.swing.JPanel              fPnlMeterR;
     private javax.swing.JLabel              fSigClipL;
@@ -74,7 +63,7 @@ class TWndPPM extends javax.swing.JFrame
      */
     public void SetLevel (int lvl, int iChannel)
     {
-        javax.swing.JProgressBar        targetGUI;
+        LinearBargraph        targetGUI;
         
         switch (iChannel)
         {
@@ -156,19 +145,19 @@ class TWndPPM extends javax.swing.JFrame
 
         fPnlMeterL = new javax.swing.JPanel();
         fLblL = new javax.swing.JLabel();
-        fMeterL = new javax.swing.JProgressBar();
+        fMeterL = new LinearBargraph();
         fSigClipL = new javax.swing.JLabel();
         fPnlMeterR = new javax.swing.JPanel();
         fLblR = new javax.swing.JLabel();
-        fMeterR = new javax.swing.JProgressBar();
+        fMeterR = new LinearBargraph ();
         fSigClipR = new javax.swing.JLabel();
 
         setDefaultCloseOperation (javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("PPM");
-        setBounds(new java.awt.Rectangle(0, 0, 500, 100));
-        setMaximumSize(new java.awt.Dimension(600, 100));
-        setMinimumSize(new java.awt.Dimension(400, 100));
-        setPreferredSize(new java.awt.Dimension(600, 100));
+        setBounds(new java.awt.Rectangle(0, 0, 500, 250));
+        setMaximumSize(new java.awt.Dimension(600, 250));
+        setMinimumSize(new java.awt.Dimension(400, 250));
+        setPreferredSize(new java.awt.Dimension(600, 250));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter()
         {
@@ -195,12 +184,16 @@ class TWndPPM extends javax.swing.JFrame
 
         fMeterL.setForeground(new java.awt.Color(102, 0, 255));
         fMeterL.setValue(50);
+        fMeterL.setTitle ("L");
+        fMeterL.setUnitString ("PPM");
+        fMeterL.setThreshold (70);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
         fPnlMeterL.add(fMeterL, gridBagConstraints);
 
@@ -247,12 +240,16 @@ class TWndPPM extends javax.swing.JFrame
 
         fMeterR.setForeground(new java.awt.Color(0, 0, 255));
         fMeterR.setValue(50);
+        fMeterR.setTitle ("R");
+        fMeterR.setUnitString ("PPM");
+        fMeterR.setThreshold (70);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
         fPnlMeterR.add(fMeterR, gridBagConstraints);
 
@@ -286,3 +283,26 @@ class TWndPPM extends javax.swing.JFrame
         pack();
     }
 }
+
+/* 
+[100]   Re: Previous version using JProgressBar:
+
+        Unfortunately, repaints are mostly slow, probably due to the way that 
+        the swing framework does repainting. It's much faster when, alongside this window,
+        I have another window with a JTextArea open which I update in high speed {@link TWndDebug}
+        filling it with a lot of text (>1024 chars? has to be new text each time?).
+        At the moment I don't otherwise know how to force a repaint with each level update.
+        I've tried <code>getContentPanel.repaint()</code>, setting UIManager properties
+        (<code>UIManager.put ("ProgressBar.repaintInterval", new Integer (10))</code and 
+        <code>UIManager.put ("ProgressBar.cycleTime", new Integer (10))</code>, 
+        updating the text on the clip indicators, but to no avail. Without that
+        extra debug window the UI remains sluggish.
+        
+        Won't put much effort into resolving this, because this is just a proof of concept application.
+        Maybe I find some indicator component that does (forces?) fast repaint and can replace the 
+        JProgressBar component with minimal amount of coding. For now I will keep the debug window 
+        alongside this one.
+        
+        Note - I did address it, found a gauge component that is responsive.
+
+*/

@@ -5,5 +5,6 @@
 	<classpathentry kind="lib" path="/home/peter/git/ppm_java/lib/jna/jna-3.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jjack/jjack-clients.jar"/>
 	<classpathentry kind="lib" path="lib/jjack/jjack.jar"/>
+	<classpathentry kind="lib" path="lib/trident_anim_lib/trident.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
