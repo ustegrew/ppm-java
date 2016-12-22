@@ -18,6 +18,7 @@ package ppm_java.backend.server;
 import java.util.ArrayList;
 
 import ppm_java._aux.debug.TTimerDebugUpdate;
+import ppm_java._aux.debug.TWndDebug;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IEvented;
@@ -33,7 +34,6 @@ import ppm_java.backend.server.event.TBroker;
 import ppm_java.backend.server.module.ppm.TNodePPMProcessor;
 import ppm_java.backend.server.module.timer.TTimer;
 import ppm_java.frontend.gui.TGUISurrogate;
-import ppm_java.frontend.gui.TWndDebug;
 
 /**
  * @author peter
@@ -328,7 +328,7 @@ public final class TController
     {
         fStatProviders.add (sp);
     }
-    
+
     private String _StatGetDumpStr ()
     {
         int             i;

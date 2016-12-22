@@ -16,10 +16,26 @@ package ppm_java.frontend.gui;
 
 import java.awt.Color;
 
+import ppm_java._aux.debug.TWndDebug;
 import ppm_java.frontend.gui.TGUISurrogate.EClipType;
 
 /**
- *
+ * The PPM UI. Unfortunately, repaints are mostly slow, probably due to the way that 
+ * the swing framework does repainting. It's much faster when, alongside this window,
+ * I have another window with a JTextArea open which I update in high speed {@link TWndDebug}
+ * filling it with a lot of text (>1024 chars? has to be new text each time?).
+ * At the moment I don't otherwise know how to force a repaint with each level update.
+ * I've tried <code>getContentPanel.repaint()</code>, setting UIManager properties
+ * (<code>UIManager.put ("ProgressBar.repaintInterval", new Integer (10))</code and 
+ * <code>UIManager.put ("ProgressBar.cycleTime", new Integer (10))</code>, 
+ * updating the text on the clip indicators, but to no avail. Without that
+ * extra debug window the UI remains sluggish.
+ * 
+ * Won't put much effort into resolving this, because this is just a proof of concept application.
+ * Maybe I find some indicator component that does (forces?) fast repaint and can replace the 
+ * JProgressBar component with minimal amount of coding. For now I will keep the debug window 
+ * alongside this one. 
+ * 
  * @author peter
  */
 class TWndPPM extends javax.swing.JFrame
@@ -50,21 +66,36 @@ class TWndPPM extends javax.swing.JFrame
         _SetClipColor (cType, iChannel);
     }
     
+    /**
+     * Sets the level information on the UI.
+     * 
+     * @param lvl
+     * @param iChannel
+     */
     public void SetLevel (int lvl, int iChannel)
     {
-        javax.swing.JProgressBar        target;
+        String                          s;
+        javax.swing.JProgressBar        targetGUI;
+        javax.swing.JLabel              targetTxt;
+        
         switch (iChannel)
         {
             case 0:
-                target = fMeterL;
+                targetGUI   = fMeterL;
+                targetTxt   = fSigClipL;
                 break;
             case 1:
-                target = fMeterR;
+                targetGUI   = fMeterR;
+                targetTxt   = fSigClipR;
                 break;
             default:
-                target = fMeterL;
+                targetGUI = fMeterL;
+                targetTxt = fSigClipL;
         }
-        target.setValue (lvl);
+
+        s = "" + lvl;
+        targetGUI.setValue (lvl);
+        targetTxt.setText (s);
     }
     
     private void _OnSigClipLMouseClicked(java.awt.event.MouseEvent evt)
@@ -140,7 +171,6 @@ class TWndPPM extends javax.swing.JFrame
         fSigClipR = new javax.swing.JLabel();
 
         setDefaultCloseOperation (javax.swing.WindowConstants.HIDE_ON_CLOSE);
-//        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("PPM");
         setBounds(new java.awt.Rectangle(0, 0, 500, 100));
         setMaximumSize(new java.awt.Dimension(600, 100));
