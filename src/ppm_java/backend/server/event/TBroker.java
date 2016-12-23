@@ -31,7 +31,8 @@ public class TBroker
     /* [100] */
     private static final int    gkArgsNone              = 0;
     private static final int    gkArgsOneInt            = 10;
-    private static final int    gkArgsOneString         = 20;
+    private static final int    gkArgsOneLong           = 20;
+    private static final int    gkArgsOneString         = 30;
     
     private TAtomicArrayMap<TBrokerSubscriptionList>    fSubscriptions;
     
@@ -42,20 +43,25 @@ public class TBroker
     
     public void Broker (int e, String idSource)
     {
-        _Broker (e, idSource, gkArgsNone, 0, null);
+        _Broker (e, idSource, gkArgsNone, 0, 0, null);
     }
     
-    public void Broker (int e, String idSource, int arg0)
+    public void Broker (int e, int arg0, String idSource)
     {
-        _Broker (e, idSource, gkArgsOneInt, arg0, null);
+        _Broker (e, idSource, gkArgsOneInt, arg0, 0, null);
     }
     
-    public void Broker (int e, String idSource, String arg0)
+    public void Broker (int e, long arg0, String idSource)
     {
-        _Broker (e, idSource, gkArgsOneString, 0, arg0);
+        _Broker (e, idSource, gkArgsOneLong, 0, arg0, null);
     }
     
-    private void _Broker (int e, String idSource, int argsType, int arg_0_0, String arg_1_0)
+    public void Broker (int e, String arg0, String idSource)
+    {
+        _Broker (e, idSource, gkArgsOneString, 0, 0, arg0);
+    }
+    
+    private void _Broker (int e, String idSource, int argsType, int arg_0_0, long arg_0_1, String arg_1_0)
     {
         TBrokerSubscription     subscr;
         TBrokerSubscriptionList subscrList;
@@ -78,6 +84,10 @@ public class TBroker
                 else if (argsType == gkArgsOneInt)
                 {
                     receiver.OnEvent (e, arg_0_0);
+                }
+                else if (argsType == gkArgsOneLong)
+                {
+                    receiver.OnEvent (e, arg_0_1);
                 }
                 else if (argsType == gkArgsOneString)
                 {

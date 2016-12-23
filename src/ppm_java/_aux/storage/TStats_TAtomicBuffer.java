@@ -31,6 +31,7 @@ public class TStats_TAtomicBuffer implements IStats
         public int      fNumContentions;
         public int      fNumOverruns;
         public int      fNumUnderruns;
+        public int      fDiffOverUnderruns;
     }
     
     private static enum EField
@@ -136,6 +137,7 @@ public class TStats_TAtomicBuffer implements IStats
         ret.fNumContentions     = fNumContentions;
         ret.fNumOverruns        = fNumOverruns;
         ret.fNumUnderruns       = fNumUnderruns;
+        ret.fDiffOverUnderruns  = fNumOverruns - fNumUnderruns;
         _Unlock ();
         
         return ret;

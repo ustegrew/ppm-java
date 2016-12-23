@@ -161,6 +161,30 @@ public final class TController
     }
     
     /**
+     * @param e
+     */
+    public static void PostEvent (int e, int arg0, String idSource)
+    {
+        gController._PostEvent (e, arg0, idSource);
+    }
+    
+    
+    /**
+     * @param e
+     */
+    public static void PostEvent (int e, long arg0, String idSource)
+    {
+        gController._PostEvent (e, arg0, idSource);
+    }
+    /**
+     * @param e
+     */
+    public static void PostEvent (int e, String arg0, String idSource)
+    {
+        gController._PostEvent (e, arg0, idSource);
+    }
+    
+    /**
      * @param object
      */
     public static void Register (VAudioDriver driver)
@@ -263,6 +287,21 @@ public final class TController
     private void _PostEvent (int e, String idSource)
     {
         fEventBus.Broker (e, idSource);
+    }
+    
+    private void _PostEvent (int e, int arg0, String idSource)
+    {
+        fEventBus.Broker (e, arg0, idSource);
+    }
+    
+    private void _PostEvent (int e, long arg0, String idSource)
+    {
+        fEventBus.Broker (e, arg0, idSource);
+    }
+    
+    private void _PostEvent (int e, String arg0, String idSource)
+    {
+        fEventBus.Broker (e, arg0, idSource);
     }
     
     private void _Register (VAudioDriver d)

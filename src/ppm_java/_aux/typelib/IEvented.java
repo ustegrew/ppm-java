@@ -63,6 +63,15 @@ public interface IEvented
     public void OnEvent (int e, int arg0);
     
     /**
+     * Receive an event with one in-band long as parameter.
+     * 
+     * @param e     ID of the event we send. Must be one of the constants
+     *              <code>gkEvent...</code> provided here.
+     * @param arg0  The in-band parameter.
+     */
+    public void OnEvent (int e, long arg0);
+    
+    /**
      * Receive an event with one in-band String as parameter.
      * 
      * @param e     ID of the event we send. Must be one of the constants

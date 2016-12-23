@@ -36,7 +36,7 @@ class TTimerWorker extends Thread
     /**
      * @param id
      */
-    TTimerWorker (TTimer host, int delayMs)
+    TTimerWorker (TTimer host, long delayMs)
     {
         fHost       = host;
         fState      = new AtomicInteger (gkStateWait);
@@ -85,7 +85,7 @@ class TTimerWorker extends Thread
         } while (state == gkStateRun);
     }
     
-    void SetInterval (int intervalMs)
+    void SetInterval (long intervalMs)
     {
         fIntervalMs.getAndSet (intervalMs);
     }

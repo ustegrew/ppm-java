@@ -21,12 +21,15 @@ import java.util.concurrent.atomic.AtomicLong;
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicDouble;
+import ppm_java._aux.storage.TStats_TAtomicBuffer;
+import ppm_java._aux.storage.TStats_TAtomicBuffer.TRecord;
 import ppm_java._aux.typelib.IEvented;
 import ppm_java._aux.typelib.IStatEnabled;
 import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VAudioProcessor;
 import ppm_java.backend.jackd.TAudioContext_JackD;
 import ppm_java.backend.server.TController;
+import ppm_java.backend.server.module.timer.TTimer;
 
 /**
  * PPM meter class. Updates all associated front ends with one 
@@ -131,6 +134,7 @@ public class TNodePPMProcessor
     private long                                fSampleRate;
     private TStats_TNodePPMProcessor            fStats;
     private long                                fTLast;
+    private long                                fTDeltaRequested;
     
     /**
      * @param id
@@ -149,6 +153,7 @@ public class TNodePPMProcessor
         fPeak_dB            = 0;
         fPeak_Raw           = 0;
         fTLast              = 0;                                        /* [140] */
+        fTDeltaRequested    = -1;
         fSampleRate         = -1;
         TController.StatAddProvider (this);
     }
@@ -211,6 +216,16 @@ public class TNodePPMProcessor
     }
 
     /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IEvented#OnEvent(int, long)
+     */
+    @Override
+    public void OnEvent (int e, long arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
      * @see ppm_java._aux.typelib.IEvented#OnEvent(int, java.lang.String)
      */
     @Override
@@ -235,6 +250,41 @@ public class TNodePPMProcessor
     protected void _Register ()
     {
         TController.Register (this);
+    }
+    
+    /**
+     * Auto compensation for Overruns/Underruns on Atomic buffer associated with input.
+     */
+    private void _CompensateCongestions ()
+    {
+        TNodePPMProcessor_Endpoint_In   in;
+        TStats_TAtomicBuffer            stats;
+        TRecord                         stRec;
+        
+        in      = (TNodePPMProcessor_Endpoint_In) GetPortIn (0); 
+        stats   = in.StatsGet ();
+        stRec   = stats.GetRecord ();
+        
+        if (stRec.fDiffOverUnderruns > 0)
+        {   /* Overruns - meaning the JackD audio driver pushes more 
+               data than we handle at the moment => We must decrement 
+               GUI timer cycle interval. We use a simple linear decrement. */
+            if (fTDeltaRequested > TTimer.gkLoopIntervalMin)
+            {
+                fTDeltaRequested--;
+                TController.PostEvent (gkEventTimerAdjustInterval, fTDeltaRequested, GetID ());
+                stats.Clear ();                                         /* [150] */
+            }
+        }
+        else if (stRec.fDiffOverUnderruns < 0)
+        {
+            /* Underruns - meaning the GUI update cycle tries to draw too
+             * much data => We must increment GUI timer cycle interval.
+             * We use a simple linear increment. */
+            fTDeltaRequested++;
+            TController.PostEvent (gkEventTimerAdjustInterval, fTDeltaRequested, GetID ());
+            stats.Clear ();                                             /* [150] */
+        }
     }
     
     private double _FindPeak (FloatBuffer b, long forNSamples)
@@ -297,8 +347,14 @@ public class TNodePPMProcessor
         nowT                = System.currentTimeMillis ();
         dT                  = nowT - fTLast;
         fTLast              = nowT;
+        if (fTDeltaRequested <= -1)
+        {   /* Will be -1 on first cycle only */
+            fTDeltaRequested = dT;
+        }
         fSampleRate         = drv.GetSampleRate ();
         fNSamplesPerCycle   = dT * fSampleRate / 1000;
+        
+        _CompensateCongestions ();
         
         fStats.SetCycleTime             (dT);
         fStats.SetSampleRate            (fSampleRate);
@@ -440,4 +496,5 @@ public class TNodePPMProcessor
         to just set an initial time point and otherwise do no data processing.
         Otherwise, the first cycle could provide non-sensical values, maybe 
         even leading to an exception.
+[150]   Otherwise stRec.fDiffOverUnderruns won't converge to zero without more over/underruns
 */

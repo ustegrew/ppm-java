@@ -50,7 +50,7 @@ public class TTimer
     {
         super (id);
         
-        int d;
+        long d;
         
         d       = _GetSaneInterval (delayMs);
         fWorker = new TTimerWorker (this, d);
@@ -81,7 +81,15 @@ public class TTimer
     @Override
     public void OnEvent (int e, int arg0)
     {
-        int         newIntervalMs;
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IEvented#OnEvent(int, long)
+     */
+    @Override
+    public void OnEvent (int e, long arg0)
+    {
+        long         newIntervalMs;
         
         if (e == gkEventTimerAdjustInterval)
         {
@@ -89,7 +97,7 @@ public class TTimer
             fWorker.SetInterval (newIntervalMs);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see ppm_java._aux.typelib.IEvented#OnEvent(int, java.lang.String)
      */
@@ -124,9 +132,9 @@ public class TTimer
         TController.Register (this);
     }
     
-    private int _GetSaneInterval (int delayMs)
+    private long _GetSaneInterval (long delayMs)
     {
-        int ret;
+        long ret;
         
         if (delayMs >= gkLoopIntervalMin)
         {
