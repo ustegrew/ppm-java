@@ -16,8 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.server.module.ppm;
 
 import java.nio.FloatBuffer;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+
 import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicDouble;
@@ -187,7 +187,7 @@ public class TNodePPMProcessor
     public void OnEvent (int e)
     {
         /* Incoming timer event to update GUI */
-        if (e == gkEventTimer)
+        if (e == gkEventTimerTick)
         {
             if (fHasInitialTime)
             {

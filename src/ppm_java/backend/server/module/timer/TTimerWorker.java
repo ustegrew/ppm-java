@@ -16,8 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.server.module.timer;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import ppm_java._aux.logging.TLogger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author peter
@@ -25,23 +24,35 @@ import ppm_java._aux.logging.TLogger;
  */
 class TTimerWorker extends Thread
 {
-    private static final int        gkLoopIntervalMin       = 10;
+    private static final int        gkLoopInterval          = TTimer.gkLoopIntervalMin;
     private static final int        gkStateRun              = 1;
     private static final int        gkStateStop             = 2;
     private static final int        gkStateWait             = 0;
     
-    private long            fDelayMs;
+    private AtomicLong      fIntervalMs;                                /* [100] */
     private TTimer          fHost;
-    private AtomicInteger   fState;
+    private AtomicInteger   fState;                                     /* [100] */
     
     /**
      * @param id
      */
     TTimerWorker (TTimer host, int delayMs)
     {
-        fHost  = host;
-        fState = new AtomicInteger (gkStateWait);
-        _SetInterval (delayMs);
+        fHost       = host;
+        fState      = new AtomicInteger (gkStateWait);
+        fIntervalMs = new AtomicLong    (delayMs);
+    }
+
+    /**
+     * @return
+     */
+    public long GetInterval ()
+    {
+        long ret;
+        
+        ret = fIntervalMs.getAndAdd (0);                                   /* [110] */
+        
+        return ret;
     }
     
     /* (non-Javadoc)
@@ -52,6 +63,7 @@ class TTimerWorker extends Thread
     {
         long            t0;
         long            t1;
+        long            dly;
         long            dt;
         int             state;
         
@@ -59,49 +71,38 @@ class TTimerWorker extends Thread
         t0 = System.currentTimeMillis ();
         do
         {
-            try {Thread.sleep (gkLoopIntervalMin);} catch (InterruptedException e) {}
+            try {Thread.sleep (gkLoopInterval);} catch (InterruptedException e) {}
 
-            t1 = System.currentTimeMillis ();
-            dt = t1 - t0;
-            if (dt >= fDelayMs)
+            t1  = System.currentTimeMillis ();
+            dly = fIntervalMs.getAndAdd (0);                               /* [110] */
+            dt  = t1 - t0;
+            if (dt >= dly)
             {
                 fHost.SendTimerEvent ();
                 t0 = System.currentTimeMillis ();
             }
-            state = fState.getAndAdd (0);                               /* [100] */
+            state = fState.getAndAdd (0);                               /* [110] */
         } while (state == gkStateRun);
     }
     
-    void SetDelayInterval (int delayMs)
+    void SetInterval (int intervalMs)
     {
-        _SetInterval (delayMs);
+        fIntervalMs.getAndSet (intervalMs);
     }
 
     void Stop ()
     {
-        fState.compareAndSet (gkStateRun, gkStateStop);
-    }
-    
-    private void _SetInterval (int delayMs)
-    {
-        if (delayMs >= gkLoopIntervalMin)
-        {
-            fDelayMs = delayMs;
-        }
-        else
-        {
-            TLogger.LogError 
-            (
-                "For timer '" + fHost.GetID () + "': Given interval must be >= " + 
-                gkLoopIntervalMin + ". Given: " + delayMs + 
-                ". Set to " + fDelayMs, this, "cTor"
-            );
-        }
+        fState.compareAndSet (gkStateRun, gkStateStop);                 /* [120] */
     }
 }
 
 /*
-[100]   A weird way to retrieve the value of fState - return value and add zero. 
+[100]   We use atomic variables because the values can be accessed by multiple threads.
+[110]   A weird way to retrieve the value of fState - return value and add zero. 
         But the AtomicInteger::get() method seems to be non-atomic (according to the docs),
-        whilst AtomicInteger::getAndAdd() is.
+        whilst AtomicInteger::getAndAdd() is atomic.
+[120]   compareAndSet: Because we don't set the state flag to gkStateStop unless the worker 
+                       is in gkStateRun, i.e. running. For now it seems unnecessary to return 
+                       whether setting was successful or not (compareAndSet returns true upon 
+                       success and false upon failure).
 */

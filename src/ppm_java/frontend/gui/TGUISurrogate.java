@@ -173,7 +173,7 @@ public class TGUISurrogate
     
     private static TGUISurrogate        gGUI        = null;
     private static final float          gkLvlClip   = -1.0f;
-    private static final float          gkLvlWarn   = -3.0f;
+    private static final float          gkLvlWarn   = -4.0f;
     
     public static void CreateInstance (String id, int nMaxChanIn)
     {
@@ -263,8 +263,7 @@ public class TGUISurrogate
      */
     void SetLevel (float level, int iChannel)
     {
-        float   div;
-        int     lDisp;
+        double lDisp;
 
         if (iChannel == 0)
             fStat.OnCycleTick ();
@@ -279,25 +278,22 @@ public class TGUISurrogate
             fGUI.ClippingSet (EClipType.kWarn, iChannel);
         }
         
-        /* PPM II has seven divisions on the scale. We map to a progress bar with 100 divisions. */
-        div = 100 / 7;  
-        
         /* Compute progress bar value */
         if (level > 0)
         {   /* ]0, ...] dB => hard limit to 100 */
             fStat.SetCalcSection (iChannel, 3);
-            lDisp = 100;
+            lDisp = 7;
         }
         else if (level >= -24)
         {   /* [-24, 0] dB => working range 1..7 */                     /* [100] */
             fStat.SetCalcSection (iChannel, 2);
-            lDisp = (int) (div * ((level + 24) / 4 + 1));
+            lDisp = (level + 24) / 4 + 1;
         }
         else if (level >= -130)
         {
             /* [-130, -24[ dB => range 0..1 */                          /* [110] */
             fStat.SetCalcSection (iChannel, 1);
-            lDisp = (int) (div * (level + 130) / 130);
+            lDisp = (level + 130) / 130;
         }
         else
         {

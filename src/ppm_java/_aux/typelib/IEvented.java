@@ -42,7 +42,8 @@ public interface IEvented
 {
     public static final int     gkEventStart                = 1000;
     public static final int     gkEventStop                 = 1010;
-    public static final int     gkEventTimer                = 1020;
+    public static final int     gkEventTimerTick            = 1020;
+    public static final int     gkEventTimerAdjustInterval  = 1030;
     
     /**
      * Receive an event with no parameter.

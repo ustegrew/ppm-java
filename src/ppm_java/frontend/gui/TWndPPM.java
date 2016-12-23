@@ -16,6 +16,7 @@ package ppm_java.frontend.gui;
 
 import java.awt.Color;
 import eu.hansolo.steelseries.gauges.LinearBargraph;
+import eu.hansolo.steelseries.tools.ThresholdType;
 import ppm_java.frontend.gui.TGUISurrogate.EClipType;
 
 /**
@@ -61,7 +62,7 @@ class TWndPPM extends javax.swing.JFrame
      * @param lvl
      * @param iChannel
      */
-    public void SetLevel (int lvl, int iChannel)
+    public void SetLevel (double lvl, int iChannel)
     {
         LinearBargraph        targetGUI;
         
@@ -182,11 +183,20 @@ class TWndPPM extends javax.swing.JFrame
         gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
         fPnlMeterL.add(fLblL, gridBagConstraints);
 
-        fMeterL.setForeground(new java.awt.Color(102, 0, 255));
-        fMeterL.setValue(50);
-        fMeterL.setTitle ("L");
-        fMeterL.setUnitString ("PPM");
-        fMeterL.setThreshold (70);
+        fMeterL.setTitle ("");
+        fMeterL.setNiceScale (false);
+        fMeterL.setMinValue (0);
+        fMeterL.setMaxValue (7);
+        fMeterL.setMajorTickSpacing (1);
+        fMeterL.setMinorTickSpacing (0.1);
+        fMeterL.setTicklabelsVisible (true);
+        fMeterL.setMinorTickmarkVisible (false);
+        fMeterL.setValue(1);
+        fMeterL.setUnitString ("");
+        fMeterL.setThreshold (6);
+        fMeterL.setThresholdVisible (true);
+        fMeterL.setThresholdType (ThresholdType.TRIANGLE);
+        fMeterL.setLcdVisible (false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -238,11 +248,20 @@ class TWndPPM extends javax.swing.JFrame
         gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
         fPnlMeterR.add(fLblR, gridBagConstraints);
 
-        fMeterR.setForeground(new java.awt.Color(0, 0, 255));
-        fMeterR.setValue(50);
-        fMeterR.setTitle ("R");
-        fMeterR.setUnitString ("PPM");
-        fMeterR.setThreshold (70);
+        fMeterR.setTitle ("");
+        fMeterR.setNiceScale (false);
+        fMeterR.setMinValue (0);
+        fMeterR.setMaxValue (7);
+        fMeterR.setMajorTickSpacing (1);
+        fMeterR.setMinorTickSpacing (0.1);
+        fMeterR.setTicklabelsVisible (true);
+        fMeterR.setMinorTickmarkVisible (false);
+        fMeterR.setValue(1);
+        fMeterR.setUnitString ("");
+        fMeterR.setThreshold (6);
+        fMeterR.setThresholdVisible (true);
+        fMeterR.setThresholdType (ThresholdType.TRIANGLE);
+        fMeterR.setLcdVisible (false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;

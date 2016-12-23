@@ -67,6 +67,8 @@ public class TMain
         /* Subscribe PPM processor to timer events */
         TController.Create_Connection_Events        ("timer",           "ppp.l"                                 );
         TController.Create_Connection_Events        ("timer",           "ppp.r"                                 );
+        TController.Create_Connection_Events        ("ppp.l",           "timer"                                 );
+        TController.Create_Connection_Events        ("ppp.r",           "timer"                                 );
         
         /* Create start and stop lists */
         TController.Create_StartListEntry           ("gui");                 

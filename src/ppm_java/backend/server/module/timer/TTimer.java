@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.backend.server.module.timer;
 
+import ppm_java._aux.logging.TLogger;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IEvented;
 import ppm_java._aux.typelib.VBrowseable;
@@ -28,6 +29,8 @@ public class TTimer
     extends         VBrowseable
     implements      IControllable, IEvented
 {
+    public static final int gkLoopIntervalMin = 10;
+
     public static TTimer CreateInstance (String id, int intervalMs)
     {
         TTimer ret;
@@ -46,8 +49,21 @@ public class TTimer
     TTimer (String id, int delayMs)
     {
         super (id);
-        fWorker = new TTimerWorker (this, delayMs);
+        
+        int d;
+        
+        d       = _GetSaneInterval (delayMs);
+        fWorker = new TTimerWorker (this, d);
         fID     = id;                                                   /* [100] */
+    }
+    
+    public long GetInterval ()
+    {
+        long ret;
+        
+        ret = fWorker.GetInterval ();
+        
+        return ret;
     }
     
     /* (non-Javadoc)
@@ -65,7 +81,13 @@ public class TTimer
     @Override
     public void OnEvent (int e, int arg0)
     {
-        // Do nothing
+        int         newIntervalMs;
+        
+        if (e == gkEventTimerAdjustInterval)
+        {
+            newIntervalMs = _GetSaneInterval (arg0);
+            fWorker.SetInterval (newIntervalMs);
+        }
     }
     
     /* (non-Javadoc)
@@ -90,7 +112,7 @@ public class TTimer
     void SendTimerEvent ()
     {
         /* [100] */
-        TController.PostEvent (IEvented.gkEventTimer, fID);
+        TController.PostEvent (IEvented.gkEventTimerTick, fID);         /* [100] */
     }
 
     /* (non-Javadoc)
@@ -100,6 +122,28 @@ public class TTimer
     protected void _Register ()
     {
         TController.Register (this);
+    }
+    
+    private int _GetSaneInterval (int delayMs)
+    {
+        int ret;
+        
+        if (delayMs >= gkLoopIntervalMin)
+        {
+            ret = delayMs;
+        }
+        else
+        {
+            ret = gkLoopIntervalMin;
+            TLogger.LogError 
+            (
+                "For timer '" + fID + "': Given interval must be >= " + /* [100] */
+                gkLoopIntervalMin + ". Given: " + delayMs + 
+                ". Set to " + ret, this, "cTor"
+            );
+        }
+        
+        return ret;
     }
 }
 
