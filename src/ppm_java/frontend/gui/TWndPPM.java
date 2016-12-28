@@ -14,290 +14,248 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui;
 
-import java.awt.Color;
-import eu.hansolo.steelseries.gauges.LinearBargraph;
-import eu.hansolo.steelseries.tools.ThresholdType;
+import eu.hansolo.steelseries.tools.LedColor;
+import ppm_java._aux.debug.TWndDebug;
 import ppm_java.frontend.gui.TGUISurrogate.EClipType;
 
 /**
  * The PPM UI. 
  * 
- * Previously used the JProgressBar as level indicator. That one had problems [100]. 
- * Replaced it with a steelseries-swing gauge LinearBargraph component 
- * (https://github.com/HanSolo/SteelSeries-Swing) - which is very responsive. 
+ * Unfortunately, repaints are mostly slow, probably due to the way that 
+ * the swing framework does repainting. It's much faster when, alongside this window,
+ * I have another window with a JTextArea open which I update in high speed {@link TWndDebug}
+ * filling it with a lot of text (>1024 chars? has to be new text each time?).
+ * At the moment I don't otherwise know how to force a repaint with each level update.
+ * I've tried <code>getContentPanel.repaint()</code> and other stuff. But without that
+ * extra debug window the UI remains sluggish.
+ * 
+ * Won't put much effort into resolving this, because this is just a proof of concept application.
+ * Maybe I find some indicator component that does (forces?) fast repaint and can replace the 
+ * gauge component with minimal amount of coding. For now I will keep the debug window 
+ * alongside this one.
  * 
  * @author peter
+ * @see    https://github.com/HanSolo/SteelSeries-Swing
  */
-class TWndPPM extends javax.swing.JFrame
+public class TWndPPM extends javax.swing.JFrame
 {
-    private static final Color              kColorClip          = new Color (0xbf, 0x03, 0x03);
-    private static final Color              kColorNormal        = new Color (0xe0, 0xe0, 0xe0);
-    private static final Color              kColorWarn          = new Color (0xff, 0xd5, 0x00);
-    private static final long               serialVersionUID    = -2335417501850617358L;
-    
-    private TGUISurrogate                   fConnector;
-    private javax.swing.JLabel              fLblL;
-    private javax.swing.JLabel              fLblR;
-    private LinearBargraph                  fMeterL;
-    private LinearBargraph                  fMeterR;
-    private javax.swing.JPanel              fPnlMeterL;
-    private javax.swing.JPanel              fPnlMeterR;
-    private javax.swing.JLabel              fSigClipL;
-    private javax.swing.JLabel              fSigClipR;
+    private static final int                gkIChanL            = 0;
+    private static final int                gkIChanR            = 1;
+    private static final LedColor           gkColorClip         = LedColor.RED_LED;
+    private static final LedColor           gkColorNormal       = LedColor.RED_LED;
+    private static final LedColor           gkColorWarn         = LedColor.YELLOW_LED;
+    private static final long               serialVersionUID    = -9218057974191248946L;
 
-    public TWndPPM (TGUISurrogate surrogate)
-    {
-        fConnector = surrogate;
-        initComponents ();
-    }
+    private TGUISurrogate                                               fConnector;
+    private eu.hansolo.steelseries.gauges.Radial1Vertical               fMeterL;
+    private eu.hansolo.steelseries.gauges.Radial1Vertical               fMeterR;
+    private TGUITimerClipping                                           fTimerL;
+    private TGUITimerClipping                                           fTimerR;
 
-    public void ClippingSet (EClipType cType, int iChannel)
-    {
-        _SetClipColor (cType, iChannel);
-    }
-    
     /**
-     * Sets the level information on the UI.
+     * Creates new form TWndPPM
+     */
+    public TWndPPM (TGUISurrogate connector)
+    {
+        initComponents ();
+        fConnector  = connector;
+        fTimerL     = new TGUITimerClipping (this, gkIChanL);
+        fTimerR     = new TGUITimerClipping (this, gkIChanR);
+        fTimerL.start ();
+        fTimerR.start ();
+    }
+
+    /**
+     * Sets the clipping LED of the indicated channel to the desired state.
      * 
-     * @param lvl
-     * @param iChannel
+     * @param cType         The state to set.
+     * @param iChannel      The channel (L or R) associated with the LED we'd like to set.
+     */
+    public void SetClipping (EClipType cType, int iChannel)
+    {
+        if (iChannel == gkIChanL)
+        {
+            fTimerL.SetClip (cType);
+        }
+        else if (iChannel == gkIChanR)
+        {
+            fTimerR.SetClip (cType);
+        }
+    }
+
+    /**
+     * Sets the gauge value (i.e. pointer position) of the indicated channel to the desired level.
+     * 
+     * @param lvl           The level to set.
+     * @param iChannel      The channel (L or R) associated with the gauge we'd like to set.
      */
     public void SetLevel (double lvl, int iChannel)
     {
-        LinearBargraph        targetGUI;
+        eu.hansolo.steelseries.gauges.Radial1Vertical   gauge;
         
-        switch (iChannel)
+        if (iChannel == gkIChanL)
         {
-            case 0:
-                targetGUI   = fMeterL;
-                break;
-            case 1:
-                targetGUI   = fMeterR;
-                break;
-            default:
-                targetGUI = fMeterL;
+            gauge   = fMeterL;
         }
+        else if (iChannel == gkIChanR)
+        {
+            gauge   = fMeterR;
+        }
+        else
+        {
+            gauge   = null;
+        }
+        
+        if (gauge != null)
+        {
+            gauge.setValue (lvl);
+        }
+    }
+    
+    /**
+     * Requests termination of this GUI window. Will shut down both
+     * monostables for the clipping indicators.
+     */
+    public void Terminate ()
+    {
+        setVisible (false);
+        fTimerL.Terminate ();
+        fTimerR.Terminate ();
+    }
+    
+    /**
+     * Sets the clip indicator of the desired channel. Used by the clipping monostable. 
+     * 
+     * @param   cType
+     * @param   iChannel
+     * @see     TGUITimerClipping
+     */
+    void _SetClipping (EClipType cType, int iChannel)
+    {
+        eu.hansolo.steelseries.gauges.Radial1Vertical       gauge;
+        LedColor                                            color;
+        boolean                                             isOn;
 
-        targetGUI.setValue (lvl);
+        if (iChannel == gkIChanL)
+        {
+            gauge = fMeterL;
+        }
+        else if (iChannel == gkIChanR)
+        {
+            gauge = fMeterR;
+        }
+        else
+        {
+            gauge = null;
+        }
+        
+        if (gauge != null)
+        {
+            if (cType == EClipType.kClear)
+            {
+                color   = gkColorNormal;
+                isOn    = false;
+            }
+            else if (cType == EClipType.kWarn)
+            {
+                color   = gkColorWarn;
+                isOn    = true;
+            }
+            else if (cType == EClipType.kError)
+            {
+                color   = gkColorClip;
+                isOn    = true;
+            }
+            else
+            {
+                color   = gkColorNormal;
+                isOn    = false;
+            }
+            
+            gauge.setUserLedColor   (color);
+            gauge.setUserLedOn      (isOn);
+        }
     }
     
-    private void _OnSigClipLMouseClicked(java.awt.event.MouseEvent evt)
-    {
-        fConnector.OnSigClip_Click ();
-    }
-    
-    private void _OnSigClipRMouseClicked(java.awt.event.MouseEvent evt)
-    {
-        fConnector.OnSigClip_Click ();
-    }
-    
-    private void _OnWindowClose(java.awt.event.WindowEvent evt)
+    private void _OnWindowClosing (java.awt.event.WindowEvent evt)
     {
         fConnector.OnTerminate ();
-    }
-    
-    private void _SetClipColor (EClipType cType, int iChannel)
-    {
-        javax.swing.JLabel  sig;
-        Color               c;
-        
-        switch (cType)
-        {
-            case kClear:
-                c = kColorNormal;
-                break;
-            case kWarn:
-                c = kColorWarn;
-                break;
-            case kError:
-                c = kColorClip;
-                break;
-            default:
-                c = kColorNormal;
-        }
-        
-        if (iChannel == 0)
-        {
-            sig = fSigClipL;
-        }
-        else if (iChannel == 1)
-        {
-            sig = fSigClipR;
-        }
-        else
-        {
-            sig = null;
-        }
-        
-        if (sig != null)
-        {
-            sig.setForeground (c);
-        }
-        else
-        {
-            fSigClipL.setForeground (c);
-            fSigClipR.setForeground (c);
-        }
     }
     
     private void initComponents()
     {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        fPnlMeterL = new javax.swing.JPanel();
-        fLblL = new javax.swing.JLabel();
-        fMeterL = new LinearBargraph();
-        fSigClipL = new javax.swing.JLabel();
-        fPnlMeterR = new javax.swing.JPanel();
-        fLblR = new javax.swing.JLabel();
-        fMeterR = new LinearBargraph ();
-        fSigClipR = new javax.swing.JLabel();
+        fMeterL = new eu.hansolo.steelseries.gauges.Radial1Vertical();
+        fMeterR = new eu.hansolo.steelseries.gauges.Radial1Vertical();
 
-        setDefaultCloseOperation (javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setTitle("PPM");
-        setBounds(new java.awt.Rectangle(0, 0, 500, 250));
-        setMaximumSize(new java.awt.Dimension(600, 250));
-        setMinimumSize(new java.awt.Dimension(400, 250));
-        setPreferredSize(new java.awt.Dimension(600, 250));
-        setResizable(false);
+        setPreferredSize(new java.awt.Dimension(640, 350));
+        setResizable(true);
+        setSize(new java.awt.Dimension(640, 350));
         addWindowListener(new java.awt.event.WindowAdapter()
         {
             public void windowClosing (java.awt.event.WindowEvent evt)
             {
-                _OnWindowClose (evt);
+                _OnWindowClosing (evt);
             }
         });
         getContentPane().setLayout(new java.awt.GridBagLayout());
-
-        fPnlMeterL.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        fPnlMeterL.setLayout(new java.awt.GridBagLayout());
-
-        fLblL.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        fLblL.setForeground(new java.awt.Color(102, 0, 255));
-        fLblL.setText("L");
+        getContentPane ().setBackground (new java.awt.Color (0,0,0));
+        
+        fMeterL.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.ANTHRACITE);
+        fMeterL.setFrameEffect(eu.hansolo.steelseries.tools.FrameEffect.EFFECT_INNER_FRAME);
+        fMeterL.setFrameType(eu.hansolo.steelseries.tools.FrameType.SQUARE);
+        fMeterL.setMaxValue(7.0);
+        fMeterL.setMinorTickmarkVisible(false);
+        fMeterL.setPointerColor(eu.hansolo.steelseries.tools.ColorDef.WHITE);
+        fMeterL.setPointerType(eu.hansolo.steelseries.tools.PointerType.TYPE3);
+        fMeterL.setPostsVisible(false);
+        fMeterL.setRtzTimeBackToZero(1L);
+        fMeterL.setRtzTimeToValue(1L);
+        fMeterL.setThreshold(7.1);
+        fMeterL.setLedVisible (false);
+        fMeterL.setTicklabelOrientation(eu.hansolo.steelseries.tools.TicklabelOrientation.HORIZONTAL);
+        fMeterL.setTitle("L");
+        fMeterL.setUnitString("");
+        fMeterL.setUserLedColor(gkColorNormal);
+        fMeterL.setUserLedVisible(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
-        fPnlMeterL.add(fLblL, gridBagConstraints);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 5, 0, 10);
+        getContentPane().add(fMeterL, gridBagConstraints);
 
-        fMeterL.setTitle ("");
-        fMeterL.setNiceScale (false);
-        fMeterL.setMinValue (0);
-        fMeterL.setMaxValue (7);
-        fMeterL.setMajorTickSpacing (1);
-        fMeterL.setMinorTickSpacing (0.1);
-        fMeterL.setTicklabelsVisible (true);
-        fMeterL.setMinorTickmarkVisible (false);
-        fMeterL.setValue(1);
-        fMeterL.setUnitString ("");
-        fMeterL.setThreshold (6);
-        fMeterL.setThresholdVisible (true);
-        fMeterL.setThresholdType (ThresholdType.TRIANGLE);
-        fMeterL.setLcdVisible (false);
+        fMeterR.setFrameDesign(eu.hansolo.steelseries.tools.FrameDesign.ANTHRACITE);
+        fMeterR.setFrameEffect(eu.hansolo.steelseries.tools.FrameEffect.EFFECT_INNER_FRAME);
+        fMeterR.setFrameType(eu.hansolo.steelseries.tools.FrameType.SQUARE);
+        fMeterR.setMajorTickSpacing(1.0);
+        fMeterR.setMaxValue(7.0);
+        fMeterR.setMinorTickmarkVisible(false);
+        fMeterR.setPointerColor(eu.hansolo.steelseries.tools.ColorDef.WHITE);
+        fMeterR.setPointerType(eu.hansolo.steelseries.tools.PointerType.TYPE3);
+        fMeterR.setPostsVisible(false);
+        fMeterR.setRtzTimeBackToZero(1L);
+        fMeterR.setRtzTimeToValue(1L);
+        fMeterR.setThreshold(7.1);
+        fMeterR.setLedVisible (false);
+        fMeterR.setTicklabelOrientation(eu.hansolo.steelseries.tools.TicklabelOrientation.HORIZONTAL);
+        fMeterR.setTitle("R");
+        fMeterR.setUnitString("");
+        fMeterR.setUserLedColor(eu.hansolo.steelseries.tools.LedColor.GREEN_LED);
+        fMeterR.setUserLedVisible(true);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
-        fPnlMeterL.add(fMeterL, gridBagConstraints);
-
-        fSigClipL.setForeground(new java.awt.Color(204, 204, 204));
-        fSigClipL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        fSigClipL.setText("Clip");
-        fSigClipL.setToolTipText("");
-        fSigClipL.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                _OnSigClipLMouseClicked(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 30;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
-        fPnlMeterL.add(fSigClipL, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        getContentPane().add(fPnlMeterL, gridBagConstraints);
-
-        fPnlMeterR.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        fPnlMeterR.setLayout(new java.awt.GridBagLayout());
-
-        fLblR.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        fLblR.setForeground(new java.awt.Color(0, 0, 255));
-        fLblR.setText("R");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 0);
-        fPnlMeterR.add(fLblR, gridBagConstraints);
-
-        fMeterR.setTitle ("");
-        fMeterR.setNiceScale (false);
-        fMeterR.setMinValue (0);
-        fMeterR.setMaxValue (7);
-        fMeterR.setMajorTickSpacing (1);
-        fMeterR.setMinorTickSpacing (0.1);
-        fMeterR.setTicklabelsVisible (true);
-        fMeterR.setMinorTickmarkVisible (false);
-        fMeterR.setValue(1);
-        fMeterR.setUnitString ("");
-        fMeterR.setThreshold (6);
-        fMeterR.setThresholdVisible (true);
-        fMeterR.setThresholdType (ThresholdType.TRIANGLE);
-        fMeterR.setLcdVisible (false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
-        fPnlMeterR.add(fMeterR, gridBagConstraints);
-
-        fSigClipR.setForeground(new java.awt.Color(204, 204, 204));
-        fSigClipR.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        fSigClipR.setText("Clip");
-        fSigClipR.setToolTipText ("");
-        fSigClipR.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mouseClicked(java.awt.event.MouseEvent evt)
-            {
-                _OnSigClipRMouseClicked(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 30;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 10);
-        fPnlMeterR.add(fSigClipR, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        getContentPane().add(fPnlMeterR, gridBagConstraints);
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 5);
+        getContentPane().add(fMeterR, gridBagConstraints);
 
         pack();
     }
@@ -306,22 +264,5 @@ class TWndPPM extends javax.swing.JFrame
 /* 
 [100]   Re: Previous version using JProgressBar:
 
-        Unfortunately, repaints are mostly slow, probably due to the way that 
-        the swing framework does repainting. It's much faster when, alongside this window,
-        I have another window with a JTextArea open which I update in high speed {@link TWndDebug}
-        filling it with a lot of text (>1024 chars? has to be new text each time?).
-        At the moment I don't otherwise know how to force a repaint with each level update.
-        I've tried <code>getContentPanel.repaint()</code>, setting UIManager properties
-        (<code>UIManager.put ("ProgressBar.repaintInterval", new Integer (10))</code and 
-        <code>UIManager.put ("ProgressBar.cycleTime", new Integer (10))</code>, 
-        updating the text on the clip indicators, but to no avail. Without that
-        extra debug window the UI remains sluggish.
-        
-        Won't put much effort into resolving this, because this is just a proof of concept application.
-        Maybe I find some indicator component that does (forces?) fast repaint and can replace the 
-        JProgressBar component with minimal amount of coding. For now I will keep the debug window 
-        alongside this one.
-        
-        Note - I did address it, found a gauge component that is responsive.
 
 */

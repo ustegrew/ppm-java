@@ -25,7 +25,6 @@ public class TMain
 {
     public static final int         gkAudioFrameSize    =  1024;
     public static final int         gkAudioSampleRate   = 44100;
-    public static final int         gkGUINChanMax       =     2;
     public static final int         gkTimerIntervalMs   =    20; 
     
     /**
@@ -40,7 +39,7 @@ public class TMain
     {
         /* Create modules */
         TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );
-        TController.Create_Frontend_GUI             ("gui",             gkGUINChanMax                           );
+        TController.Create_Frontend_GUI             ("gui"                                                      );
         TController.Create_Module_PPMProcessor      ("ppp.l"                                                    );
         TController.Create_Module_PPMProcessor      ("ppp.r"                                                    );
         TController.Create_Module_Timer             ("timer",           gkTimerIntervalMs                       );

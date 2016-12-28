@@ -64,9 +64,9 @@ public final class TController
     /**
      * @param string
      */
-    public static void Create_Frontend_GUI (String id, int nChanInMax)
+    public static void Create_Frontend_GUI (String id)
     {
-        TGUISurrogate.CreateInstance (id, nChanInMax);
+        TGUISurrogate.CreateInstance (id);
     }
     
     public static void Create_Module_PPMProcessor (String id)
@@ -355,11 +355,11 @@ public final class TController
         
         if (doStart)
         {
-            //fDebugUpdateWorker.start ();
+            fDebugUpdateWorker.start ();
         }
         else
         {
-            //fDebugUpdateWorker.Stop ();
+            fDebugUpdateWorker.Stop ();
         }
     }
 

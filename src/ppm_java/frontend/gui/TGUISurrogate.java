@@ -175,22 +175,22 @@ public class TGUISurrogate
     private static final float          gkLvlClip   = -1.0f;
     private static final float          gkLvlWarn   = -4.0f;
     
-    public static void CreateInstance (String id, int nMaxChanIn)
+    public static void CreateInstance (String id)
     {
         if (gGUI != null)
         {
             throw new IllegalStateException ("TGUISurrogate is already instantiated.");
         }
-        gGUI = new TGUISurrogate (id, nMaxChanIn);
+        gGUI = new TGUISurrogate (id);
     }
     
-    private TWndPPM             fGUI;
+    private TWndPPM            fGUI;
     private TStat_TGUISurrogate fStat;
     
-    private TGUISurrogate (String id, int nMaxChanIn)
+    private TGUISurrogate (String id)
     {
-        super (id, nMaxChanIn, 0);
-        fGUI = new TWndPPM (this);
+        super (id, 2, 0);
+        fGUI  = new TWndPPM (this);
         fStat = new TStat_TGUISurrogate (this);
         TController.StatAddProvider (this);
     }
@@ -245,14 +245,9 @@ public class TGUISurrogate
     @Override
     public void Stop ()
     {
-        fGUI.setVisible (false);
+        fGUI.Terminate ();
     }
     
-    void OnSigClip_Click ()
-    {
-        fGUI.ClippingSet (EClipType.kClear, -1);
-    }
-
     void OnTerminate ()
     {
         TController.OnTerminate (GetID ());
@@ -271,11 +266,11 @@ public class TGUISurrogate
         /* Set clipping indicators. */
         if (level >= gkLvlClip)
         {
-            fGUI.ClippingSet (EClipType.kError, iChannel);
+            fGUI.SetClipping (EClipType.kError, iChannel);
         }
         else if (level >= gkLvlWarn)
         {
-            fGUI.ClippingSet (EClipType.kWarn, iChannel);
+            fGUI.SetClipping (EClipType.kWarn, iChannel);
         }
         
         /* Compute progress bar value */
