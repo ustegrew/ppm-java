@@ -113,7 +113,7 @@ public class TNodePPMProcessor
         
     }
     
-    private static final double     gkIntegrRiseRangedB =   22;         /* [110] */
+    private static final double     gkIntegrRiseRangedB =   23;         /* [110] */
     private static final double     gkIntegrFallRangedB =  -24;         /* [110] */
     private static final long       gkIntegrFallTime    = 2800;         /* [110] */
     private static final long       gkIntegrRiseTime    =   10;         /* [110] */
@@ -447,7 +447,7 @@ public class TNodePPMProcessor
 
 /* 
 [110]   PPM type II ballistics (strict):
-        Rise: -24dB -> - 2dB:   10  ms  =  22dB /   10mS =  2        dB/mS 
+        Rise: -24dB -> - 1dB:   10  ms  =  23dB /   10mS =  2.3      dB/mS 
         Fall:   0dB -> -24dB: 2800  ms  = -24dB / 2800ms ~ -0.00857  dB/ms
 [120]   For each sample, JJack delivers a floating point value
         in the range [-1.0, 1.0] floating point units.
