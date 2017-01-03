@@ -39,6 +39,23 @@ import java.util.concurrent.atomic.AtomicInteger;
  * contention situations.
  * <p><br/></p>
  * 
+ * The <code>TAtomicBuffer</code> copies the incoming data frames before 
+ * they are passed on to the consumer. This is to protect the producer. 
+ * If we pass on uncopied data frames and the consumer side does changes 
+ * to the data then those changes would be seen on the producer side as 
+ * well and cause unforeseen side effects and hard to track down errors.
+ * The extra protection comes with a performance penalty as the copying
+ * costs time. To protect the time critical thread from the performance loss
+ * we can set the time point at which the data is copied. If the producer
+ * is the time critical we copy when the consumer fetches. If the consumer is
+ * time critical we copy when the producer sets it. In some situations 
+ * the data copy may be unnecessary in which case we 
+ * can instruct the atomic buffer to omit any data copying. However, due 
+ * to the real possibility of data corruption the data must then be copied
+ * separately, either on the producer or on the consumer side. The copy
+ * actions can be set at construction time via the <code>copyPolicy</code>
+ * parameter.  
+ * 
  * To monitor the quality of the data flow we offer various counters which can 
  * be queried by all parties (all {@link #ClearStats() clearable}}:
  * <p><br/></p>
@@ -170,12 +187,21 @@ public class TAtomicBuffer
      *          costs the least time. Use this policy when the consumer thread has 
      *          a higher priority than the producer thread.
      *     </dd>
+     *     <dt>{@link #kNoCopy}</dt>
+     *     <dd>
+     *          Data won't be copied, but we pass on the original data frame objects.
+     *          This policy is risky and should only ever be used if either the producer
+     *          or the consumer guarantee their own data copy. This policy is necessary
+     *          in some situations to prevent unnecessary multiple copying of data frames
+     *          (e.g. when data is passed from one module to another).
+     *     </dd>
      * </dl> 
      */
     public static enum ECopyPolicy
     {
         kCopyOnGet,
-        kCopyOnSet
+        kCopyOnSet,
+        kNoCopy
     }
     
     /**
@@ -212,7 +238,7 @@ public class TAtomicBuffer
     private AtomicInteger                   fFlag;
     private boolean                         fHasBeenCollected;
     private EIfInvalidPolicy                fIfInvalidPolicy;
-    private TStats_TAtomicBuffer            fStats;
+    private TAtomicBuffer_Stats             fStats;
     
     /**
      * Creates a new atomic buffer with default policies:
@@ -274,13 +300,13 @@ public class TAtomicBuffer
         FloatBuffer     ret;
 
         if (fCopyPolicy == ECopyPolicy.kCopyOnGet)
-        {   /* Consumer has low priority */
+        {   /* Consumer has low priority, i.e. can wait until the lock is free. */
             _Lock ();
             ret = _DataGet (true);
             _Unlock ();
         }
-        else
-        {   /* Consumer has high priority */
+        else if (fCopyPolicy == ECopyPolicy.kCopyOnSet)
+        {   /* Consumer has high priority, i.e. will give up trying if it can't acquire the lock */
             isLocked = _TryLock ();                                     /* [110] */
             if (isLocked)
             {
@@ -302,6 +328,34 @@ public class TAtomicBuffer
                 }
             }
         }
+        else
+        {
+            /* No copying. This is dangerous, but sometimes necessary. 
+             * Clients must make sure the producer or the consumer do
+             * their own data copying. Since we can't tell who's 
+             * high and who's low priority we treat this case as if both,
+             * producer and consumer are high priority. */
+            isLocked = _TryLock ();
+            if (isLocked)
+            {
+                ret = _DataGet (false);
+                _Unlock ();
+            }
+            else
+            {   /* Consumer clashed with producer. Increment 
+                contention counter and return empty chunk 
+                or null. */
+                fStats.IncrementContentions ();
+                if (fIfInvalidPolicy == EIfInvalidPolicy.kReturnEmpty)
+                {
+                    ret = FloatBuffer.allocate (0);
+                }
+                else
+                {
+                    ret = null;
+                }
+            }
+        }
         
         return ret;
     }
@@ -311,7 +365,7 @@ public class TAtomicBuffer
      * Not thread safe, but good enough to use 
      * for automatic compensation of problems.
      * 
-     * @see TStats_TAtomicBuffer
+     * @see TAtomicBuffer_Stats
      */
     public void StatsClear ()
     {
@@ -323,9 +377,9 @@ public class TAtomicBuffer
      *              Not thread safe, but good enough to use 
      *              for automatic compensation of problems.
      * 
-     * @see TStats_TAtomicBuffer
+     * @see TAtomicBuffer_Stats
      */
-    public TStats_TAtomicBuffer StatsGet ()
+    public TAtomicBuffer_Stats StatsGet ()
     {
         return fStats;
     }
@@ -363,13 +417,13 @@ public class TAtomicBuffer
         boolean isLocked;
         
         if (fCopyPolicy == ECopyPolicy.kCopyOnSet)
-        {   /* Producer has low priority */
+        {   /* Producer has low priority, i.e. can wait until the lock is free. */
             _Lock ();                                                   /* [120] */
             _DataSet (fb, true);
             _Unlock ();
         }
-        else
-        {   /* Producer has high priority */
+        else if (fCopyPolicy == ECopyPolicy.kCopyOnGet)
+        {   /* Producer has high priority, i.e. will give up trying if it can't acquire the lock */
             isLocked = _TryLock ();                                     /* [110] */
             if (isLocked)
             {
@@ -379,6 +433,23 @@ public class TAtomicBuffer
             else
             {
                 fStats.IncrementContentions ();                         /* [130] */ 
+            }
+        }
+        else
+        {   /* No copying. This is dangerous, but sometimes necessary. 
+             * Clients must make sure the producer or the consumer do
+             * their own data copying. Since we can't tell who's 
+             * high and who's low priority we treat this case as if both,
+             * producer and consumer are high priority. */
+            isLocked = _TryLock ();
+            if (isLocked)
+            {
+                _DataSet (fb, false);
+                _Unlock ();
+            }
+            else
+            {
+                fStats.IncrementContentions ();
             }
         }
     }
@@ -501,7 +572,7 @@ public class TAtomicBuffer
      */
     private void _Init (ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
     {
-        fStats              = new TStats_TAtomicBuffer ();
+        fStats              = new TAtomicBuffer_Stats ();
         fFlag               = new AtomicInteger (gkFree);
         fBuffer             = FloatBuffer.allocate (0);
         fCopyPolicy         = copyPolicy;

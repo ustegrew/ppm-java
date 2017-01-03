@@ -14,14 +14,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui;
 
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
-import ppm_java._aux.storage.TAtomicDouble;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IStatEnabled;
-import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.server.TController;
 
@@ -40,137 +34,6 @@ public class TGUISurrogate
         kWarn
     }
     
-    private static final class TStat_TGUISurrogate_Record
-    {
-        private AtomicInteger            fCalcSection;
-        private TAtomicDouble            fLastDBValue;
-        private TAtomicDouble            fLastDisplayValue;
-        
-        public TStat_TGUISurrogate_Record ()
-        {
-            fCalcSection        = new AtomicInteger (0);
-            fLastDBValue        = new TAtomicDouble ();
-            fLastDisplayValue   = new TAtomicDouble ();
-        }
-        
-        public void SetCalcSection (int s)
-        {
-            fCalcSection.getAndSet (s);
-        }
-        
-        public void SetDBValue (double dBv)
-        {
-            fLastDBValue.Set (dBv);
-        }
-        
-        public void SetDisplayValue (double dv)
-        {
-            fLastDisplayValue.Set (dv);
-        }
-        
-        public String GetDumpStr ()
-        {
-            String ret;
-            
-            ret = "            peak [dB]            = " + fLastDBValue.Get ()       + "\n" +
-                  "            displayValue         = " + fLastDisplayValue.Get ()  + "\n" +
-                  "            meter section        = " + fCalcSection.get ()       + "\n";
-            
-            return ret;
-        }
-    }
-    
-    public static final class TStat_TGUISurrogate implements IStats
-    {
-        private TGUISurrogate                               fHost;
-        private long                                        fT0;
-        private AtomicLong                                  fTimeCycle;
-        private ArrayList<TStat_TGUISurrogate_Record>       fStatChannels;
-        
-        public TStat_TGUISurrogate (TGUISurrogate host)
-        {
-            fHost               = host;
-            fTimeCycle          = new AtomicLong (0);
-            fT0                 = System.currentTimeMillis ();
-            fStatChannels       = new ArrayList<> ();
-        }
-        
-        public void AddChannel ()
-        {
-            TStat_TGUISurrogate_Record  r;
-            
-            r = new TStat_TGUISurrogate_Record ();
-            fStatChannels.add (r);
-        }
-
-        public void OnCycleTick ()
-        {
-            long    dT;
-            long    tNow;
-            
-            tNow            = System.currentTimeMillis ();
-            dT              = tNow - fT0;
-            fT0             = tNow;
-            fTimeCycle.getAndSet (dT);
-        }
-        
-        public void SetCalcSection (int iChannel, int s)
-        {
-            TStat_TGUISurrogate_Record  r;
-            
-            r = fStatChannels.get (iChannel);
-            r.SetCalcSection (s);
-        }
-        
-        public void SetDBValue (int iChannel, double dBv)
-        {
-            TStat_TGUISurrogate_Record  r;
-            
-            r = fStatChannels.get (iChannel);
-            r.SetDBValue (dBv);
-        }
-        
-        public void SetDisplayValue (int iChannel, double dv)
-        {
-            TStat_TGUISurrogate_Record  r;
-            
-            r = fStatChannels.get (iChannel);
-            r.SetDisplayValue (dv);
-        }
-        
-        /* (non-Javadoc)
-         * @see ppm_java._aux.typelib.IStats#GetDumpStr()
-         */
-        @Override
-        public String GetDumpStr ()
-        {
-            int                                 i;
-            int                                 n;
-            TStat_TGUISurrogate_Record          r;
-            String                              ret;
-
-            ret = "GUI [" + fHost.GetID () + "]:\n" +  
-                    "    cycleTime [ms]               = " + fTimeCycle.getAndAdd (0)  + "\n";
-
-            n = fStatChannels.size ();
-            if (n >= 1)
-            {
-                ret += "    Channels:\n";
-                for (i = 0; i < n; i++)
-                {
-                    r       = fStatChannels.get (i);
-                    ret    += "        Channel [" + i + "]:\n" + r.GetDumpStr ();
-                }
-            }
-            else
-            {
-                ret += "    Channels: None\n";
-            }
-            
-            return ret;
-        }
-    }
-    
     private static TGUISurrogate        gGUI        = null;
     private static final float          gkLvlClip   = -1.0f;
     private static final float          gkLvlWarn   = -4.0f;
@@ -184,14 +47,14 @@ public class TGUISurrogate
         gGUI = new TGUISurrogate (id);
     }
     
-    private TWndPPM            fGUI;
-    private TStat_TGUISurrogate fStat;
+    private TWndPPM             fGUI;
+    private TGUISurrogate_Stats fStat;
     
     private TGUISurrogate (String id)
     {
         super (id, 2, 0);
         fGUI  = new TWndPPM (this);
-        fStat = new TStat_TGUISurrogate (this);
+        fStat = new TGUISurrogate_Stats (this);
         TController.StatAddProvider (this);
     }
     
@@ -234,7 +97,7 @@ public class TGUISurrogate
      * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
      */
     @Override
-    public TStat_TGUISurrogate StatsGet ()
+    public TGUISurrogate_Stats StatsGet ()
     {
         return fStat;
     }

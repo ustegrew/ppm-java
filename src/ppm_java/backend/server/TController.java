@@ -31,7 +31,11 @@ import ppm_java._aux.typelib.VBrowseable;
 import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.jackd.TAudioContext_JackD;
 import ppm_java.backend.server.event.TBroker;
-import ppm_java.backend.server.module.ppm.TNodePPMProcessor;
+import ppm_java.backend.server.module._deprecated_ppm.TNodePPMProcessor;
+import ppm_java.backend.server.module.converter_db.TNodeConverterDb;
+import ppm_java.backend.server.module.integrator.TNodeIntegrator_PPMBallistics;
+import ppm_java.backend.server.module.peak_estimator.TNodePeakEstimator;
+import ppm_java.backend.server.module.pump.TNodePump;
 import ppm_java.backend.server.module.timer.TTimer;
 import ppm_java.frontend.gui.TGUISurrogate;
 
@@ -69,6 +73,30 @@ public final class TController
         TGUISurrogate.CreateInstance (id);
     }
     
+    public static void Create_Module_ConverterDB (String id)
+    {
+        TNodeConverterDb.CreateInstance (id);
+    }
+    
+    public static void Create_Module_IntegratorPPMBallistics (String id)
+    {
+        TNodeIntegrator_PPMBallistics.CreateInstance (id);
+    }
+    
+    public static void Create_Module_PeakEstimator (String id)
+    {
+        TNodePeakEstimator.CreateInstance (id);
+    }
+    
+    public static void Create_Module_Pump (String id)
+    {
+        TNodePump.CreateInstance (id);
+    }
+    
+    /**
+     * @param id
+     * @deprecated      PPMProcessor has been superseded by a more modular framework
+     */
     public static void Create_Module_PPMProcessor (String id)
     {
         TNodePPMProcessor.CreateInstance (id);

@@ -20,7 +20,7 @@ import java.nio.FloatBuffer;
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
-import ppm_java._aux.storage.TStats_TAtomicBuffer;
+import ppm_java._aux.storage.TAtomicBuffer_Stats;
 
 /**
  * @author peter
@@ -62,9 +62,9 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         fBuffer.StatsClear ();
     }
     
-    public TStats_TAtomicBuffer StatsGet ()
+    public TAtomicBuffer_Stats StatsGet ()
     {
-        TStats_TAtomicBuffer ret;
+        TAtomicBuffer_Stats ret;
         
         ret = fBuffer.StatsGet ();
         

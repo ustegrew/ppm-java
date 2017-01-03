@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ppm_java._aux.storage.TAtomicBuffer;
 import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
-import ppm_java._aux.storage.TStats_TAtomicBuffer;
-import ppm_java._aux.storage.TStats_TAtomicBuffer.TRecord;
+import ppm_java._aux.storage.TAtomicBuffer_Stats;
+import ppm_java._aux.storage.TAtomicBuffer_Stats.TRecord;
 
 /**
  * Test result:
@@ -1342,7 +1342,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
         int                     nRunningProducers;
         int                     nRunningConsumers;
         boolean                 doWait;
-        TStats_TAtomicBuffer    stats;
+        TAtomicBuffer_Stats    stats;
         TRecord                 stRec;
 
         System.out.println ();

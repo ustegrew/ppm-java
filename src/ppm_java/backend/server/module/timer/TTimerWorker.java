@@ -29,8 +29,8 @@ class TTimerWorker extends Thread
     private static final int        gkStateStop             = 2;
     private static final int        gkStateWait             = 0;
     
-    private AtomicLong      fIntervalMs;                                /* [100] */
     private TTimer          fHost;
+    private AtomicLong      fIntervalMs;                                /* [100] */
     private AtomicInteger   fState;                                     /* [100] */
     
     /**

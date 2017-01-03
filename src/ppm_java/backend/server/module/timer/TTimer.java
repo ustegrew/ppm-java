@@ -40,13 +40,12 @@ public class TTimer
         return ret;
     }
     
-    private String                      fID;
     private TTimerWorker                fWorker;
     
     /**
      * @param id
      */
-    TTimer (String id, int delayMs)
+    private TTimer (String id, int delayMs)
     {
         super (id);
         
@@ -54,7 +53,6 @@ public class TTimer
         
         d       = _GetSaneInterval (delayMs);
         fWorker = new TTimerWorker (this, d);
-        fID     = id;                                                   /* [100] */
     }
     
     public long GetInterval ()
@@ -117,12 +115,6 @@ public class TTimer
         fWorker.Stop ();
     }
 
-    void SendTimerEvent ()
-    {
-        /* [100] */
-        TController.PostEvent (IEvented.gkEventTimerTick, fID);         /* [100] */
-    }
-
     /* (non-Javadoc)
      * @see ppm_java._aux.typelib.VBrowseable#_Register()
      */
@@ -130,6 +122,14 @@ public class TTimer
     protected void _Register ()
     {
         TController.Register (this);
+    }
+
+    void SendTimerEvent ()
+    {
+        String id;
+        
+        id = GetID ();
+        TController.PostEvent (IEvented.gkEventTimerTick, id);
     }
     
     private long _GetSaneInterval (long delayMs)
@@ -145,7 +145,7 @@ public class TTimer
             ret = gkLoopIntervalMin;
             TLogger.LogError 
             (
-                "For timer '" + fID + "': Given interval must be >= " + /* [100] */
+                "For timer '" + GetID () + "': Given interval must be >= " +
                 gkLoopIntervalMin + ". Given: " + delayMs + 
                 ". Set to " + ret, this, "cTor"
             );
@@ -154,8 +154,3 @@ public class TTimer
         return ret;
     }
 }
-
-/*
-[100]   We simply cache the unique ID rather than calling GetID()
-        /every time/ we fire an event.
- */

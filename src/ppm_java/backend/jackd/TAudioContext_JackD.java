@@ -22,10 +22,8 @@ import de.gulden.framework.jjack.JJackAudioProcessor;
 import de.gulden.framework.jjack.JJackException;
 import de.gulden.framework.jjack.JJackSystem;
 import ppm_java._aux.logging.TLogger;
-import ppm_java._aux.storage.TStats_TAtomicBuffer;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IStatEnabled;
-import ppm_java._aux.typelib.IStats;
 import ppm_java._aux.typelib.VAudioDriver;
 import ppm_java.backend.server.TController;
 import ppm_java.backend.server.TRegistry;
@@ -39,76 +37,6 @@ public final class TAudioContext_JackD
     extends     VAudioDriver 
     implements  JJackAudioProcessor, IControllable, IStatEnabled
 {
-    public static final class TStats_TAudioContext_JackD implements IStats
-    {
-        private TAudioContext_JackD                     fHost;
-        
-        public TStats_TAudioContext_JackD (TAudioContext_JackD host)
-        {
-            fHost = host;
-        }
-        
-        public String GetDumpStr ()
-        {
-            int                             i;
-            int                             n;
-            String                          id;
-            TAudioContext_Endpoint_Input    ip;
-            TAudioContext_Endpoint_Output   op;
-            TStats_TAtomicBuffer            s;
-            String                          ret;
-            
-            /* First dump line */
-            id      = fHost.GetID ();
-            ret     = "JackD_driver ["      + id + 
-                      "]: sampleRate="      + fHost.GetSampleRate () +
-                      ", isWorking="        + fHost.IsWorking () +
-                      "\n";
-
-            /* Add one line of statistics per input port. */
-            n = fHost.GetNumPortsIn ();
-            if (n >= 1)
-            {
-                ret += "    Inputs:\n";
-                for (i = 0; i < n; i++)
-                {
-                    ip          = (TAudioContext_Endpoint_Input) fHost.GetPortIn (i);
-                    s           = ip.StatsGet ();
-                    id          = ip.GetID ();
-                    ret        += "        i/p [" + id              +
-                                  "]: "           + s.GetDumpStr () + 
-                                  "\n";
-                }
-            }
-            else
-            {
-                ret += "    Inputs: None\n";
-            }
-            
-            /* Add one line of statistics per output port. */
-            n = fHost.GetNumPortsOut ();
-            if (n >= 1)
-            {
-                ret += "    Outputs:\n";
-                for (i = 0; i < n; i++)
-                {
-                    op          = (TAudioContext_Endpoint_Output) fHost.GetPortOut (i);
-                    s           = op.TargetStatsGet ();
-                    id          = op.GetID ();
-                    ret        += "        o/p [" + id              +
-                                  "]: "           + s.GetDumpStr () + 
-                                  "\n";
-                }
-            }
-            else
-            {
-                ret += "    Outputs: None\n";
-            }
-            
-            return ret;
-        }
-    }
-
     /**
      * The JackD driver singleton.
      */
@@ -147,7 +75,7 @@ public final class TAudioContext_JackD
     /**
      * Runtime statistics for diagnostic and debugging purposes.
      */
-    private TStats_TAudioContext_JackD     fStats;
+    private TAudioContext_JackD_Stats     fStats;
     
     /**
      * cTor. Creates a new instance and registers it with the global 
@@ -162,7 +90,7 @@ public final class TAudioContext_JackD
         super (idClient, -1, -1);
         
         TLogger.LogMessage ("Creating JackD bridge (singleton)", this, "cTor ('" + idClient + ")");
-        fStats          = new TStats_TAudioContext_JackD (this);
+        fStats          = new TAudioContext_JackD_Stats (this);
         fSampleRate     = -1;
         fIsWorking      = false;
         TController.StatAddProvider (this);
@@ -231,7 +159,7 @@ public final class TAudioContext_JackD
     /* (non-Javadoc)
      * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
      */
-    public TStats_TAudioContext_JackD StatsGet ()
+    public TAudioContext_JackD_Stats StatsGet ()
     {
         return fStats;
     }

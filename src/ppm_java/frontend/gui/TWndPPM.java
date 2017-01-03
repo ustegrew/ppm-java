@@ -37,7 +37,7 @@ import ppm_java.frontend.gui.TGUISurrogate.EClipType;
  * @author peter
  * @see    https://github.com/HanSolo/SteelSeries-Swing
  */
-public class TWndPPM extends javax.swing.JFrame
+class TWndPPM extends javax.swing.JFrame
 {
     private static final int                gkIChanL            = 0;
     private static final int                gkIChanR            = 1;

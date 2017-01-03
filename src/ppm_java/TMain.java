@@ -32,10 +32,90 @@ public class TMain
      */
     public static void main (String[] args)
     {
-        _Setup ();
+        _Setup_Deprecated ();
     }
     
+    /**
+     * TODO: In debugging state - not working yet. 
+     */
     private static void _Setup ()
+    {
+        /* Create modules */
+        TController.Create_Module_Timer                     ("timer",           gkTimerIntervalMs                       );
+        TController.Create_AudioContext                     ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );
+        TController.Create_Module_Pump                      ("datapump.l"                                               );
+        TController.Create_Module_Pump                      ("datapump.r"                                               );
+        TController.Create_Module_PeakEstimator             ("peakestimator.l"                                          );
+        TController.Create_Module_PeakEstimator             ("peakestimator.r"                                          );
+        TController.Create_Module_ConverterDB               ("converterdb.l"                                            );
+        TController.Create_Module_ConverterDB               ("converterdb.r"                                            );
+        TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.l"                                               );
+        TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.r"                                               );
+        TController.Create_Frontend_GUI                     ("gui"                                                      );
+        
+        /* For each module, create in/out ports */
+        TController.Create_Port_Out                         ("ppm",                     "ppm.out.l"                             );
+        TController.Create_Port_Out                         ("ppm",                     "ppm.out.r"                             );
+        
+        TController.Create_Port_In                          ("datapump.l",              "datapump.l.in"                         );
+        TController.Create_Port_Out                         ("datapump.l",              "datapump.l.out"                        );
+        
+        TController.Create_Port_In                          ("datapump.r",              "datapump.r.in"                         );
+        TController.Create_Port_Out                         ("datapump.r",              "datapump.r.out"                        );
+        
+        TController.Create_Port_In                          ("peakestimator.l",         "peakestimator.l.in"                    );
+        TController.Create_Port_Out                         ("peakestimator.l",         "peakestimator.l.out"                   );
+        
+        TController.Create_Port_In                          ("peakestimator.r",         "peakestimator.r.in"                    );
+        TController.Create_Port_Out                         ("peakestimator.r",         "peakestimator.r.out"                   );
+        
+        TController.Create_Port_In                          ("converterdb.l",           "converterdb.l.in"                      );
+        TController.Create_Port_Out                         ("converterdb.l",           "converterdb.l.out"                     );
+        
+        TController.Create_Port_In                          ("converterdb.r",           "converterdb.r.in"                      );
+        TController.Create_Port_Out                         ("converterdb.r",           "converterdb.r.out"                     );
+        
+        TController.Create_Port_In                          ("intgrppm.l",              "intgrppm.l.in"                         );
+        TController.Create_Port_Out                         ("intgrppm.l",              "intgrppm.l.out"                        );
+        
+        TController.Create_Port_In                          ("intgrppm.r",              "intgrppm.r.in"                         );
+        TController.Create_Port_Out                         ("intgrppm.r",              "intgrppm.r.out"                        );
+        
+        TController.Create_Port_In                          ("gui",                     "gui.in.l"                              );
+        TController.Create_Port_In                          ("gui",                     "gui.in.r"                              );
+        
+        /* Connect modules */
+        TController.Create_Connection_Data                  ("ppm.out.l",               "datapump.l.in"                         );
+        TController.Create_Connection_Data                  ("ppm.out.r",               "datapump.r.in"                         );
+        TController.Create_Connection_Data                  ("datapump.l.out",          "peakestimator.l.in"                    );
+        TController.Create_Connection_Data                  ("datapump.r.out",          "peakestimator.r.in"                    );
+        TController.Create_Connection_Data                  ("peakestimator.l.out",     "converterdb.l.in"                      );
+        TController.Create_Connection_Data                  ("peakestimator.r.out",     "converterdb.r.in"                      );
+        TController.Create_Connection_Data                  ("converterdb.l.out",       "intgrppm.l.in"                         );
+        TController.Create_Connection_Data                  ("converterdb.r.out",       "intgrppm.r.in"                         );
+        TController.Create_Connection_Data                  ("intgrppm.l.out",          "gui.in.l"                              );
+        TController.Create_Connection_Data                  ("intgrppm.r.out",          "gui.in.r"                              );
+        
+        /* Subscribe PPM processor to timer events */
+        TController.Create_Connection_Events                ("timer",                   "datapump.l"                            );
+        TController.Create_Connection_Events                ("timer",                   "datapump.r"                            );
+        TController.Create_Connection_Events                ("timer",                   "intgrppm.l"                            );
+        TController.Create_Connection_Events                ("timer",                   "intgrppm.r"                            );
+        TController.Create_Connection_Events                ("datapump.l",              "timer"                                 );
+        TController.Create_Connection_Events                ("datapump.r",              "timer"                                 );
+        
+        /* Create start and stop lists */
+        TController.Create_StartListEntry                   ("gui");                 
+        TController.Create_StartListEntry                   ("timer");                 
+        TController.Create_StartListEntry                   ("ppm");
+        TController.Create_StopListEntry                    ("timer");                 
+        TController.Create_StopListEntry                    ("ppm");
+        
+        /* Start all modules */
+        TController.Start ();
+    }
+    
+    private static void _Setup_Deprecated ()
     {
         /* Create modules */
         TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );

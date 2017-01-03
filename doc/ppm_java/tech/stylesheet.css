@@ -1,0 +1,17 @@
+@CHARSET "US-ASCII";
+
+.lh-column
+{
+	width:             200px;
+	align:             left;
+	vertical-align:    top;
+	padding-right:     20px;
+	background-color:  #f0f0f0;
+}
+
+.rh-column
+{
+    align:             left;
+    vertical-align:    top;
+    padding-left:      20px;
+}

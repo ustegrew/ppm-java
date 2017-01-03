@@ -17,7 +17,7 @@ package ppm_java._aux.typelib;
 
 import java.nio.FloatBuffer;
 
-import ppm_java._aux.storage.TStats_TAtomicBuffer;
+import ppm_java._aux.storage.TAtomicBuffer_Stats;
 
 /**
  * An output that connects to a buffered input. 
@@ -56,10 +56,10 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
         target.StatsClear ();
     }
 
-    public TStats_TAtomicBuffer TargetStatsGet ()
+    public TAtomicBuffer_Stats TargetStatsGet ()
     {
         VAudioPort_Input_Chunks_Buffered    target;
-        TStats_TAtomicBuffer                ret;
+        TAtomicBuffer_Stats                ret;
         
         target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
         ret    = target.StatsGet ();
