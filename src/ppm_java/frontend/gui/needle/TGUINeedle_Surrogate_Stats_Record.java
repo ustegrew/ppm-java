@@ -13,19 +13,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.frontend.gui;
+package ppm_java.frontend.gui.needle;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ppm_java._aux.storage.TAtomicDouble;
 
-final class TGUISurrogate_Stats_Record
+final class TGUINeedle_Surrogate_Stats_Record
 {
     private AtomicInteger            fCalcSection;
     private TAtomicDouble            fLastDBValue;
     private TAtomicDouble            fLastDisplayValue;
     
-    public TGUISurrogate_Stats_Record ()
+    public TGUINeedle_Surrogate_Stats_Record ()
     {
         fCalcSection        = new AtomicInteger (0);
         fLastDBValue        = new TAtomicDouble ();

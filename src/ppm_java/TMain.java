@@ -51,7 +51,7 @@ public class TMain
         TController.Create_Module_ConverterDB               ("converterdb.r"                                            );
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.l"                                               );
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.r"                                               );
-        TController.Create_Frontend_GUI                     ("gui"                                                      );
+        TController.Create_Frontend_GUI_LinearGauge         ("gui"                                                      );
         
         /* For each module, create in/out ports */
         TController.Create_Port_Out                         ("ppm",                     "ppm.out.l"                             );
@@ -112,6 +112,7 @@ public class TMain
         TController.Create_StopListEntry                    ("ppm");
         
         /* Start all modules */
+        TController.SetDebugUI_On ();
         TController.Start ();
     }
     
@@ -119,7 +120,7 @@ public class TMain
     {
         /* Create modules */
         TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );
-        TController.Create_Frontend_GUI             ("gui"                                                      );
+        TController.Create_Frontend_GUI_Needle             ("gui"                                                      );
         TController.Create_Module_PPMProcessor      ("ppp.l"                                                    );
         TController.Create_Module_PPMProcessor      ("ppp.r"                                                    );
         TController.Create_Module_Timer             ("timer",           gkTimerIntervalMs                       );

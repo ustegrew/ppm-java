@@ -37,7 +37,8 @@ import ppm_java.backend.server.module.integrator.TNodeIntegrator_PPMBallistics;
 import ppm_java.backend.server.module.peak_estimator.TNodePeakEstimator;
 import ppm_java.backend.server.module.pump.TNodePump;
 import ppm_java.backend.server.module.timer.TTimer;
-import ppm_java.frontend.gui.TGUISurrogate;
+import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate;
+import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate;
 
 /**
  * @author peter
@@ -65,12 +66,17 @@ public final class TController
         gController._SubscribeToEvents (idSource, idRecipient);
     }
     
+    public static final void Create_Frontend_GUI_LinearGauge (String id)
+    {
+        TGUILinearGauge_Surrogate.CreateInstance (id);
+    }
+    
     /**
      * @param string
      */
-    public static void Create_Frontend_GUI (String id)
+    public static void Create_Frontend_GUI_Needle (String id)
     {
-        TGUISurrogate.CreateInstance (id);
+        TGUINeedle_Surrogate.CreateInstance (id);
     }
     
     public static void Create_Module_ConverterDB (String id)
@@ -236,6 +242,11 @@ public final class TController
         gController._Register (fe);
     }
     
+    public static void SetDebugUI_On ()
+    {
+        gController._SetDebugUI_On ();
+    }
+    
     /**
      * 
      */
@@ -266,6 +277,7 @@ public final class TController
     private TRegistry                   fRegistry;
     private ArrayList<IStatEnabled>     fStatProviders;
     private TTimerDebugUpdate           fDebugUpdateWorker;
+    private boolean                     fDoShowDebugUI;
     
     private TController ()
     {
@@ -276,6 +288,7 @@ public final class TController
         fListIDModulesStop  = new ArrayList<>           ();
         fStatProviders      = new ArrayList<>           ();
         fDebugUpdateWorker  = new TTimerDebugUpdate     ();
+        fDoShowDebugUI      = false;
     }
     
     /**
@@ -350,6 +363,11 @@ public final class TController
         fRegistry.Register (fe);
     }
     
+    private void _SetDebugUI_On ()
+    {
+        fDoShowDebugUI = true;
+    }
+    
     private void _StartStop (boolean doStart)
     {
         int                 i;
@@ -383,11 +401,17 @@ public final class TController
         
         if (doStart)
         {
-            fDebugUpdateWorker.start ();
+            if (fDoShowDebugUI)
+            {
+                fDebugUpdateWorker.start ();
+            }
         }
         else
         {
-            fDebugUpdateWorker.Stop ();
+            if (fDoShowDebugUI)
+            {
+                fDebugUpdateWorker.Stop ();
+            }
         }
     }
 

@@ -12,11 +12,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
-package ppm_java.frontend.gui;
+package ppm_java.frontend.gui.needle;
 
 import eu.hansolo.steelseries.tools.LedColor;
 import ppm_java._aux.debug.TWndDebug;
-import ppm_java.frontend.gui.TGUISurrogate.EClipType;
+import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate.EClipType;
 
 /**
  * The PPM UI. 
@@ -37,7 +37,7 @@ import ppm_java.frontend.gui.TGUISurrogate.EClipType;
  * @author peter
  * @see    https://github.com/HanSolo/SteelSeries-Swing
  */
-class TWndPPM extends javax.swing.JFrame
+class TGUINeedle_WndPPM extends javax.swing.JFrame
 {
     private static final int                gkIChanL            = 0;
     private static final int                gkIChanR            = 1;
@@ -46,21 +46,21 @@ class TWndPPM extends javax.swing.JFrame
     private static final LedColor           gkColorWarn         = LedColor.YELLOW_LED;
     private static final long               serialVersionUID    = -9218057974191248946L;
 
-    private TGUISurrogate                                               fConnector;
+    private TGUINeedle_Surrogate                                               fConnector;
     private eu.hansolo.steelseries.gauges.Radial1Vertical               fMeterL;
     private eu.hansolo.steelseries.gauges.Radial1Vertical               fMeterR;
-    private TGUITimerClipping                                           fTimerL;
-    private TGUITimerClipping                                           fTimerR;
+    private TGUINeedle_TimerClipping                                           fTimerL;
+    private TGUINeedle_TimerClipping                                           fTimerR;
 
     /**
-     * Creates new form TWndPPM
+     * Creates new form TGUINeedle_WndPPM
      */
-    public TWndPPM (TGUISurrogate connector)
+    public TGUINeedle_WndPPM (TGUINeedle_Surrogate connector)
     {
         initComponents ();
         fConnector  = connector;
-        fTimerL     = new TGUITimerClipping (this, gkIChanL);
-        fTimerR     = new TGUITimerClipping (this, gkIChanR);
+        fTimerL     = new TGUINeedle_TimerClipping (this, gkIChanL);
+        fTimerR     = new TGUINeedle_TimerClipping (this, gkIChanR);
         fTimerL.start ();
         fTimerR.start ();
     }
@@ -118,7 +118,6 @@ class TWndPPM extends javax.swing.JFrame
      */
     public void Terminate ()
     {
-        setVisible (false);
         fTimerL.Terminate ();
         fTimerR.Terminate ();
     }
@@ -128,7 +127,7 @@ class TWndPPM extends javax.swing.JFrame
      * 
      * @param   cType
      * @param   iChannel
-     * @see     TGUITimerClipping
+     * @see     TGUILinearGauge_TimerClipping
      */
     void _SetClipping (EClipType cType, int iChannel)
     {

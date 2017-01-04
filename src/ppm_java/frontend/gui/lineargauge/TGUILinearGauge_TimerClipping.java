@@ -13,11 +13,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.frontend.gui;
+package ppm_java.frontend.gui.lineargauge;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ppm_java.frontend.gui.TGUISurrogate.EClipType;
+import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate.EClipType;
+
 
 /**
  * A monostable timer for a clipping LED on our PPM GUI. 
@@ -34,7 +35,7 @@ import ppm_java.frontend.gui.TGUISurrogate.EClipType;
  * 
  * @author peter
  */
-class TGUITimerClipping extends Thread 
+class TGUILinearGauge_TimerClipping extends Thread 
 {
     private static final int        gkStateClear        = 0;
     private static final int        gkStateWarn         = 1;
@@ -45,7 +46,7 @@ class TGUITimerClipping extends Thread
     
     private AtomicInteger           fRequest;
     private int                     fState;
-    private TWndPPM                 fHost;
+    private TGUILinearGauge_WndPPM  fHost;
     private int                     fChannel;
     private long                    fTLast;
     
@@ -55,7 +56,7 @@ class TGUITimerClipping extends Thread
      * @param host          The PPM GUI we interoperate with.
      * @param iChannel      The specific channel of which we set the clipping LED.  
      */
-    public TGUITimerClipping (TWndPPM host, int iChannel)
+    public TGUILinearGauge_TimerClipping (TGUILinearGauge_WndPPM host, int iChannel)
     {
         fRequest    = new AtomicInteger (gkStateClear);
         fState      = gkStateClear;

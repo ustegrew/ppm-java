@@ -13,21 +13,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.frontend.gui;
+package ppm_java.frontend.gui.needle;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 import ppm_java._aux.typelib.IStats;
 
-public final class TGUISurrogate_Stats implements IStats
+public final class TGUINeedle_Surrogate_Stats implements IStats
 {
-    private TGUISurrogate                               fHost;
+    private TGUINeedle_Surrogate                               fHost;
     private long                                        fT0;
     private AtomicLong                                  fTimeCycle;
-    private ArrayList<TGUISurrogate_Stats_Record>       fStatChannels;
+    private ArrayList<TGUINeedle_Surrogate_Stats_Record>       fStatChannels;
     
-    public TGUISurrogate_Stats (TGUISurrogate host)
+    public TGUINeedle_Surrogate_Stats (TGUINeedle_Surrogate host)
     {
         fHost               = host;
         fTimeCycle          = new AtomicLong (0);
@@ -37,9 +37,9 @@ public final class TGUISurrogate_Stats implements IStats
     
     public void AddChannel ()
     {
-        TGUISurrogate_Stats_Record  r;
+        TGUINeedle_Surrogate_Stats_Record  r;
         
-        r = new TGUISurrogate_Stats_Record ();
+        r = new TGUINeedle_Surrogate_Stats_Record ();
         fStatChannels.add (r);
     }
 
@@ -56,7 +56,7 @@ public final class TGUISurrogate_Stats implements IStats
     
     public void SetCalcSection (int iChannel, int s)
     {
-        TGUISurrogate_Stats_Record  r;
+        TGUINeedle_Surrogate_Stats_Record  r;
         
         r = fStatChannels.get (iChannel);
         r.SetCalcSection (s);
@@ -64,7 +64,7 @@ public final class TGUISurrogate_Stats implements IStats
     
     public void SetDBValue (int iChannel, double dBv)
     {
-        TGUISurrogate_Stats_Record  r;
+        TGUINeedle_Surrogate_Stats_Record  r;
         
         r = fStatChannels.get (iChannel);
         r.SetDBValue (dBv);
@@ -72,7 +72,7 @@ public final class TGUISurrogate_Stats implements IStats
     
     public void SetDisplayValue (int iChannel, double dv)
     {
-        TGUISurrogate_Stats_Record  r;
+        TGUINeedle_Surrogate_Stats_Record  r;
         
         r = fStatChannels.get (iChannel);
         r.SetDisplayValue (dv);
@@ -86,7 +86,7 @@ public final class TGUISurrogate_Stats implements IStats
     {
         int                                 i;
         int                                 n;
-        TGUISurrogate_Stats_Record          r;
+        TGUINeedle_Surrogate_Stats_Record          r;
         String                              ret;
 
         ret = "GUI [" + fHost.GetID () + "]:\n" +  

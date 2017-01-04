@@ -12,7 +12,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
-package ppm_java.frontend.gui;
+package ppm_java.frontend.gui.needle;
 
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.IStatEnabled;
@@ -23,7 +23,7 @@ import ppm_java.backend.server.TController;
  *
  * @author peter
  */
-public class TGUISurrogate 
+public class TGUINeedle_Surrogate 
     extends     VFrontend 
     implements  IControllable, IStatEnabled
 {
@@ -34,7 +34,7 @@ public class TGUISurrogate
         kWarn
     }
     
-    private static TGUISurrogate        gGUI        = null;
+    private static TGUINeedle_Surrogate        gGUI        = null;
     private static final float          gkLvlClip   = -1.0f;
     private static final float          gkLvlWarn   = -4.0f;
     
@@ -42,19 +42,19 @@ public class TGUISurrogate
     {
         if (gGUI != null)
         {
-            throw new IllegalStateException ("TGUISurrogate is already instantiated.");
+            throw new IllegalStateException ("TGUINeedle_Surrogate is already instantiated.");
         }
-        gGUI = new TGUISurrogate (id);
+        gGUI = new TGUINeedle_Surrogate (id);
     }
     
-    private TWndPPM             fGUI;
-    private TGUISurrogate_Stats fStat;
+    private TGUINeedle_WndPPM             fGUI;
+    private TGUINeedle_Surrogate_Stats fStat;
     
-    private TGUISurrogate (String id)
+    private TGUINeedle_Surrogate (String id)
     {
         super (id, 2, 0);
-        fGUI  = new TWndPPM (this);
-        fStat = new TGUISurrogate_Stats (this);
+        fGUI  = new TGUINeedle_WndPPM (this);
+        fStat = new TGUINeedle_Surrogate_Stats (this);
         TController.StatAddProvider (this);
     }
     
@@ -65,10 +65,10 @@ public class TGUISurrogate
     public void CreatePort_In (String id)
     {
         int                 iPort;
-        TGUI_Endpoint       port;
+        TGUINeedle_Endpoint       port;
         
         iPort   = GetNumPortsIn ();
-        port    = new TGUI_Endpoint (id, this, iPort);
+        port    = new TGUINeedle_Endpoint (id, this, iPort);
         fStat.AddChannel ();
         AddPortIn (port);
     }
@@ -97,7 +97,7 @@ public class TGUISurrogate
      * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
      */
     @Override
-    public TGUISurrogate_Stats StatsGet ()
+    public TGUINeedle_Surrogate_Stats StatsGet ()
     {
         return fStat;
     }
