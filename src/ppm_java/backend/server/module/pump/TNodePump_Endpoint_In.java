@@ -34,9 +34,9 @@ public class TNodePump_Endpoint_In extends VAudioPort_Input_Chunks_Buffered
      * @param copyPolicy
      * @param ifInvalidPolicy
      */
-    protected TNodePump_Endpoint_In (String id, TNodePump host, ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
+    protected TNodePump_Endpoint_In (String id, TNodePump host, int iPort, ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
     {
-        super (id, host, 0, copyPolicy, ifInvalidPolicy);
+        super (id, host, iPort, copyPolicy, ifInvalidPolicy);
     }
 
     /* (non-Javadoc)

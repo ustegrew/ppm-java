@@ -42,8 +42,10 @@ public class TNodeConverterDb_Endpoint_In extends VAudioPort_Input_Samples
     @Override
     public void ReceiveSample (float sample)
     {
-        // TODO Auto-generated method stub
-
+        TNodeConverterDb        host;
+        
+        host = (TNodeConverterDb) _GetHost ();
+        host.Receive (sample);
     }
 
     /* (non-Javadoc)

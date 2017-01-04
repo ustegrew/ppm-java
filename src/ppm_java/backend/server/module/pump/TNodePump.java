@@ -85,7 +85,7 @@ public class TNodePump
         TNodePump_Endpoint_In       p;
         
         TLogger.LogMessage ("Creating input port '" + id + "'", this, "CreatePort_In ('" + id + "')");
-        p = new TNodePump_Endpoint_In (id, this, ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnNull);
+        p = new TNodePump_Endpoint_In (id, this, 0, ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnNull);
         AddPortIn (p);
     }
 
@@ -259,8 +259,8 @@ public class TNodePump
             {
                 fTCycleDesired--;
                 TController.PostEvent (gkEventTimerAdjustInterval, fTCycleDesired, id);
-                st.Clear ();                                            /* [130 */
             }
+            st.Clear ();                                            /* [130 */
         }
         else if (stRec.fDiffOverUnderruns < 0)
         {   /* Underruns - meaning the GUI update cycle tries to draw too

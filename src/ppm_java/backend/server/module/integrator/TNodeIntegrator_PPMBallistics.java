@@ -41,7 +41,7 @@ public class TNodeIntegrator_PPMBallistics
 
     private TNodeIntegrator_PPMBallistics_Stats     fStats;
     private boolean                                 fHasNotBeenInitialized;
-    private long                                    fTLast;
+    private double                                  fTLast;
     private double                                  fVDB;
     private double                                  fValueDeltaRise;
     private double                                  fValueDeltaFall;
@@ -157,9 +157,10 @@ public class TNodeIntegrator_PPMBallistics
         float                                       y1;
         TNodeIntegrator_PPMBallistics_Endpoint_Out  out;
         
-        t0 = System.currentTimeMillis ();
-        dY = dBValue - fVDB;
-        dT = t0 - fTLast;
+        t0      = System.currentTimeMillis ();
+        dY      = dBValue - fVDB;
+        dT      = t0 - fTLast;
+        fTLast  = t0;
         
         if (dY > 0)
         {   /* Value has risen. Apply rise ballistics. */
@@ -171,7 +172,7 @@ public class TNodeIntegrator_PPMBallistics
         }
         else if (dY < 0)
         {   /* Value has fallen. Apply fall ballistics. */
-            fVDB = fVDB - fValueDeltaFall * dT;
+            fVDB = fVDB + fValueDeltaFall * dT;
             if (fVDB < dBValue)
             {   /* Brickwall limiter */
                 fVDB = dBValue;

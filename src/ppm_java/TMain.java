@@ -32,7 +32,7 @@ public class TMain
      */
     public static void main (String[] args)
     {
-        _Setup_Deprecated ();
+        _Setup ();
     }
     
     /**
