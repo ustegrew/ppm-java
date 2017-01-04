@@ -124,7 +124,6 @@ public class TGUILinearGauge_Surrogate
      */
     void SetLevel (float level, int iChannel)
     {
-        float   div;
         float   lDisp;
 
         if (iChannel == 0)

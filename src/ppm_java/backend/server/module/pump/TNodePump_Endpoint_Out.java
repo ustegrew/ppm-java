@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.server.module.pump;
 
 import ppm_java._aux.typelib.VAudioPort_Output_Chunks_NoBuffer;
-import ppm_java._aux.typelib.VAudioProcessor;
 import ppm_java.backend.server.TController;
 
 /**

@@ -23,22 +23,38 @@ import ppm_java.backend.server.TController;
  */
 public class TMain
 {
-    public static final int         gkAudioFrameSize    =  1024;
-    public static final int         gkAudioSampleRate   = 44100;
-    public static final int         gkTimerIntervalMs   =    20; 
+    public static enum EGUIType
+    {
+        kNeedle,
+        kLinearGauge
+    }
+    
+    public static final EGUIType    gkGUIType                       = EGUIType.kLinearGauge;
+    public static final boolean     gkDoShowDebugUI                 = false;
+    public static final boolean     gkUseDeprecatedPPMProcessor     = false;
+    public static final int         gkAudioFrameSize                =  1024;
+    public static final int         gkAudioSampleRate               = 44100;
+    public static final int         gkTimerIntervalMs               =    20; 
     
     /**
      * @param args
      */
     public static void main (String[] args)
     {
-        _Setup ();
+        if (gkUseDeprecatedPPMProcessor)
+        {
+            _Setup_Deprecated (gkGUIType);
+        }
+        else
+        {
+            _Setup (gkGUIType);
+        }
     }
     
     /**
      * TODO: In debugging state - not working yet. 
      */
-    private static void _Setup ()
+    private static void _Setup (EGUIType guiType)
     {
         /* Create modules */
         TController.Create_Module_Timer                     ("timer",           gkTimerIntervalMs                       );
@@ -51,7 +67,14 @@ public class TMain
         TController.Create_Module_ConverterDB               ("converterdb.r"                                            );
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.l"                                               );
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.r"                                               );
-        TController.Create_Frontend_GUI_LinearGauge         ("gui"                                                      );
+        if (guiType == EGUIType.kLinearGauge)
+        {
+            TController.Create_Frontend_GUI_LinearGauge ("gui");
+        }
+        else if (guiType == EGUIType.kNeedle)
+        {
+            TController.Create_Frontend_GUI_Needle ("gui");
+        }
         
         /* For each module, create in/out ports */
         TController.Create_Port_Out                         ("ppm",                     "ppm.out.l"                             );
@@ -112,18 +135,28 @@ public class TMain
         TController.Create_StopListEntry                    ("ppm");
         
         /* Start all modules */
-        TController.SetDebugUI_On ();
+        if (gkDoShowDebugUI)
+        {
+            TController.SetDebugUI_On ();
+        }
         TController.Start ();
     }
     
-    private static void _Setup_Deprecated ()
+    private static void _Setup_Deprecated (EGUIType guiType)
     {
         /* Create modules */
         TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );
-        TController.Create_Frontend_GUI_Needle             ("gui"                                                      );
         TController.Create_Module_PPMProcessor      ("ppp.l"                                                    );
         TController.Create_Module_PPMProcessor      ("ppp.r"                                                    );
         TController.Create_Module_Timer             ("timer",           gkTimerIntervalMs                       );
+        if (guiType == EGUIType.kLinearGauge)
+        {
+            TController.Create_Frontend_GUI_LinearGauge ("gui");
+        }
+        else if (guiType == EGUIType.kNeedle)
+        {
+            TController.Create_Frontend_GUI_Needle ("gui");
+        }
         
         /* For each module, create in/out ports */
         TController.Create_Port_Out                 ("ppm",             "ppm.out.l"                             );
@@ -158,6 +191,10 @@ public class TMain
         TController.Create_StopListEntry            ("ppm");
         
         /* Start all modules */
+        if (gkDoShowDebugUI)
+        {
+            TController.SetDebugUI_On ();
+        }
         TController.Start ();
     }
 }

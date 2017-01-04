@@ -40,8 +40,8 @@ class TGUINeedle_TimerClipping extends Thread
     private static final int        gkStateWarn         = 1;
     private static final int        gkStateErr          = 2;
     private static final int        gkStateTerm         = 10;
-    private static final long       gkIntervalLoop      = 100;
-    private static final long       gkIntervalWait      = 1000;
+    private static final long       gkIntervalLoop      = 250;
+    private static final long       gkIntervalWait      = 999;
     
     private AtomicInteger           fRequest;
     private int                     fState;

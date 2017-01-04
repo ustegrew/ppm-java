@@ -41,8 +41,8 @@ class TGUILinearGauge_TimerClipping extends Thread
     private static final int        gkStateWarn         = 1;
     private static final int        gkStateErr          = 2;
     private static final int        gkStateTerm         = 10;
-    private static final long       gkIntervalLoop      = 100;
-    private static final long       gkIntervalWait      = 1000;
+    private static final long       gkIntervalLoop      = 250;
+    private static final long       gkIntervalWait      = 900;
     
     private AtomicInteger           fRequest;
     private int                     fState;
@@ -231,4 +231,6 @@ class TGUILinearGauge_TimerClipping extends Thread
 [100]   A weird way to retrieve the value of fState - return value and add zero. 
         But the AtomicInteger::get() method seems to be non-atomic (according to the docs),
         whilst AtomicInteger::getAndAdd() is atomic.
+[110]   If set to 900ms it's guaranteed to trigger at 1000ms. If it's set to 1000ms it's 
+        not guaranteed, due to Thread.sleep being somewhat inaccurate.
 */

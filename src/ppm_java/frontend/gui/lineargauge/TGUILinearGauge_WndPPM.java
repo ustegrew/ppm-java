@@ -12,10 +12,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui.lineargauge;
 
-import java.awt.Color;
 import eu.hansolo.steelseries.gauges.LinearBargraph;
 import eu.hansolo.steelseries.tools.LedColor;
-import eu.hansolo.steelseries.tools.ThresholdType;
 import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate.EClipType;
 
 /**
@@ -175,20 +173,6 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         fPnlMeterL.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         fPnlMeterL.setLayout(new java.awt.GridBagLayout());
 
-//        fMeterL.setTitle ("");
-//        fMeterL.setNiceScale (false);
-//        fMeterL.setMinValue (0);
-//        fMeterL.setMaxValue (7);
-//        fMeterL.setMajorTickSpacing (1);
-//        fMeterL.setMinorTickSpacing (0.1);
-//        fMeterL.setTicklabelsVisible (true);
-//        fMeterL.setMinorTickmarkVisible (false);
-//        fMeterL.setValue(1);
-//        fMeterL.setUnitString ("");
-//        fMeterL.setThreshold (6);
-//        fMeterL.setThresholdVisible (true);
-//        fMeterL.setThresholdType (ThresholdType.TRIANGLE);
-//        fMeterL.setLcdVisible (false);
         fMeterL.setTitle ("L");
         fMeterL.setNiceScale (false);
         fMeterL.setMinValue (0);
@@ -213,7 +197,6 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-//        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
         fPnlMeterL.add(fMeterL, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -229,20 +212,6 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         fPnlMeterR.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         fPnlMeterR.setLayout(new java.awt.GridBagLayout());
 
-//        fMeterR.setTitle ("");
-//        fMeterR.setNiceScale (false);
-//        fMeterR.setMinValue (0);
-//        fMeterR.setMaxValue (7);
-//        fMeterR.setMajorTickSpacing (1);
-//        fMeterR.setMinorTickSpacing (0.1);
-//        fMeterR.setTicklabelsVisible (true);
-//        fMeterR.setMinorTickmarkVisible (false);
-//        fMeterR.setValue(1);
-//        fMeterR.setUnitString ("");
-//        fMeterR.setThreshold (6);
-//        fMeterR.setThresholdVisible (true);
-//        fMeterR.setThresholdType (ThresholdType.TRIANGLE);
-//        fMeterR.setLcdVisible (false);
         fMeterR.setTitle ("R");
         fMeterR.setNiceScale (false);
         fMeterR.setMinValue (0);
@@ -267,7 +236,6 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-//        gridBagConstraints.insets = new java.awt.Insets(0, 8, 0, 10);
         fPnlMeterR.add(fMeterR, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();

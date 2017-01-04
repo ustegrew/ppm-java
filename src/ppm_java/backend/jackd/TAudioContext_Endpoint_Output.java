@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.backend.jackd;
 
-import ppm_java._aux.typelib.VAudioPort_Input_Chunks_Buffered;
 import ppm_java._aux.typelib.VAudioPort_Output_Chunks_NeedsBuffer;
 import ppm_java.backend.server.TController;
 
