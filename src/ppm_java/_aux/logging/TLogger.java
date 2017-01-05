@@ -66,6 +66,14 @@ public class TLogger
         _Log (msg, ELevel.kWarn, source, method);
     }
     
+    /**
+     * Writes a log entry to stderr.
+     * 
+     * @param msg       The message to log
+     * @param lv        The log level
+     * @param source    Name of the class from which the log entry originates.
+     * @param method    Name of the method from which the log entry originates.
+     */
     private static void _Log (String msg, ELevel lv, Object source, String method)
     {
         String      src;
@@ -86,7 +94,7 @@ public class TLogger
         
         dtime = new Date().toString ();
         m     = dtime + ": " + src + ": ";
-        switch (lv)
+        switch (lv)                                                     /* [100] */
         {
             case kError:
                 m   += "FATAL: " + msg;
@@ -94,17 +102,21 @@ public class TLogger
                 break;
             case kMessage:
                 m   += "INFO: " + msg;
-                out  = System.out;
+                out  = System.err;
                 break;
             case kWarn:
                 m   += "WARNING: " + msg;
-                out  = System.out;
+                out  = System.err;
                 break;
             default:
                 m   += "INFO: " + msg;
-                out  = System.out;
+                out  = System.err;
         }
         
         out.println (m);
     }
 }
+
+/*
+[100]   We log everything to stderr, so the console output front end can write sample values to stdout.  
+*/

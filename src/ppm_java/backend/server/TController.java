@@ -37,6 +37,7 @@ import ppm_java.backend.server.module.integrator.TNodeIntegrator_PPMBallistics;
 import ppm_java.backend.server.module.peak_estimator.TNodePeakEstimator;
 import ppm_java.backend.server.module.pump.TNodePump;
 import ppm_java.backend.server.module.timer.TTimer;
+import ppm_java.frontend.console.text.TConsole_TextOut;
 import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate;
 import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate;
 
@@ -64,6 +65,11 @@ public final class TController
     public static void Create_Connection_Events (String idSource, String idRecipient)
     {
         gController._SubscribeToEvents (idSource, idRecipient);
+    }
+    
+    public static final void Create_Frontend_Console_TextOut (String id)
+    {
+        TConsole_TextOut.CreateInstance (id);
     }
     
     public static final void Create_Frontend_GUI_LinearGauge (String id)

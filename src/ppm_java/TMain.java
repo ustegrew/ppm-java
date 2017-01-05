@@ -18,23 +18,49 @@ package ppm_java;
 import ppm_java.backend.server.TController;
 
 /**
+ * Main class. Sets up the streaming apparatus. We use a very modular design
+ * connecting various modules.
+ * Since this is a concept test we have the freedom to try various designs and 
+ * study the behaviour.
+ * 
+ * <dl>
+ *     <dt>Lightweight modules</dt> 
+ *     <dd>
+ *         A group of modules, each havin g a very limited functionality, connected
+ *         to form a complex apparatus. This is the current design.
+ *     </dd>
+ *     <dt>Monolithic module</dt> 
+ *     <dd>
+ *         The entire PPM processor is one monolithic block performing the whole
+ *         data processing from raw audio samples to GUI ready peak value stream.
+ *         Now deprecated, but kept for education purposes. 
+ *     </dd>
+ * </dl>
+ * 
+ * The lighweight module design has the advantage of high flexibility as it's fairly 
+ * inexpensive to create new kinds of modules (e.g. a history view showing the last minute
+ * of metering data). It comes at a price of multiple data copying between some modules and 
+ * some boilerplate code and modules with trivial functionality (e.g. the peak estimator). 
+ * However, the flexibility trumps, as it makes the design much more scalable. 
+ * 
  * @author peter
- *
  */
 public class TMain
 {
-    public static enum EGUIType
+    public static enum EFrontendType
     {
-        kNeedle,
-        kLinearGauge
+        kConsoleLinearGauge,
+        kConsoleTextOut,
+        kGUINeedle,
+        kGUILinearGauge
     }
     
-    public static final EGUIType    gkGUIType                       = EGUIType.kLinearGauge;
-    public static final boolean     gkDoShowDebugUI                 = false;
-    public static final boolean     gkUseDeprecatedPPMProcessor     = false;
-    public static final int         gkAudioFrameSize                =  1024;
-    public static final int         gkAudioSampleRate               = 44100;
-    public static final int         gkTimerIntervalMs               =    20; 
+    public static final EFrontendType       gkFrontendType                  = EFrontendType.kConsoleTextOut;
+    public static final boolean             gkDoShowDebugUI                 = false;
+    public static final boolean             gkUseDeprecatedPPMProcessor     = false;
+    public static final int                 gkAudioFrameSize                =  1024;
+    public static final int                 gkAudioSampleRate               = 44100;
+    public static final int                 gkTimerIntervalMs               =    20; 
     
     /**
      * @param args
@@ -43,18 +69,18 @@ public class TMain
     {
         if (gkUseDeprecatedPPMProcessor)
         {
-            _Setup_Deprecated (gkGUIType);
+            _Setup_Deprecated (gkFrontendType);
         }
         else
         {
-            _Setup (gkGUIType);
+            _Setup (gkFrontendType);
         }
     }
     
     /**
      * TODO: In debugging state - not working yet. 
      */
-    private static void _Setup (EGUIType guiType)
+    private static void _Setup (EFrontendType feType)
     {
         /* Create modules */
         TController.Create_Module_Timer                     ("timer",           gkTimerIntervalMs                       );
@@ -67,11 +93,19 @@ public class TMain
         TController.Create_Module_ConverterDB               ("converterdb.r"                                            );
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.l"                                               );
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.r"                                               );
-        if (guiType == EGUIType.kLinearGauge)
+        if (feType == EFrontendType.kConsoleLinearGauge)
+        {
+            TController.Create_Frontend_Console_TextOut ("gui");
+        }
+        else if (feType == EFrontendType.kConsoleTextOut)
+        {
+            TController.Create_Frontend_Console_TextOut ("gui");
+        }
+        else if (feType == EFrontendType.kGUILinearGauge)
         {
             TController.Create_Frontend_GUI_LinearGauge ("gui");
         }
-        else if (guiType == EGUIType.kNeedle)
+        else if (feType == EFrontendType.kGUINeedle)
         {
             TController.Create_Frontend_GUI_Needle ("gui");
         }
@@ -142,18 +176,26 @@ public class TMain
         TController.Start ();
     }
     
-    private static void _Setup_Deprecated (EGUIType guiType)
+    private static void _Setup_Deprecated (EFrontendType feType)
     {
         /* Create modules */
         TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );
         TController.Create_Module_PPMProcessor      ("ppp.l"                                                    );
         TController.Create_Module_PPMProcessor      ("ppp.r"                                                    );
         TController.Create_Module_Timer             ("timer",           gkTimerIntervalMs                       );
-        if (guiType == EGUIType.kLinearGauge)
+        if (feType == EFrontendType.kConsoleLinearGauge)
+        {
+            TController.Create_Frontend_Console_TextOut ("gui");
+        }
+        else if (feType == EFrontendType.kConsoleTextOut)
+        {
+            TController.Create_Frontend_Console_TextOut ("gui");
+        }
+        else if (feType == EFrontendType.kGUILinearGauge)
         {
             TController.Create_Frontend_GUI_LinearGauge ("gui");
         }
-        else if (guiType == EGUIType.kNeedle)
+        else if (feType == EFrontendType.kGUINeedle)
         {
             TController.Create_Frontend_GUI_Needle ("gui");
         }
