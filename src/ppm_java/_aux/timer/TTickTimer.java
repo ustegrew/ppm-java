@@ -21,8 +21,6 @@ package ppm_java._aux.timer;
  */
 public class TTickTimer
 {
-    
-    
     private long            fExpireTime;
     private long            fStartTime;
     private ETimerState     fState;

@@ -15,6 +15,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java;
 
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import ppm_java._aux.logging.TLogger;
 import ppm_java.backend.server.TController;
 
 /**
@@ -67,6 +71,9 @@ public class TMain
      */
     public static void main (String[] args)
     {
+        
+        
+        TLogger.CreateInstance ("/home/peter/ppm.log");
         if (gkUseDeprecatedPPMProcessor)
         {
             _Setup_Deprecated (gkFrontendType);
@@ -77,9 +84,39 @@ public class TMain
         }
     }
     
-    /**
-     * TODO: In debugging state - not working yet. 
-     */
+    private static void _ParseOptions (String[] args)
+    {
+        Options                 opts;
+        Option                  printHelp;
+        Option                  showDebugWindow;
+        Option                  logFilePath;
+        Option                  uiType;
+        Option                  consoleWidth;
+        Option                  useDeprecatedPPMProcessor;
+        
+        printHelp                   = new Option ("h",  "help",             false,      "Print this message");
+        showDebugWindow             = new Option ("d",  "debug",            false,      "Show debug window");
+        logFilePath                 = new Option ("l",  "logFile",          true,       "Path to log file");
+        uiType                      = new Option ("u",  "uiType",           true,       "Which UI to use. Possible values: 'guiRadial', 'guiLinear', 'consoleLinear', 'consoleText'");
+        consoleWidth                = new Option ("w",  "consoleWidth",     true,       "If guitype is 'consoleLinear': Width of meter in terminal columns.");
+        useDeprecatedPPMProcessor   = new Option ("x",  "dPPMProc",         false,      "Use the deprecated PPM processor. Experimental development stage feature.");
+
+        printHelp.setRequired                   (false);
+        showDebugWindow.setRequired             (false);
+        logFilePath.setRequired                 (true);
+        uiType.setRequired                      (true);
+        consoleWidth.setRequired                (false);
+        useDeprecatedPPMProcessor.setRequired   (false);
+        
+        opts = new Options ();
+        opts.addOption (printHelp);
+        opts.addOption (showDebugWindow);
+        opts.addOption (logFilePath);
+        opts.addOption (uiType);
+        opts.addOption (consoleWidth);
+        opts.addOption (useDeprecatedPPMProcessor);
+    }
+    
     private static void _Setup (EFrontendType feType)
     {
         /* Create modules */

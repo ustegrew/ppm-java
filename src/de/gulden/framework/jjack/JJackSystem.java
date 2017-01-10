@@ -18,6 +18,8 @@ import java.lang.reflect.*;
 import java.nio.*;
 import java.util.*;
 
+import ppm_java._aux.logging.TLogger;
+
 /**
  * JJack system class.
  * This purely static class is the bridge between the native JACK client
@@ -138,18 +140,28 @@ public class JJackSystem implements JJackConstants {
         {
             // try loading native library from system lib (library path)
             System.loadLibrary("jjack");
-            System.out.println("native jjack library loaded using system library path");
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage ("native jjack library loaded using system library path");
+            // PH, 2017-01-10: Disabled
+            // System.out.println("native jjack library loaded using system library path");
             init1();
         } catch(Throwable e) {
             try {
                 File file = new File("lib/"+System.getProperty("os.arch")+"/"+System.getProperty("os.name")+"/libjjack.so");
                 libJJackFileName = file.getAbsolutePath();
                 System.load(libJJackFileName);
-                System.out.println("loaded jjack native library "+ libJJackFileName );
+                // PH, 2017-01-10: Added
+                TLogger.LogMessage ("loaded jjack native library "+ libJJackFileName);
+                // PH, 2017-01-10: Disabled
+                // System.out.println("loaded jjack native library "+ libJJackFileName );
                 init1();
             } catch (Throwable e2) {
-                System.out.println("Could not load jjack native library");
-                System.out.println("Tried system library path and " + libJJackFileName);
+                // PH, 2017-01-10: Added
+                TLogger.LogMessage ("Could not load jjack native library");
+                TLogger.LogMessage ("Tried system library path and " + libJJackFileName);
+                // PH, 2017-01-10: Disabled
+                // System.out.println("Could not load jjack native library");
+                // System.out.println("Tried system library path and " + libJJackFileName);
                 e.printStackTrace();
                 e2.printStackTrace();
             }
@@ -206,7 +218,10 @@ public class JJackSystem implements JJackConstants {
      */
     public static void main(String[] args) throws Throwable {
         if (initError != null) {
-        	System.out.println("Error initializing JJack client:");
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage ("Error initializing JJack client:");
+            // PH, 2017-01-10: Disabled
+            // System.out.println("Error initializing JJack client:");
         	throw initError;
         }
         if (args.length==0) {
@@ -220,14 +235,20 @@ public class JJackSystem implements JJackConstants {
         try {
         	cl = Class.forName(cn);
         } catch (ClassNotFoundException cnfe) {
-        	System.out.println("Error loading class '"+cn+"': "+cnfe.getMessage());
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage ("Error loading class '"+cn+"': "+cnfe.getMessage());
+            // PH, 2017-01-10: Disabled
+        	// System.out.println("Error loading class '"+cn+"': "+cnfe.getMessage());
         	usage();
         }
         Method method = null;
         try {
         	method = cl.getMethod("main", new Class[] {String[].class});
         } catch (Exception e) {
-        	System.out.println("Error: '"+cn+"' has no main()-method: "+e.getMessage());
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage ("Error: '"+cn+"' has no main()-method: "+e.getMessage());
+            // PH, 2017-01-10: Disabled
+        	// System.out.println("Error: '"+cn+"' has no main()-method: "+e.getMessage());
         	System.exit(1);
         }
         String[] wrappedArgs = new String[args.length-1];
@@ -239,7 +260,10 @@ public class JJackSystem implements JJackConstants {
         } catch (InvocationTargetException ite) {
         	throw ite.getTargetException();
         } catch (Exception ex) {
-        	System.out.println("Error running main() method of '"+cn+"': "+ex.getMessage());
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage ("Error running main() method of '"+cn+"': "+ex.getMessage());
+            // PH, 2017-01-10: Disabled
+        	// System.out.println("Error running main() method of '"+cn+"': "+ex.getMessage());
         	System.exit(1);
         }
     }
@@ -297,7 +321,10 @@ public class JJackSystem implements JJackConstants {
         	} else {
         		s = src.getClass().getName();
         	}
-        	System.out.println(s+": "+msg);
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage (s+": "+msg);
+            // PH, 2017-01-10: Disabled
+        	// System.out.println(s+": "+msg);
         }
     }
 
@@ -387,7 +414,10 @@ public class JJackSystem implements JJackConstants {
      * Output usage description, then exit with error code.
      */
     private static void usage() {
-        System.out.println("usage: java ... (-D" + PROPERTY_CLIENT_NAME + "=Name) JJack <wrapped-class-with-main-method> <arg0 of wrapped-class> <arg1 of wrapped-class> ...");
+        // PH, 2017-01-10: Added
+        TLogger.LogMessage ("usage: java ... (-D" + PROPERTY_CLIENT_NAME + "=Name) JJack <wrapped-class-with-main-method> <arg0 of wrapped-class> <arg1 of wrapped-class> ...");
+        // PH, 2017-01-10: Disabled
+        // System.out.println("usage: java ... (-D" + PROPERTY_CLIENT_NAME + "=Name) JJack <wrapped-class-with-main-method> <arg0 of wrapped-class> <arg1 of wrapped-class> ...");
         System.exit(1);
     }
 

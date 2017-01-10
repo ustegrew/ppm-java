@@ -15,6 +15,8 @@ package de.gulden.application.jjack;
 
 import de.gulden.framework.jjack.*;
 import de.gulden.util.Toolbox;
+import ppm_java._aux.logging.TLogger;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -142,7 +144,10 @@ public class JJack {
      * Output usage message, then exit.
      */
     private static void usage() {
-        System.out.println(USAGE);
+        // PH, 2017-01-10: Added
+        TLogger.LogMessage (USAGE);
+        // PH, 2017-01-10: Disabled
+        // System.out.println(USAGE);
         System.exit(1);
     }
 
@@ -150,9 +155,14 @@ public class JJack {
      * Output usage message and help, then exit.
      */
     private static void help() {
-        System.out.println(USAGE);
-        System.out.println("clients are Java classes that implement interface de.gulden.framework.jjack.JJackAudioProducer");
-        System.out.println("monitor-clients are classes that implement interface de.gulden.framework.jjack.JJackAudioConsumer");
+        // PH, 2017-01-10: Added
+        TLogger.LogMessage (USAGE);
+        TLogger.LogMessage ("clients are Java classes that implement interface de.gulden.framework.jjack.JJackAudioProducer");
+        TLogger.LogMessage ("monitor-clients are classes that implement interface de.gulden.framework.jjack.JJackAudioConsumer");
+        // PH, 2017-01-10: Disabled
+        // System.out.println(USAGE);
+        // System.out.println("clients are Java classes that implement interface de.gulden.framework.jjack.JJackAudioProducer");
+        // System.out.println("monitor-clients are classes that implement interface de.gulden.framework.jjack.JJackAudioConsumer");
         System.exit(1);
     }
 
@@ -544,7 +554,10 @@ public class JJack {
      * @param msg text message to output
      */
     private static void message(String msg) {
-        System.out.println(msg);
+        // PH, 2017-01-10: Added
+        TLogger.LogMessage (msg);
+        // PH, 2017-01-10: Disabled
+        // System.out.println(msg);
     }
 
     /**

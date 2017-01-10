@@ -16,6 +16,9 @@ package de.gulden.framework.jjack;
 import java.nio.FloatBuffer;
 import java.awt.BorderLayout;
 import javax.swing.*;
+
+import ppm_java._aux.logging.TLogger;
+
 import java.util.*;
 
 /**
@@ -382,7 +385,10 @@ public abstract class JJackMonitor extends JPanel implements JJackAudioProcessor
      * @param e the exception
      */
     static void exc(Exception e) {
-        System.out.println(e.getClass().getName()+": "+e.getMessage());
+        // PH, 2017-01-10: Added
+        TLogger.LogWarning (e.getClass().getName()+": "+e.getMessage());
+        // PH, 2017-01-10: Disabled
+        // System.out.println(e.getClass().getName()+": "+e.getMessage());
     }
 
 } // end JJackMonitor

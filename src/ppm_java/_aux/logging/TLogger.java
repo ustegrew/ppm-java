@@ -15,8 +15,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java._aux.logging;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Date;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * @author peter
@@ -24,62 +30,112 @@ import java.util.Date;
  */
 public class TLogger
 {
-    private enum ELevel
+    public static void CreateInstance (String filePath)
+    {
+        if (gLogger == null)
+        {
+            gLogger = new TLogger (filePath);
+        }
+    }
+
+    private static enum ELevel
     {
         kMessage,
         kWarn,
         kError
     };
+
+    private static TLogger          gLogger = null;
     
     public static void LogError (String msg, Object source, String method)
     {
-        _Log (msg, ELevel.kError, source, method);
+        gLogger._Log (msg, ELevel.kError, source, method);
     }
     
     public static void LogMessage (String msg)
     {
-        _Log (msg, ELevel.kMessage, null, null);
+        gLogger._Log (msg, ELevel.kMessage, null, null);
     }
     
     public static void LogMessage (String msg, Object source)
     {
-        _Log (msg, ELevel.kMessage, source, null);
+        gLogger._Log (msg, ELevel.kMessage, source, null);
     }
     
     public static void LogMessage (String msg, Object source, String method)
     {
-        _Log (msg, ELevel.kMessage, source, method);
+        gLogger._Log (msg, ELevel.kMessage, source, method);
     }
     
     public static void LogWarning (String msg)
     {
-        _Log (msg, ELevel.kWarn, null, null);
+        gLogger._Log (msg, ELevel.kWarn, null, null);
     }
     
     public static void LogWarning (String msg, Object source)
     {
-        _Log (msg, ELevel.kWarn, source, null);
+        gLogger._Log (msg, ELevel.kWarn, source, null);
     }
     
     public static void LogWarning (String msg, Object source, String method)
     {
-        _Log (msg, ELevel.kWarn, source, method);
+        gLogger._Log (msg, ELevel.kWarn, source, method);
     }
+
+    private Logger          fLogger;
     
+    private TLogger (String filePath)
+    {
+        Logger                          rootLogger;
+        Handler[]                       handlers;
+        int                             i;
+        int                             nHandlers;
+        Handler                         cH;
+        FileHandler                     fH;
+        SimpleFormatter                 sF;
+
+        /* Remove console handlers; we write log entries to a log file */
+        rootLogger = Logger.getLogger ("");
+        handlers   = rootLogger.getHandlers ();
+        nHandlers  = handlers.length;
+        if (nHandlers >= 1)
+        {
+            for (i = 0; i < nHandlers; i++)
+            {
+                cH = handlers [i];
+                if (cH instanceof ConsoleHandler)
+                {
+                    rootLogger.removeHandler (cH);
+                }
+            }
+        }
+        
+        try
+        {
+            sF = new SimpleFormatter ();
+            fH = new FileHandler (filePath);
+            fH.setFormatter (sF);
+            fLogger = Logger.getLogger (Logger.GLOBAL_LOGGER_NAME);
+        }
+        catch (SecurityException | IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     /**
-     * Writes a log entry to stderr.
+     * Writes a log entry.
      * 
      * @param msg       The message to log
      * @param lv        The log level
      * @param source    Name of the class from which the log entry originates.
      * @param method    Name of the method from which the log entry originates.
      */
-    private static void _Log (String msg, ELevel lv, Object source, String method)
+    private void _Log (String msg, ELevel lv, Object source, String method)
     {
         String      src;
         String      m;
         String      dtime;
-        PrintStream out;
         
         src = "";
         if (source != null)
@@ -93,27 +149,21 @@ public class TLogger
         }
         
         dtime = new Date().toString ();
-        m     = dtime + ": " + src + ": ";
+        m     = dtime + ": " + src + ": " + msg;
         switch (lv)                                                     /* [100] */
         {
             case kError:
-                m   += "FATAL: " + msg;
-                out  = System.err;
+                fLogger.severe (m);
                 break;
             case kMessage:
-                m   += "INFO: " + msg;
-                out  = System.err;
+                fLogger.info (m);
                 break;
             case kWarn:
-                m   += "WARNING: " + msg;
-                out  = System.err;
+                fLogger.warning (m);
                 break;
             default:
-                m   += "INFO: " + msg;
-                out  = System.err;
+                fLogger.info (m);
         }
-        
-        out.println (m);
     }
 }
 

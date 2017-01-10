@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.backend.server;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import ppm_java._aux.debug.TTimerDebugUpdate;
@@ -230,6 +231,16 @@ public final class TController
         gController._PostEvent (e, arg0, idSource);
     }
     
+    public static void PrintToConsole (String s)
+    {
+        gController._PrintToConsole (s);
+    }
+    
+    public static void PrintLnToConsole (String s)
+    {
+        gController._PrintLnToConsole (s);
+    }
+    
     /**
      * @param object
      */
@@ -295,6 +306,9 @@ public final class TController
     private ArrayList<IStatEnabled>     fStatProviders;
     private TTimerDebugUpdate           fDebugUpdateWorker;
     private boolean                     fDoShowDebugUI;
+    private TStdStreamInterceptor       fStdErr;
+    private TStdStreamInterceptor       fStdOut;
+    private PrintStream                 fStdOutOrig;
     
     private TController ()
     {
@@ -309,8 +323,16 @@ public final class TController
         fDebugUpdateWorker  = new TTimerDebugUpdate     ();
         fDoShowDebugUI      = false;
         
+        /* Set up shutdown hook, so we can CTRL-C the application */
         sh = new TShutdownHook ();                                      /* [150] */
         Runtime.getRuntime ().addShutdownHook (sh);
+        
+        /* Redirect stdout and stderr to the logger. */                 /* [160] */
+        fStdOutOrig = System.out;
+        fStdOut     = new TStdStreamInterceptor (System.out, false);
+        fStdErr     = new TStdStreamInterceptor (System.err, true);
+        System.setOut (fStdOut);
+        System.setErr (fStdErr);
     }
     
     /**
@@ -365,6 +387,16 @@ public final class TController
     private void _PostEvent (int e, String arg0, String idSource)
     {
         fEventBus.Broker (e, arg0, idSource);
+    }
+    
+    private void _PrintToConsole (String s)
+    {
+        fStdOutOrig.print (s);
+    }
+    
+    private void _PrintLnToConsole (String s)
+    {
+        fStdOutOrig.println (s);
     }
     
     private void _Register (VAudioDriver d)
@@ -504,5 +536,14 @@ public final class TController
 }
 
 /* 
-[150]   This will call the shutdown hook which will call _StartStop (false)
+[150]   This will call the shutdown hook which will call _StartStop (false).
+
+[160]   For preserving output to the console (used by the console frontends).
+        Specifically, the JackD driver (Shared library) writes some information 
+        to stdout, and when we use one of the console front ends, it injects 
+        the output into the frontend output. 
+        The wrapper class redirects output to a log file when the output is 
+        written via System.out.print... statements. The wrapper does provide
+        two methods to still write to the console (That's why the console 
+        frontends do work for the console).  
 */

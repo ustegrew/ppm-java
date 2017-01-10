@@ -15,6 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.console.lineargauge;
 
+import ppm_java._aux.timer.TTickTimer;
 import ppm_java._aux.typelib.IControllable;
 import ppm_java._aux.typelib.VFrontend;
 import ppm_java.backend.server.TController;
@@ -25,14 +26,16 @@ import ppm_java.backend.server.TController;
  */
 public class TConsole_LinearGauge extends VFrontend implements IControllable
 {
-    static final int                            gkNumSections           = 7;
-    private static final String                 gkAnsiCursorDown3Lines  = "\u001B[3B";
-    private static final String                 gkAnsiCursorDown5Lines  = "\u001B[5B";
-    private static final String                 gkAnsiCursorUp3Lines    = "\u001B[3A";
-    private static final String                 gkAnsiCursorUp5Lines    = "\u001B[5A";
-    private static final int                    gkBarLenMax             = 280;
-    private static final int                    gkBarLenMin             = 14;
-    private static final String                 gkTickmarkChar          = "|";
+    static final int                            gkNumSections               = 7;
+    private static final String                 gkAnsiCursorPosBottom       = "\u001B[7;1H";
+    private static final String                 gkAnsiCursorPosTop          = "\u001B[1;1H";
+    private static final String                 gkAnsiCursorPosMeterL       = "\u001B[2;1H";
+    private static final String                 gkAnsiCursorPosMeterR       = "\u001B[4;1H";
+    private static final String                 gkAnsiScreenClear           = "\u001B[2J";
+    private static final int                    gkBarLenMax                 = 280;
+    private static final int                    gkBarLenMin                 = 14;
+    private static final long                   gkRefreshInterval           = 2000;
+    private static final String                 gkTickmarkChar              = "|";
     
     /**
      * @param id
@@ -48,8 +51,9 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     private TConsole_LinearGauge_MeterUI        fMeterL;
     private TConsole_LinearGauge_MeterUI        fMeterR;
     private String                              fNumBar;
-    
     private int                                 fNumColsPerSection;
+    
+    private TTickTimer                          fRefreshTimer;
 
     /**
      * @param barLen        length of gauge on screen (in columns)
@@ -59,8 +63,9 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
         super (id, 2, 0);
         
         _Init (barLen);
-        fMeterL = new TConsole_LinearGauge_MeterUI (fBarLen);
-        fMeterR = new TConsole_LinearGauge_MeterUI (fBarLen);
+        fMeterL             = new TConsole_LinearGauge_MeterUI (fBarLen);
+        fMeterR             = new TConsole_LinearGauge_MeterUI (fBarLen);
+        fRefreshTimer       = new TTickTimer                   (gkRefreshInterval);
     }
 
     /* (non-Javadoc)
@@ -92,7 +97,8 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     @Override
     public void Start ()
     {
-        _PrintGaugeFrame ();
+        _RefreshFrame ();
+        fRefreshTimer.Start ();
     }
 
     /* (non-Javadoc)
@@ -115,29 +121,22 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     void _Receive (float level, int iChannel)
     {
         String                              meterBar;
-        TConsole_LinearGauge_MeterUI        meter;
         
         if (iChannel == 0)
         {
-            meter = fMeterL;
+            fMeterL.Receive (level);
+            meterBar = fMeterL.GetLevelBar ();
+            meterBar = gkAnsiCursorPosMeterL + meterBar + gkAnsiCursorPosBottom;
         }
         else
         {
-            meter = fMeterR;
+            fMeterR.Receive (level);
+            meterBar = fMeterR.GetLevelBar ();
+            meterBar = gkAnsiCursorPosMeterR + meterBar + gkAnsiCursorPosBottom;
         }
 
-        meter.Receive (level);
-        meterBar = meter.GetLevelBar ();
-        
-        if (iChannel == 0)
-        {
-            meterBar = gkAnsiCursorUp5Lines + meterBar + gkAnsiCursorDown5Lines;
-        }
-        else if (iChannel == 1)
-        {
-            meterBar = gkAnsiCursorUp3Lines + meterBar + gkAnsiCursorDown3Lines;
-        }
-        System.out.print (meterBar);
+        _RefreshUI ();                                                  /* 110 */
+        TController.PrintToConsole (meterBar);
     }
     
     private void _Init (int barLen)
@@ -185,18 +184,39 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
             fEmptyBar += " ";
         }
     }
-
-    private void _PrintGaugeFrame ()
+    
+    private void _RefreshFrame ()
     {
-        System.out.println (fFramebar);
-        System.out.println (fEmptyBar);
-        System.out.println (fFramebar);
-        System.out.println (fEmptyBar);
-        System.out.println (fFramebar);
-        System.out.println (fNumBar);
+        TController.PrintToConsole   (gkAnsiScreenClear);
+        TController.PrintToConsole   (gkAnsiCursorPosTop);
+        TController.PrintLnToConsole (fFramebar);
+        TController.PrintLnToConsole (fEmptyBar);
+        TController.PrintLnToConsole (fFramebar);
+        TController.PrintLnToConsole (fEmptyBar);
+        TController.PrintLnToConsole (fFramebar);
+        TController.PrintLnToConsole (fNumBar);
+    }
+
+    private void _RefreshUI ()
+    {
+        boolean     hasExpired;
+        
+        fRefreshTimer.OnTimerTick ();
+        hasExpired = fRefreshTimer.HasExpired ();
+        if (hasExpired)
+        {
+            _RefreshFrame ();
+            fRefreshTimer.Start ();
+        }
     }
 }
 
 /*
 [100]   Guarantees that the bar length is an exact multiple of gkNumSections
+
+[110]   The associated JJack library gave problems with the console output
+        by writing output to the console and mess up the UI (Text written underneath
+        and location of meter bar offset). For this reason we redraw the 
+        entire UI in a regular interval and place the meter elements at an
+        absolute position.
 */

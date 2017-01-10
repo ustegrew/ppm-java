@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import de.gulden.framework.jjack.JJackAudioProcessor;
+import ppm_java._aux.logging.TLogger;
 
 /**
  * Quick launcher class for launching built in jjack clients out of the box...
@@ -53,7 +54,10 @@ public class JJackQuickClientLaunch {
          * Find jjack clients in built in client package
          */
         String basePath = de.gulden.application.jjack.clients.Gain.class.getPackage().getName().replace('.', '/');
-        System.out.println("Scanning classes in: "+basePath);
+        // PH, 2017-01-10: Added
+        TLogger.LogMessage ("Scanning classes in: "+basePath);
+        // PH, 2017-01-10: Disabled
+        // System.out.println("Scanning classes in: "+basePath);
 
         File dir = new File(ClassLoader.getSystemResource(basePath).getPath());
 
@@ -74,7 +78,10 @@ public class JJackQuickClientLaunch {
         			Class cls = Class.forName(className);
         			if(JJackAudioProcessor.class.isAssignableFrom(cls))
         			{
-        				System.out.println("Found client: "+cls.getName());
+        		        // PH, 2017-01-10: Added
+        		        TLogger.LogMessage ("Found client: "+cls.getName());
+        		        // PH, 2017-01-10: Disabled
+        				// System.out.println("Found client: "+cls.getName());
         				clients.add(cls);
         			}
 
@@ -92,7 +99,10 @@ public class JJackQuickClientLaunch {
         	JJack.main(new String[] {((Class)JOptionPane.showInputDialog(null, "Select client", "Select client", JOptionPane.QUESTION_MESSAGE, null, clients.toArray(), null)).getName()});
         } catch(NullPointerException e)
         {
-        	System.out.println("No client was selected.. Exiting.. ");
+            // PH, 2017-01-10: Added
+            TLogger.LogMessage ("No client was selected.. Exiting.. ");
+            // PH, 2017-01-10: Disabled
+        	// System.out.println("No client was selected.. Exiting.. ");
         }
     }
 
