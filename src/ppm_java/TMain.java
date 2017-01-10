@@ -55,7 +55,7 @@ public class TMain
         kGUILinearGauge
     }
     
-    public static final EFrontendType       gkFrontendType                  = EFrontendType.kConsoleTextOut;
+    public static final EFrontendType       gkFrontendType                  = EFrontendType.kConsoleLinearGauge;
     public static final boolean             gkDoShowDebugUI                 = false;
     public static final boolean             gkUseDeprecatedPPMProcessor     = false;
     public static final int                 gkAudioFrameSize                =  1024;
@@ -95,7 +95,7 @@ public class TMain
         TController.Create_Module_IntegratorPPMBallistics   ("intgrppm.r"                                               );
         if (feType == EFrontendType.kConsoleLinearGauge)
         {
-            TController.Create_Frontend_Console_TextOut ("gui");
+            TController.Create_Frontend_Console_LinearGauge ("gui", 80);
         }
         else if (feType == EFrontendType.kConsoleTextOut)
         {

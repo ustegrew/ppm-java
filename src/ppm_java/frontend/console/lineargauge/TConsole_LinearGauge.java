@@ -1,0 +1,202 @@
+/* -----------------------------------------------------------------------------
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+----------------------------------------------------------------------------- */
+
+package ppm_java.frontend.console.lineargauge;
+
+import ppm_java._aux.typelib.IControllable;
+import ppm_java._aux.typelib.VFrontend;
+import ppm_java.backend.server.TController;
+
+/**
+ * @author peter
+ *
+ */
+public class TConsole_LinearGauge extends VFrontend implements IControllable
+{
+    static final int                            gkNumSections           = 7;
+    private static final String                 gkAnsiCursorDown3Lines  = "\u001B[3B";
+    private static final String                 gkAnsiCursorDown5Lines  = "\u001B[5B";
+    private static final String                 gkAnsiCursorUp3Lines    = "\u001B[3A";
+    private static final String                 gkAnsiCursorUp5Lines    = "\u001B[5A";
+    private static final int                    gkBarLenMax             = 280;
+    private static final int                    gkBarLenMin             = 14;
+    private static final String                 gkTickmarkChar          = "|";
+    
+    /**
+     * @param id
+     */
+    public static void CreateInstance (String id, int widthCols)
+    {
+        new TConsole_LinearGauge (id, widthCols);
+    }
+    
+    private int                                 fBarLen;
+    private String                              fEmptyBar;
+    private String                              fFramebar;
+    private TConsole_LinearGauge_MeterUI        fMeterL;
+    private TConsole_LinearGauge_MeterUI        fMeterR;
+    private String                              fNumBar;
+    
+    private int                                 fNumColsPerSection;
+
+    /**
+     * @param barLen        length of gauge on screen (in columns)
+     */
+    public TConsole_LinearGauge (String id, int barLen)
+    {
+        super (id, 2, 0);
+        
+        _Init (barLen);
+        fMeterL = new TConsole_LinearGauge_MeterUI (fBarLen);
+        fMeterR = new TConsole_LinearGauge_MeterUI (fBarLen);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePort_In(java.lang.String)
+     */
+    @Override
+    public void CreatePort_In (String id)
+    {
+        int                                 iP;
+        TConsole_LinearGauge_Endpoint       p;
+        
+        iP  = GetNumPortsIn ();
+        p   = new TConsole_LinearGauge_Endpoint (id, this, iP);
+        AddPortIn (p);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePort_Out(java.lang.String)
+     */
+    @Override
+    public void CreatePort_Out (String id)
+    {
+        throw new IllegalStateException ("This is a front end class - it doesn't use output ports.");
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IControllable#Start()
+     */
+    @Override
+    public void Start ()
+    {
+        _PrintGaugeFrame ();
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.IControllable#Stop()
+     */
+    @Override
+    public void Stop ()
+    {
+    }
+    
+    /* (non-Javadoc)
+     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
+    }
+
+    void _Receive (float level, int iChannel)
+    {
+        String                              meterBar;
+        TConsole_LinearGauge_MeterUI        meter;
+        
+        if (iChannel == 0)
+        {
+            meter = fMeterL;
+        }
+        else
+        {
+            meter = fMeterR;
+        }
+
+        meter.Receive (level);
+        meterBar = meter.GetLevelBar ();
+        
+        if (iChannel == 0)
+        {
+            meterBar = gkAnsiCursorUp5Lines + meterBar + gkAnsiCursorDown5Lines;
+        }
+        else if (iChannel == 1)
+        {
+            meterBar = gkAnsiCursorUp3Lines + meterBar + gkAnsiCursorDown3Lines;
+        }
+        System.out.print (meterBar);
+    }
+    
+    private void _Init (int barLen)
+    {
+        int             i;
+        String          spaces;
+        
+        /* Set bar length to sane value. Bar length must be divisable by gkNumSections */
+        if (barLen < gkBarLenMin)
+        {
+            fBarLen = gkBarLenMin;
+        }
+        else if (barLen > gkBarLenMax)
+        {
+            fBarLen = gkBarLenMax;
+        }
+        else
+        {
+            fBarLen = gkNumSections * (barLen / gkNumSections);         /* [100] */
+        }
+        fNumColsPerSection = fBarLen / gkNumSections;
+
+        /* Precompute fixed frame elements */
+        spaces = "";
+        for (i = 1; i <= fNumColsPerSection-1; i++)
+        {
+            spaces += " ";
+        }
+        
+        fFramebar = gkTickmarkChar;
+        for (i = 1; i <= gkNumSections; i++)
+        {
+            fFramebar += spaces + gkTickmarkChar;
+        }
+        
+        fNumBar = "0";
+        for (i = 1; i <= gkNumSections; i++)
+        {
+            fNumBar += spaces + i;
+        }
+        
+        fEmptyBar = "";
+        for (i = 1; i <= fBarLen; i++)
+        {
+            fEmptyBar += " ";
+        }
+    }
+
+    private void _PrintGaugeFrame ()
+    {
+        System.out.println (fFramebar);
+        System.out.println (fEmptyBar);
+        System.out.println (fFramebar);
+        System.out.println (fEmptyBar);
+        System.out.println (fFramebar);
+        System.out.println (fNumBar);
+    }
+}
+
+/*
+[100]   Guarantees that the bar length is an exact multiple of gkNumSections
+*/

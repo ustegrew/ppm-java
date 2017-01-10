@@ -141,9 +141,9 @@ public class TGUILinearGauge_Surrogate
         
         /* Compute progress bar value */
         if (level > 0)
-        {   /* ]0, ...] dB => hard limit to 100 */
+        {   /* ]0, ...] dB => hard limit to maximum */
             fStat.SetCalcSection (iChannel, 3);
-            lDisp = 100;
+            lDisp = 7.0f;
         }
         else if (level >= -24)
         {   /* [-24, 0] dB => working range 1..7 */                     /* [100] */

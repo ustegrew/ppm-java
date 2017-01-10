@@ -35,6 +35,16 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     {
         new TConsole_TextOut (id);
     }
+
+    private static enum EFieldType
+    {
+        kInfo,
+        kSample
+    }
+    
+    private static final String             gkFieldTypeInfo         = "info";
+    private static final String             gkFieldTypeSample       = "sample";
+    
     
     /**
      * @param id
@@ -75,8 +85,7 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     @Override
     public void Start ()
     {
-        // TODO Auto-generated method stub
-        
+        _PushRecord (EFieldType.kInfo, "event_meter_start", 0, 0);
     }
 
     /* (non-Javadoc)
@@ -85,8 +94,7 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     @Override
     public void Stop ()
     {
-        // TODO Auto-generated method stub
-        
+        _PushRecord (EFieldType.kInfo, "event_meter_stop", 0, 0);
     }
 
     /* (non-Javadoc)
@@ -100,10 +108,35 @@ public class TConsole_TextOut extends VFrontend implements IControllable
 
     void Receive (float sample, int iPort)
     {
-        String lineOut;
+        _PushRecord (EFieldType.kSample, null, sample, iPort);
+    }
+    
+    private void _PushRecord (EFieldType fieldType, String info, float sample, int iPort)
+    {
+        String record;
         
-        lineOut = iPort + "," + sample;
+        if (fieldType == EFieldType.kInfo)
+        {
+            record = 
+            "{" +
+                "'type':'"  + gkFieldTypeInfo       + "',"  +
+                "'value':'" + info                  + "'"   +
+            "}";
+        }
+        else if (fieldType == EFieldType.kSample)
+        {
+            record = 
+            "{" +
+                "'type':'"  + gkFieldTypeSample     + "',"  +
+                "'value':'" + sample                + "',"  +
+                "'port':'"  + iPort                 + "'"   +
+            "}";
+        }
+        else
+        {
+            record = "{'type':'null'}"; 
+        }
         
-        System.out.println (lineOut);
+        System.out.println (record);
     }
 }

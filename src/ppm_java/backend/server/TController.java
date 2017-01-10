@@ -37,6 +37,7 @@ import ppm_java.backend.server.module.integrator.TNodeIntegrator_PPMBallistics;
 import ppm_java.backend.server.module.peak_estimator.TNodePeakEstimator;
 import ppm_java.backend.server.module.pump.TNodePump;
 import ppm_java.backend.server.module.timer.TTimer;
+import ppm_java.frontend.console.lineargauge.TConsole_LinearGauge;
 import ppm_java.frontend.console.text.TConsole_TextOut;
 import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate;
 import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate;
@@ -65,6 +66,11 @@ public final class TController
     public static void Create_Connection_Events (String idSource, String idRecipient)
     {
         gController._SubscribeToEvents (idSource, idRecipient);
+    }
+    
+    public static final void Create_Frontend_Console_LinearGauge (String id, int widthCols)
+    {
+        TConsole_LinearGauge.CreateInstance (id, widthCols);
     }
     
     public static final void Create_Frontend_Console_TextOut (String id)
@@ -275,6 +281,11 @@ public final class TController
         return ret;
     }
     
+    static void SystemTerminate ()
+    {
+        gController._StartStop (false);
+    }
+    
     private static final int            gkTimeBetweenStartOrStop = 500;
 
     private TBroker                     fEventBus;
@@ -287,6 +298,8 @@ public final class TController
     
     private TController ()
     {
+        TShutdownHook           sh;
+        
         TLogger.LogMessage ("Creating controller (singleton)", this, "cTor()");
         fRegistry           = new TRegistry             ();
         fEventBus           = new TBroker               ();
@@ -295,6 +308,9 @@ public final class TController
         fStatProviders      = new ArrayList<>           ();
         fDebugUpdateWorker  = new TTimerDebugUpdate     ();
         fDoShowDebugUI      = false;
+        
+        sh = new TShutdownHook ();                                      /* [150] */
+        Runtime.getRuntime ().addShutdownHook (sh);
     }
     
     /**
@@ -468,9 +484,8 @@ public final class TController
 
     private void _SystemTerminate ()
     {
-        _StartStop (false);
         TLogger.LogMessage ("Terminating application", this, "_SystemTerminate ()");
-        System.exit (0);
+        System.exit (0);                                                /* [150] */
     }
 
     private void _Unregister (String id)
@@ -487,3 +502,7 @@ public final class TController
         }
     }
 }
+
+/* 
+[150]   This will call the shutdown hook which will call _StartStop (false)
+*/
