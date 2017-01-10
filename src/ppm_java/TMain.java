@@ -15,9 +15,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import ppm_java._aux.logging.TLogger;
 import ppm_java.backend.server.TController;
 
@@ -55,45 +61,51 @@ public class TMain
     {
         kConsoleLinearGauge,
         kConsoleTextOut,
-        kGUINeedle,
-        kGUILinearGauge
+        kGUILinearGauge,
+        kGUINeedle
     }
     
-    public static final EFrontendType       gkFrontendType                  = EFrontendType.kConsoleLinearGauge;
-    public static final boolean             gkDoShowDebugUI                 = false;
-    public static final boolean             gkUseDeprecatedPPMProcessor     = false;
     public static final int                 gkAudioFrameSize                =  1024;
     public static final int                 gkAudioSampleRate               = 44100;
-    public static final int                 gkTimerIntervalMs               =    20; 
+    public static final boolean             gkDoShowDebugUI                 = true;
+    public static final EFrontendType       gkFrontendType                  = EFrontendType.kConsoleLinearGauge;
+    public static final int                 gkTimerIntervalMs               =    20;
+    public static final boolean             gkUseDeprecatedPPMProcessor     = false; 
     
     /**
      * @param args
      */
     public static void main (String[] args)
     {
-        
-        
-        TLogger.CreateInstance ("/home/peter/ppm.log");
-        if (gkUseDeprecatedPPMProcessor)
-        {
-            _Setup_Deprecated (gkFrontendType);
-        }
-        else
-        {
-            _Setup (gkFrontendType);
-        }
+        new TMain (args);
     }
     
-    private static void _ParseOptions (String[] args)
+    private Options                         fCmdlineOptions;
+    private int                             fOptConsoleWidth;
+    private String                          fOptLogFilePath;
+    private boolean                         fOptPrintHelp;
+    private boolean                         fOptShowDebugWindow;
+    private EFrontendType                   fOptUIType;
+    private boolean                         fOptUseDeprecatedPPMProcessor;
+    
+    public TMain (String[] args)
     {
-        Options                 opts;
+        _Init (args);
+    }
+    
+    private void _Init (String[] args)
+    {
         Option                  printHelp;
         Option                  showDebugWindow;
         Option                  logFilePath;
         Option                  uiType;
         Option                  consoleWidth;
         Option                  useDeprecatedPPMProcessor;
+        CommandLineParser       clp;
+        CommandLine             cl;
         
+        TLogger.CreateInstance ("/home/peter/ppm.log");
+
         printHelp                   = new Option ("h",  "help",             false,      "Print this message");
         showDebugWindow             = new Option ("d",  "debug",            false,      "Show debug window");
         logFilePath                 = new Option ("l",  "logFile",          true,       "Path to log file");
@@ -108,16 +120,50 @@ public class TMain
         consoleWidth.setRequired                (false);
         useDeprecatedPPMProcessor.setRequired   (false);
         
-        opts = new Options ();
-        opts.addOption (printHelp);
-        opts.addOption (showDebugWindow);
-        opts.addOption (logFilePath);
-        opts.addOption (uiType);
-        opts.addOption (consoleWidth);
-        opts.addOption (useDeprecatedPPMProcessor);
+        fCmdlineOptions = new Options ();
+        fCmdlineOptions.addOption (printHelp);
+        fCmdlineOptions.addOption (showDebugWindow);
+        fCmdlineOptions.addOption (logFilePath);
+        fCmdlineOptions.addOption (uiType);
+        fCmdlineOptions.addOption (consoleWidth);
+        fCmdlineOptions.addOption (useDeprecatedPPMProcessor);
+        
+// TODO Temp statement to have something...
+_Setup_0 (EFrontendType.kGUINeedle);
+//        try
+//        {
+//            clp = new DefaultParser ();
+//            cl  = clp.parse (fCmdlineOptions, args);
+//            _Setup (cl);
+//        }
+//        catch (ParseException e)
+//        {
+//            _PrintHelp ();
+//        }
+
     }
     
-    private static void _Setup (EFrontendType feType)
+    private void _PrintHelp ()
+    {
+        HelpFormatter       hf;
+        
+        hf = new HelpFormatter ();
+        hf.printHelp 
+        (
+              "java -jar /path/to/ppm.jar [-h | --help] [-d | --debug] [-x | --dPPMProc] "
+            + "(-l <path> | --logFile=<path>) (-u <ui_type> | --uiType=<ui_type>) "
+            + "(-w <n> | --consoleWidth=<n>)", 
+            fCmdlineOptions,
+            true
+        );
+    }
+    
+    private void _Setup (CommandLine cmdLine)
+    {
+        _Setup_0 (EFrontendType.kGUINeedle);
+    }
+    
+    private void _Setup_0 (EFrontendType feType)
     {
         /* Create modules */
         TController.Create_Module_Timer                     ("timer",           gkTimerIntervalMs                       );
@@ -213,7 +259,7 @@ public class TMain
         TController.Start ();
     }
     
-    private static void _Setup_Deprecated (EFrontendType feType)
+    private void _Setup_Deprecated (EFrontendType feType)
     {
         /* Create modules */
         TController.Create_AudioContext             ("ppm",             gkAudioSampleRate, gkAudioFrameSize     );

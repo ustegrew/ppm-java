@@ -52,7 +52,6 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     private TConsole_LinearGauge_MeterUI        fMeterR;
     private String                              fNumBar;
     private int                                 fNumColsPerSection;
-    
     private TTickTimer                          fRefreshTimer;
 
     /**
@@ -136,7 +135,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
         }
 
         _RefreshUI ();                                                  /* 110 */
-        TController.PrintToConsole (meterBar);
+        System.out.print (meterBar);
     }
     
     private void _Init (int barLen)
@@ -187,14 +186,14 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     
     private void _RefreshFrame ()
     {
-        TController.PrintToConsole   (gkAnsiScreenClear);
-        TController.PrintToConsole   (gkAnsiCursorPosTop);
-        TController.PrintLnToConsole (fFramebar);
-        TController.PrintLnToConsole (fEmptyBar);
-        TController.PrintLnToConsole (fFramebar);
-        TController.PrintLnToConsole (fEmptyBar);
-        TController.PrintLnToConsole (fFramebar);
-        TController.PrintLnToConsole (fNumBar);
+        System.out.print    (gkAnsiScreenClear);
+        System.out.print    (gkAnsiCursorPosTop);
+        System.out.println  (fFramebar);
+        System.out.println  (fEmptyBar);
+        System.out.println  (fFramebar);
+        System.out.println  (fEmptyBar);
+        System.out.println  (fFramebar);
+        System.out.println  (fNumBar);
     }
 
     private void _RefreshUI ()

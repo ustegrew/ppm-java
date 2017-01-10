@@ -231,16 +231,6 @@ public final class TController
         gController._PostEvent (e, arg0, idSource);
     }
     
-    public static void PrintToConsole (String s)
-    {
-        gController._PrintToConsole (s);
-    }
-    
-    public static void PrintLnToConsole (String s)
-    {
-        gController._PrintLnToConsole (s);
-    }
-    
     /**
      * @param object
      */
@@ -306,8 +296,6 @@ public final class TController
     private ArrayList<IStatEnabled>     fStatProviders;
     private TTimerDebugUpdate           fDebugUpdateWorker;
     private boolean                     fDoShowDebugUI;
-    private TStdStreamInterceptor       fStdErr;
-    private TStdStreamInterceptor       fStdOut;
     private PrintStream                 fStdOutOrig;
     
     private TController ()
@@ -326,13 +314,6 @@ public final class TController
         /* Set up shutdown hook, so we can CTRL-C the application */
         sh = new TShutdownHook ();                                      /* [150] */
         Runtime.getRuntime ().addShutdownHook (sh);
-        
-        /* Redirect stdout and stderr to the logger. */                 /* [160] */
-        fStdOutOrig = System.out;
-        fStdOut     = new TStdStreamInterceptor (System.out, false);
-        fStdErr     = new TStdStreamInterceptor (System.err, true);
-        System.setOut (fStdOut);
-        System.setErr (fStdErr);
     }
     
     /**
