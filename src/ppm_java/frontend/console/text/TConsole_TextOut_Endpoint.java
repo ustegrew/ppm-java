@@ -15,9 +15,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.console.text;
 
-import ppm_java._aux.typelib.VAudioPort_Input_Samples;
-import ppm_java._aux.typelib.VAudioProcessor;
-import ppm_java.backend.server.TController;
+import ppm_java.backend.TController;
+import ppm_java.typelib.VAudioPort_Input_Samples;
+import ppm_java.typelib.VAudioProcessor;
 
 /**
  * @author peter
@@ -35,7 +35,7 @@ public class TConsole_TextOut_Endpoint extends VAudioPort_Input_Samples
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VAudioPort_Input_Samples#ReceiveSample(float)
+     * @see ppm_java.typelib.VAudioPort_Input_Samples#ReceiveSample(float)
      */
     @Override
     public void ReceiveSample (float sample)
@@ -49,7 +49,7 @@ public class TConsole_TextOut_Endpoint extends VAudioPort_Input_Samples
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     * @see ppm_java.typelib.VBrowseable#_Register()
      */
     @Override
     protected void _Register ()

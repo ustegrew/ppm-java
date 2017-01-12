@@ -17,7 +17,7 @@ import java.nio.FloatBuffer;
 import java.awt.BorderLayout;
 import javax.swing.*;
 
-import ppm_java._aux.logging.TLogger;
+import ppm_java.util.logging.TLogger;
 
 import java.util.*;
 

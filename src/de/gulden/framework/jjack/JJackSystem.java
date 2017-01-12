@@ -18,7 +18,7 @@ import java.lang.reflect.*;
 import java.nio.*;
 import java.util.*;
 
-import ppm_java._aux.logging.TLogger;
+import ppm_java.util.logging.TLogger;
 
 /**
  * JJack system class.

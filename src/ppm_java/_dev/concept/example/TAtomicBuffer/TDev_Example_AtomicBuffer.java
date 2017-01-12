@@ -17,8 +17,8 @@ package ppm_java._dev.concept.example.TAtomicBuffer;
 
 import java.nio.FloatBuffer;
 
-import ppm_java._aux.storage.TAtomicBuffer;
-import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java.util.storage.TAtomicBuffer;
+import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 
 /**
  * A simplistic example on how to use the TAtomicBuffer class.

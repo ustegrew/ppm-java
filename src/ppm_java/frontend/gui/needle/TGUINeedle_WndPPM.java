@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.frontend.gui.needle;
 
 import eu.hansolo.steelseries.tools.LedColor;
-import ppm_java._aux.debug.TWndDebug;
 import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate.EClipType;
+import ppm_java.util.debug.TWndDebug;
 
 /**
  * The PPM UI. 

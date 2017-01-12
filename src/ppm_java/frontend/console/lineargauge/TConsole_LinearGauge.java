@@ -15,10 +15,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.console.lineargauge;
 
-import ppm_java._aux.timer.TTickTimer;
-import ppm_java._aux.typelib.IControllable;
-import ppm_java._aux.typelib.VFrontend;
-import ppm_java.backend.server.TController;
+import ppm_java.backend.TController;
+import ppm_java.typelib.IControllable;
+import ppm_java.typelib.VFrontend;
+import ppm_java.util.timer.TTickTimer;
 
 /**
  * @author peter
@@ -68,7 +68,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePort_In(java.lang.String)
+     * @see ppm_java.typelib.VAudioProcessor#CreatePort_In(java.lang.String)
      */
     @Override
     public void CreatePort_In (String id)
@@ -82,7 +82,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePort_Out(java.lang.String)
+     * @see ppm_java.typelib.VAudioProcessor#CreatePort_Out(java.lang.String)
      */
     @Override
     public void CreatePort_Out (String id)
@@ -91,7 +91,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.IControllable#Start()
+     * @see ppm_java.typelib.IControllable#Start()
      */
     @Override
     public void Start ()
@@ -101,7 +101,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.IControllable#Stop()
+     * @see ppm_java.typelib.IControllable#Stop()
      */
     @Override
     public void Stop ()
@@ -109,7 +109,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     * @see ppm_java.typelib.VBrowseable#_Register()
      */
     @Override
     protected void _Register ()

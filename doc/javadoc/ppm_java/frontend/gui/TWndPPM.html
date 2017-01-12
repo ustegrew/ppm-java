@@ -144,7 +144,7 @@ extends javax.swing.JFrame</pre>
  
  Unfortunately, repaints are mostly slow, probably due to the way that 
  the swing framework does repainting. It's much faster when, alongside this window,
- I have another window with a JTextArea open which I update in high speed <a href="../../../ppm_java/_aux/debug/TWndDebug.html" title="class in ppm_java._aux.debug"><code>TWndDebug</code></a>
+ I have another window with a JTextArea open which I update in high speed <a href="../../../ppm_java/_aux/debug/TWndDebug.html" title="class in ppm_java.util.debug"><code>TWndDebug</code></a>
  filling it with a lot of text (>1024 chars? has to be new text each time?).
  At the moment I don't otherwise know how to force a repaint with each level update.
  I've tried <code>getContentPanel.repaint()</code> and other stuff. But without that

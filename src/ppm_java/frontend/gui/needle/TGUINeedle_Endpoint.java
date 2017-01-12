@@ -15,8 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.gui.needle;
 
-import ppm_java._aux.typelib.VAudioPort_Input_Samples;
-import ppm_java.backend.server.TController;
+import ppm_java.backend.TController;
+import ppm_java.typelib.VAudioPort_Input_Samples;
 
 /**
  * @author peter
@@ -44,7 +44,7 @@ public class TGUINeedle_Endpoint extends VAudioPort_Input_Samples
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     * @see ppm_java.typelib.VBrowseable#_Register()
      */
     @Override
     protected void _Register ()

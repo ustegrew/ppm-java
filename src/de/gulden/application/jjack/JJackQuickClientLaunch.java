@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import de.gulden.framework.jjack.JJackAudioProcessor;
-import ppm_java._aux.logging.TLogger;
+import ppm_java.util.logging.TLogger;
 
 /**
  * Quick launcher class for launching built in jjack clients out of the box...

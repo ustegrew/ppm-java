@@ -18,11 +18,11 @@ package ppm_java._dev.concept.trial.TAtomicBuffer;
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ppm_java._aux.storage.TAtomicBuffer;
-import ppm_java._aux.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java._aux.storage.TAtomicBuffer.EIfInvalidPolicy;
-import ppm_java._aux.storage.TAtomicBuffer_Stats;
-import ppm_java._aux.storage.TAtomicBuffer_Stats.TRecord;
+import ppm_java.util.storage.TAtomicBuffer;
+import ppm_java.util.storage.TAtomicBuffer_Stats;
+import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
 
 /**
  * Test result:

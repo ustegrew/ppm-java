@@ -14,10 +14,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 package ppm_java.frontend.gui.needle;
 
-import ppm_java._aux.typelib.IControllable;
-import ppm_java._aux.typelib.IStatEnabled;
-import ppm_java._aux.typelib.VFrontend;
-import ppm_java.backend.server.TController;
+import ppm_java.backend.TController;
+import ppm_java.typelib.IControllable;
+import ppm_java.typelib.IStatEnabled;
+import ppm_java.typelib.VFrontend;
 
 /**
  *
@@ -59,7 +59,7 @@ public class TGUINeedle_Surrogate
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
+     * @see ppm_java.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
      */
     @Override
     public void CreatePort_In (String id)
@@ -74,7 +74,7 @@ public class TGUINeedle_Surrogate
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
+     * @see ppm_java.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
      */
     @Override
     public void CreatePort_Out (String id)
@@ -83,7 +83,7 @@ public class TGUINeedle_Surrogate
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.IControllable#Start()
+     * @see ppm_java.typelib.IControllable#Start()
      */
     @Override
     public void Start ()
@@ -94,7 +94,7 @@ public class TGUINeedle_Surrogate
 
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.IStatEnabled#StatsGet()
+     * @see ppm_java.typelib.IStatEnabled#StatsGet()
      */
     @Override
     public TGUINeedle_Surrogate_Stats StatsGet ()
@@ -103,7 +103,7 @@ public class TGUINeedle_Surrogate
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.IControllable#Stop()
+     * @see ppm_java.typelib.IControllable#Stop()
      */
     @Override
     public void Stop ()
@@ -167,7 +167,7 @@ public class TGUINeedle_Surrogate
     }
 
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.VBrowseable#_Register()
+     * @see ppm_java.typelib.VBrowseable#_Register()
      */
     @Override
     protected void _Register ()

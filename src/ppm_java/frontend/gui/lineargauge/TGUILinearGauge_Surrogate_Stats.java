@@ -18,7 +18,7 @@ package ppm_java.frontend.gui.lineargauge;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
-import ppm_java._aux.typelib.IStats;
+import ppm_java.typelib.IStats;
 
 public final class TGUILinearGauge_Surrogate_Stats implements IStats
 {
@@ -79,7 +79,7 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
     }
     
     /* (non-Javadoc)
-     * @see ppm_java._aux.typelib.IStats#GetDumpStr()
+     * @see ppm_java.typelib.IStats#GetDumpStr()
      */
     @Override
     public String GetDumpStr ()

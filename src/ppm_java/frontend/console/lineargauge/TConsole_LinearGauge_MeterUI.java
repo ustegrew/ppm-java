@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.frontend.console.lineargauge;
 
-import ppm_java._aux.timer.TTickTimer;
+import ppm_java.util.timer.TTickTimer;
 
 /**
  * @author peter

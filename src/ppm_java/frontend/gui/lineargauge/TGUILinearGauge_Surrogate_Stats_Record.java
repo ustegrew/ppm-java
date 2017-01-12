@@ -17,7 +17,7 @@ package ppm_java.frontend.gui.lineargauge;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ppm_java._aux.storage.TAtomicDouble;
+import ppm_java.util.storage.TAtomicDouble;
 
 class TGUILinearGauge_Surrogate_Stats_Record
 {

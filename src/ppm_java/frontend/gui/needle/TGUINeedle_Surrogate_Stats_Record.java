@@ -17,7 +17,7 @@ package ppm_java.frontend.gui.needle;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ppm_java._aux.storage.TAtomicDouble;
+import ppm_java.util.storage.TAtomicDouble;
 
 final class TGUINeedle_Surrogate_Stats_Record
 {

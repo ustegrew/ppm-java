@@ -15,7 +15,7 @@ package de.gulden.application.jjack;
 
 import de.gulden.framework.jjack.*;
 import de.gulden.util.Toolbox;
-import ppm_java._aux.logging.TLogger;
+import ppm_java.util.logging.TLogger;
 
 import java.awt.*;
 import java.awt.event.*;
