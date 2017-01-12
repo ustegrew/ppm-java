@@ -219,7 +219,7 @@ public class TSessionProperties
         /* Setting up: Option: -d | --debug */
         if (doContinue)
         {
-            if (cl.hasOption ("h"))
+            if (cl.hasOption ("d"))
             {
                 fOptShowDebugWindow = true;
             }

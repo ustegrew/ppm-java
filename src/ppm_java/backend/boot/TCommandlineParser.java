@@ -94,7 +94,7 @@ public class TCommandlineParser
         consoleWidth.setRequired (false);
 
         logFilePath = new Option ("l", "logFile", true, "Path to log file");
-        logFilePath.setRequired (true);
+        logFilePath.setRequired (false);
         logFilePath.setArgName  ("path");
         logFilePath.setType     (String.class);
 
@@ -105,7 +105,7 @@ public class TCommandlineParser
         showDebugWindow.setRequired (false);
         
         uiType = new Option ("u", "uiType", true, "Which UI to use. Possible values: 'guiRadial', 'guiLinear', 'consoleLinear', 'consoleText'");
-        uiType.setRequired (true);
+        uiType.setRequired (false);
         uiType.setArgName  ("typeID");
         uiType.setType     (String.class);
 
