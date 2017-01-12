@@ -22,13 +22,14 @@ import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 
 /**
  * A simplistic example on how to use the TAtomicBuffer class.
- * 
- * @author peter
  */
 public class TDev_Example_AtomicBuffer
 {
     private static final float []   gkFloatArray = {1, 2, 3, 4, 5, 6, 7, 8};
     
+    /**
+     * The producer. Provides a constant stream of packets.
+     */
     private static class THighPriority_Producer implements Runnable
     {
         private float[]         fFArray;
@@ -59,6 +60,9 @@ public class TDev_Example_AtomicBuffer
         }
     }
     
+    /**
+     * The consumer. Reads the packets from the producer.
+     */
     private static class TLowPriority_Consumer implements Runnable
     {
         private TAtomicBuffer           fBuffer;

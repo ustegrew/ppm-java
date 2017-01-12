@@ -18,8 +18,7 @@ package ppm_java._dev.concept.trial.FloatBuffer.readWrite;
 import java.nio.FloatBuffer;
 
 /**
- * @author peter
- *
+ * Trial: FloatBuffer: Write -> Flip -> Read
  */
 public class TDev_Trial_ReadWrite_FloatBuffer_01
 {

@@ -16,8 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java._dev.concept.trial.console;
 
 /**
- * @author peter
- *
+ * Trial: Ansi code, on the console, move cursor up.
  */
 public class TDev_Trial_Console_MoveCursorUp_01
 {
