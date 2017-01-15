@@ -115,6 +115,7 @@ public class TLogger
             fH = new FileHandler (filePath);
             fH.setFormatter (sF);
             fLogger = Logger.getLogger (Logger.GLOBAL_LOGGER_NAME);
+            fLogger.addHandler (fH);
         }
         catch (SecurityException | IOException e)
         {
