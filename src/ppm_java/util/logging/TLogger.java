@@ -29,6 +29,14 @@ import java.util.logging.SimpleFormatter;
  */
 public class TLogger
 {
+    public static void CreateInstance ()
+    {
+        if (gLogger == null)
+        {
+            gLogger = new TLogger ();
+        }
+    }
+    
     public static void CreateInstance (String filePath)
     {
         if (gLogger == null)
@@ -44,6 +52,12 @@ public class TLogger
         kError
     };
 
+    private static enum ELogTarget
+    {
+        kStdOut,
+        kFile
+    }
+    
     private static TLogger          gLogger = null;
     
     public static void LogError (String msg, Object source, String method)
@@ -82,8 +96,18 @@ public class TLogger
     }
 
     private Logger          fLogger;
+
+    private TLogger ()
+    {
+        _Init (ELogTarget.kStdOut, null);
+    }
     
     private TLogger (String filePath)
+    {
+        _Init (ELogTarget.kFile, filePath);
+    }
+    
+    private void _Init (ELogTarget target, String filePath)
     {
         Logger                          rootLogger;
         Handler[]                       handlers;
@@ -93,38 +117,46 @@ public class TLogger
         FileHandler                     fH;
         SimpleFormatter                 sF;
 
-        /* Remove console handlers; we write log entries to a log file */
-        rootLogger = Logger.getLogger ("");
-        handlers   = rootLogger.getHandlers ();
-        nHandlers  = handlers.length;
-        if (nHandlers >= 1)
+        if (target == ELogTarget.kFile)
         {
-            for (i = 0; i < nHandlers; i++)
+            /* Remove console handlers; we write log entries to a log file */
+            rootLogger = Logger.getLogger ("");
+            handlers   = rootLogger.getHandlers ();
+            nHandlers  = handlers.length;
+            if (nHandlers >= 1)
             {
-                cH = handlers [i];
-                if (cH instanceof ConsoleHandler)
+                for (i = 0; i < nHandlers; i++)
                 {
-                    rootLogger.removeHandler (cH);
+                    cH = handlers [i];
+                    if (cH instanceof ConsoleHandler)
+                    {
+                        rootLogger.removeHandler (cH);
+                    }
                 }
             }
+            
+            try
+            {
+                sF = new SimpleFormatter ();
+                fH = new FileHandler (filePath);
+                fH.setFormatter (sF);
+                fLogger = Logger.getLogger (Logger.GLOBAL_LOGGER_NAME);
+                fLogger.addHandler (fH);
+            }
+            catch (SecurityException | IOException e)
+            {
+                e.printStackTrace();
+            }
         }
-        
-        try
+        else
         {
-            sF = new SimpleFormatter ();
-            fH = new FileHandler (filePath);
-            fH.setFormatter (sF);
-            fLogger = Logger.getLogger (Logger.GLOBAL_LOGGER_NAME);
-            fLogger.addHandler (fH);
-        }
-        catch (SecurityException | IOException e)
-        {
-            e.printStackTrace();
+            fLogger = Logger.getGlobal ();
         }
     }
 
     /**
-     * Writes a log entry.
+     * Writes a log entry. Depending on the log target, the message will either be written
+     * to a log file or to stdout/stderr.
      * 
      * @param msg       The message to log
      * @param lv        The log level
@@ -150,7 +182,7 @@ public class TLogger
         
         dtime = new Date().toString ();
         m     = dtime + ": " + src + ": " + msg;
-        switch (lv)                                                     /* [100] */
+        switch (lv)
         {
             case kError:
                 fLogger.severe (m);
@@ -166,7 +198,3 @@ public class TLogger
         }
     }
 }
-
-/*
-[100]   We log everything to stderr, so the console output front end can write sample values to stdout.  
-*/
