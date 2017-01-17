@@ -26,74 +26,50 @@ import ppm_java.util.logging.TLogger;
  * Loads the JJack driver, connects to a running instance of JackD and prints
  * the peak of every incoming frame to stdout.
  * 
- * Note - this program never finishes by itself unless terminated 
- *        from a thread separate from the main thread.
- * 
  * @author peter
  */
 public class TDev_Trial_JJack_process_01 implements JJackAudioProcessor
 {
-    /**
-     * Termination timer. Has to run in it's own thread (can't invoke Thread.sleep() 
-     * in the main thread, as execution flow never reaches it).
-     */
-    private static class TTimeout extends Thread
-    {
-        private int fTimeout;
-        
-        public TTimeout (int timeout)
-        {
-            fTimeout = timeout;
-        }
-        
-        public void run ()
-        {
-            try
-            {
-                Thread.sleep (fTimeout);
-            }
-            catch (InterruptedException e)
-            {
-            }
-            
-            Terminate ();
-        }
-    }
-    
-    private static TDev_Trial_JJack_process_01          gProcessor;
-    private static TTimeout                             gTerminator;
-    
     public static void main (String[] args)
     {
+        TDev_Trial_JJack_process_01 processor;
+        
         /* Setting up a standard logger (logs to stdout/stderr) */
         TLogger.CreateInstance ();
         
         /* Setting up Jack client and terminator thread.  */
-        gTerminator = new TTimeout (2000);
-        gProcessor  = new TDev_Trial_JJack_process_01 ();
+        processor  = new TDev_Trial_JJack_process_01 ();
         
-        /* Start termination timer. */
-        gTerminator.start ();
+        /* Connecting with the running instance of Jack */
+        JJackSystem.setProcessor (processor);
         
+        /* Terminator timer - must run in separate thread */
+        new Thread ()
+        {
+            public void run ()
+            {
+                try 
+                {
+                    Thread.sleep (500);
+                    JJackSystem.shutdown ();
+                }
+                catch (JJackException | InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+                System.exit (1);
+            }
+        }.start ();
     }
-    
-    private static void Terminate ()
-    {
-        System.out.println ("-------------------------------------------------------------------------------------------------");
-        System.out.println ("Terminating...");
-        System.out.println ("-------------------------------------------------------------------------------------------------");
-        gProcessor._Terminate ();
-        System.exit (0);
-    }
-    
-    private int fIFrame;
+
+    private int fIFrame = 0;
     
     /**
      * 
      */
     public TDev_Trial_JJack_process_01 ()
     {
-        _Init ();
+        fIFrame = 0;
     }
     
     /**
@@ -107,7 +83,6 @@ public class TDev_Trial_JJack_process_01 implements JJackAudioProcessor
     @Override
     public void process (JJackAudioEvent e)
     {
-        int                 nInPorts;
         FloatBuffer         inBuf;
         int                 nSamples;
         int                 i;
@@ -116,80 +91,20 @@ public class TDev_Trial_JJack_process_01 implements JJackAudioProcessor
         float               peak;
         
         fIFrame++;
-        System.out.print ("Frame: " + fIFrame + "; ");
-
-        nInPorts = e.countInputPorts ();
-        if (nInPorts >= 1)
+        inBuf       = e.getInput (0);
+        nSamples    = inBuf.limit ();
+        peak        = 0;
+        for (i = 0; i < nSamples; i++)
         {
-            inBuf       = e.getInput (0);
-            nSamples    = inBuf.limit ();
-            peak        = 0;
-            if (nSamples >= 1)
-            {
-                for (i = 0; i < nSamples; i++)
-                {
-                    /* Get next sample. */
-                    s = inBuf.get (i);
-                    
-                    /* Rectify (i.e. mirror a negative sample to it's positive opposite). */
-                    sRect = (s < 0)  ?  -s : s;
-                    
-                    /* Determine peak value. */
-                    peak = (sRect > peak)  ?  sRect : peak;
-                }
-                
-                System.out.println ("Peak value (abs): " + peak + ".");
-            }
-            else
-            {
-                System.out.println ("Empty frame (no samples). Peak value unavailable.");
-            }
+            /* Get next sample. */
+            s = inBuf.get (i);
+            
+            /* Rectify (i.e. mirror a negative sample to it's positive opposite). */
+            sRect = (s < 0)  ?  -s : s;
+            
+            /* Determine peak value. */
+            peak = (sRect > peak)  ?  sRect : peak;
         }
-        else
-        {
-            System.out.println ("No ports registered. Peak value unavailable.");
-        }
-    }
-    
-    private void _Init ()
-    {
-        String details;
-
-        /* Setting some properties for the Jack bridge. */
-        System.setProperty ("jjack.client.name",                    "TDev_Trial_JJack_process_01");
-        System.setProperty ("jjack.ports",                          Integer.toString (1));
-        System.setProperty ("jjack.ports.in",                       Integer.toString (1));        
-        System.setProperty ("jjack.ports.out",                      Integer.toString (0));        
-        System.setProperty ("jjack.ports.autoconnect",              Boolean.toString (false));        
-        System.setProperty ("jjack.ports.input.autoconnect",        Boolean.toString (false));        
-        System.setProperty ("jjack.ports.output.autoconnect",       Boolean.toString (false));
-        
-        /* Dummy call; will load JJack bridge */
-        JJackSystem.class.getName ();
-        
-        /* Get some basic information about this connection */
-        details     = JJackSystem.getInfo ();
-        fIFrame     = 0;
-        
-        /* Make an announcement */
-        System.out.println ("For the next few seconds we'll print the peak of each incoming frame on input channel #0.");
-        System.out.println ("-------------------------------------------------------------------------------------------------");
-        System.out.println (details);
-        System.out.println ("-------------------------------------------------------------------------------------------------");
-        
-        /* Activate connection to JackD. This will begin to call the ::process() method */
-        JJackSystem.setProcessor (this);
-    }
-
-    private void _Terminate ()
-    {
-        try
-        {
-            JJackSystem.shutdown ();
-        }
-        catch (JJackException e)
-        {
-            e.printStackTrace();
-        }
+        System.out.println ("Frame: " + fIFrame + "; Peak value (abs): " + peak + ".");
     }
 }
