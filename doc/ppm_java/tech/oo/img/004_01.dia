@@ -325,7 +325,7 @@
       </dia:attribute>
     </dia:object>
   </dia:layer>
-  <dia:layer name="components" visible="true" active="true">
+  <dia:layer name="components" visible="true">
     <dia:object type="AADL - Thread" version="0" id="O6">
       <dia:attribute name="obj_pos">
         <dia:point val="22,22"/>
@@ -1392,7 +1392,7 @@
       <dia:attribute name="aadlbox_connections"/>
     </dia:object>
   </dia:layer>
-  <dia:layer name="inscriptions" visible="true">
+  <dia:layer name="inscriptions" visible="true" active="true">
     <dia:object type="Standard - Text" version="1" id="O24">
       <dia:attribute name="obj_pos">
         <dia:point val="28.2409,28.3017"/>
@@ -1729,12 +1729,12 @@
         <dia:point val="41.2865,17.0973"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="38.5802,16.4423;43.9928,17.2648"/>
+        <dia:rectangle val="38.3702,16.4217;44.2233,17.3059"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
           <dia:attribute name="string">
-            <dia:string>#Atomic buffer#</dia:string>
+            <dia:string>#Atomic buffers#</dia:string>
           </dia:attribute>
           <dia:attribute name="font">
             <dia:font family="sans" style="80" name="Helvetica-Bold"/>
@@ -1762,12 +1762,12 @@
         <dia:point val="58,8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="54.2212,7.345;61.7787,8.1675"/>
+        <dia:rectangle val="52.47,7.32444;63.5506,8.20862"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
           <dia:attribute name="string">
-            <dia:string>#GUI update system#</dia:string>
+            <dia:string>#Analysis and display engine#</dia:string>
           </dia:attribute>
           <dia:attribute name="font">
             <dia:font family="sans" style="80" name="Helvetica-Bold"/>
