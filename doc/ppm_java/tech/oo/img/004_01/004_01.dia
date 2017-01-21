@@ -207,7 +207,7 @@
       <dia:attribute name="aadlbox_connections"/>
     </dia:object>
   </dia:layer>
-  <dia:layer name="coloring" visible="true">
+  <dia:layer name="coloring" visible="true" active="true">
     <dia:object type="Standard - Box" version="0" id="O2">
       <dia:attribute name="obj_pos">
         <dia:point val="36.6728,16"/>
@@ -235,6 +235,9 @@
       </dia:attribute>
       <dia:attribute name="show_background">
         <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="corner_radius">
+        <dia:real val="1.5"/>
       </dia:attribute>
     </dia:object>
     <dia:object type="Standard - Box" version="0" id="O3">
@@ -265,6 +268,9 @@
       <dia:attribute name="show_background">
         <dia:boolean val="true"/>
       </dia:attribute>
+      <dia:attribute name="corner_radius">
+        <dia:real val="1.5"/>
+      </dia:attribute>
     </dia:object>
     <dia:object type="Standard - Box" version="0" id="O4">
       <dia:attribute name="obj_pos">
@@ -294,6 +300,9 @@
       <dia:attribute name="show_background">
         <dia:boolean val="true"/>
       </dia:attribute>
+      <dia:attribute name="corner_radius">
+        <dia:real val="1.5"/>
+      </dia:attribute>
     </dia:object>
     <dia:object type="Standard - Box" version="0" id="O5">
       <dia:attribute name="obj_pos">
@@ -315,13 +324,16 @@
         <dia:real val="0.10000000149011612"/>
       </dia:attribute>
       <dia:attribute name="border_color">
-        <dia:color val="#7f7f7f"/>
+        <dia:color val="#e6e6fa"/>
       </dia:attribute>
       <dia:attribute name="inner_color">
         <dia:color val="#e6e6e6"/>
       </dia:attribute>
       <dia:attribute name="show_background">
         <dia:boolean val="true"/>
+      </dia:attribute>
+      <dia:attribute name="corner_radius">
+        <dia:real val="1.5"/>
       </dia:attribute>
     </dia:object>
   </dia:layer>
@@ -1392,7 +1404,7 @@
       <dia:attribute name="aadlbox_connections"/>
     </dia:object>
   </dia:layer>
-  <dia:layer name="inscriptions" visible="true" active="true">
+  <dia:layer name="inscriptions" visible="true">
     <dia:object type="Standard - Text" version="1" id="O24">
       <dia:attribute name="obj_pos">
         <dia:point val="28.2409,28.3017"/>
@@ -1729,7 +1741,7 @@
         <dia:point val="41.2865,17.0973"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="38.3702,16.4217;44.2233,17.3059"/>
+        <dia:rectangle val="38.3702,16.4423;44.2028,17.2648"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
@@ -1762,7 +1774,7 @@
         <dia:point val="58,8"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="52.47,7.32444;63.5506,8.20862"/>
+        <dia:rectangle val="52.47,7.345;63.53,8.1675"/>
       </dia:attribute>
       <dia:attribute name="text">
         <dia:composite type="text">
