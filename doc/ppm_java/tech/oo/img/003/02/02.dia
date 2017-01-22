@@ -68,7 +68,7 @@
         <dia:point val="27.95,10.0717"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="27.9,10.0217;45,21.9361"/>
+        <dia:rectangle val="27.9,10.0217;45,21.9362"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="27.95,10.0717"/>
@@ -112,7 +112,7 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:attribute name="file">
-        <dia:string>#004_02_01.png#</dia:string>
+        <dia:string>#02_01.png#</dia:string>
       </dia:attribute>
     </dia:object>
     <dia:object type="Standard - Image" version="0" id="O2">
@@ -138,7 +138,7 @@
         <dia:boolean val="true"/>
       </dia:attribute>
       <dia:attribute name="file">
-        <dia:string>#004_02_02.png#</dia:string>
+        <dia:string>#02_02.png#</dia:string>
       </dia:attribute>
     </dia:object>
     <dia:object type="Standard - Ellipse" version="0" id="O3">
@@ -146,7 +146,7 @@
         <dia:point val="18.2784,9.78915"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="18.0284,9.53915;29.6323,21.6056"/>
+        <dia:rectangle val="18.0284,9.53915;29.6322,21.6056"/>
       </dia:attribute>
       <dia:attribute name="elem_corner">
         <dia:point val="18.2784,9.78915"/>
@@ -226,7 +226,7 @@
         <dia:point val="29.3947,14.832"/>
       </dia:attribute>
       <dia:attribute name="obj_bb">
-        <dia:rectangle val="28.2883,14.6858;30.5098,16.9565"/>
+        <dia:rectangle val="28.2883,14.6858;30.5097,16.9565"/>
       </dia:attribute>
       <dia:attribute name="conn_endpoints">
         <dia:point val="29.3947,14.832"/>
