@@ -3,4 +3,7 @@ Java for prototyping. I intend to port to C++/QT later)
 
 For some documentation, visit the `doc` sub directory.
 
+We're making all documentation available on the 
+[github wiki](https://github.com/ustegrew/ppm-java/wiki) section as well. 
+
  
