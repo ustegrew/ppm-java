@@ -55,7 +55,7 @@ public class TDev_Example_multithread_unsafe
         if (fValue > 0)
         {
             fValue--;
-            try {Thread.sleep (500);} catch (InterruptedException e) {}
+            //try {Thread.sleep (500);} catch (InterruptedException e) {}
         }
         System.out.println ("Exiting  Pop  ().  Number: " + fValue);
     }
@@ -66,7 +66,7 @@ public class TDev_Example_multithread_unsafe
         if (fValue < 1)
         {
             fValue++;
-            try {Thread.sleep (500);} catch (InterruptedException e) {}
+            //try {Thread.sleep (500);} catch (InterruptedException e) {}
         }
         System.out.println ("Exiting  Push ().  Number: " + fValue);
     }
