@@ -23,6 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class THouse
 {
+    private static final int        gkNumVisitors   = 5;
+    private static final int        gkTimeAudience  = 1000;
+    private static final int        gkLocked        = 1;
+    private static final int        gkUnlocked      = 0;
+    
     public static void main (String[] args)
     {
         THouse              house;
@@ -30,9 +35,6 @@ public class THouse
         house = new THouse ();
         house.GetMeSomeVisitors ();
     }
-    
-    private static final int        gkLocked    = 1;
-    private static final int        gkUnlocked  = 0;
     
     private AtomicInteger           fState;
     private TVisitor[]              fVisitors;
@@ -45,8 +47,8 @@ public class THouse
         int i;
         
         fState    = new AtomicInteger (gkUnlocked);  
-        fVisitors = new TVisitor [10];
-        for (i = 0; i < 9; i++)
+        fVisitors = new TVisitor [gkNumVisitors];
+        for (i = 0; i < gkNumVisitors; i++)
         {
             fVisitors[i] = new TVisitor (this, i);
         }
@@ -56,7 +58,7 @@ public class THouse
     {
         int i;
         
-        for (i = 0; i < 9; i++)
+        for (i = 0; i < gkNumVisitors; i++)
         {
             fVisitors[i].start ();
         }
@@ -69,7 +71,7 @@ public class THouse
         isSuccess = fState.compareAndSet (gkUnlocked, gkLocked);
         if (isSuccess)
         {
-            try {Thread.sleep (1000);} catch (InterruptedException e) {}
+            try {Thread.sleep (gkTimeAudience);} catch (InterruptedException e) {}
             fState.getAndSet (gkUnlocked);
         }
         

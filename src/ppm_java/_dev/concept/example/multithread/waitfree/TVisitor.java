@@ -23,7 +23,7 @@ class TVisitor extends Thread
 {
     private THouse                  fHouse;
     private int                     fID;
-    private long                    fTTot;
+    private String                  fPreamble;
     
     /**
      * 
@@ -32,7 +32,7 @@ class TVisitor extends Thread
     {
         fHouse          = house;
         fID             = id;
-        fTTot           = 0;
+        fPreamble       = "Visitor: " + fID;
     }
     
     @Override
@@ -41,27 +41,26 @@ class TVisitor extends Thread
         long            t0;
         long            t1;
         long            dT;
+        long            tTot;
         boolean         isSuccess;
 
+        tTot = 0;
         do
         {
             t0        = System.currentTimeMillis ();
             isSuccess = fHouse.Visit (fID);
             t1        = System.currentTimeMillis ();
             dT        = t1 - t0;
-            fTTot    += dT;
+            tTot     += dT;
             if (isSuccess)
             {
-                System.out.println ("Visitor #" + fID + ": Had an audience!     Time spent        : " + dT + "ms.");
+                System.out.println (fPreamble + ": Had an audience! Time spent (total): " + tTot + "ms.");
             }
             else
             {
-                System.out.println ("Visitor #" + fID + ": Unsuccessfull visit, Time spent trying : " + dT + "ms.");
                 try {Thread.sleep (500);} catch (InterruptedException e) {}
             }
         }
         while (! isSuccess);
-        
-        System.out.println ("Visitor #" + fID + ": FINISHED.            Time spent (total): " + fTTot + "ms.");
     }
 }

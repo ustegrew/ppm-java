@@ -21,6 +21,9 @@ package ppm_java._dev.concept.example.multithread.wait;
  */
 public class THouse
 {
+    private static final int        gkNumVisitors   = 5;
+    private static final long       gkTimeAudience  = 1000;
+    
     public static void main (String[] args)
     {
         THouse              house;
@@ -38,8 +41,8 @@ public class THouse
     {
         int i;
         
-        fVisitors = new TVisitor [10];
-        for (i = 0; i < 9; i++)
+        fVisitors = new TVisitor [gkNumVisitors];
+        for (i = 0; i < gkNumVisitors; i++)
         {
             fVisitors[i] = new TVisitor (this, i);
         }
@@ -49,7 +52,7 @@ public class THouse
     {
         int i;
         
-        for (i = 0; i < 9; i++)
+        for (i = 0; i < gkNumVisitors; i++)
         {
             fVisitors[i].start ();
         }
@@ -57,7 +60,6 @@ public class THouse
 
     public synchronized void Visit (int id)
     {
-        System.out.println ("Got visitor: " + id);
-        try {Thread.sleep (1000);} catch (InterruptedException e) {}
+        try {Thread.sleep (gkTimeAudience);} catch (InterruptedException e) {}
     }
 }

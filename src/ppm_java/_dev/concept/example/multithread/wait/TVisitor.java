@@ -23,6 +23,7 @@ class TVisitor extends Thread
 {
     private THouse                  fHouse;
     private int                     fID;
+    private String                  fPreamble;
     
     /**
      * 
@@ -31,6 +32,7 @@ class TVisitor extends Thread
     {
         fHouse          = house;
         fID             = id;
+        fPreamble       = "Visitor #" + fID;
     }
 
     @Override
@@ -40,13 +42,11 @@ class TVisitor extends Thread
         long            t1;
         long            dT;
 
-        System.out.println ("Visitor #" + fID + ": Trying to make a visit to the house.");
-
         t0 = System.currentTimeMillis ();
         fHouse.Visit (fID);
         t1 = System.currentTimeMillis ();
         dT = t1 - t0;
         
-        System.out.println ("Visitor #" + fID + ": Done my visit. Took me: " + dT + "ms.");
+        System.out.println (fPreamble + ": Had an audience! Time spent: " + dT + "ms.");
     }
 }
