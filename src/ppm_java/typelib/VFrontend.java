@@ -18,7 +18,7 @@ package ppm_java.typelib;
 import ppm_java.backend.TController;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public abstract class VFrontend extends VAudioProcessor

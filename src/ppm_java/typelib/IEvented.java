@@ -36,7 +36,7 @@ import ppm_java.backend.module.timer.TTimer;
  * {@link #OnEvent(int)}. That's why we provide additional methods that allow
  * for arguments with each event (e.g. {@link #OnEvent(int, int)}.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public interface IEvented
 {

@@ -19,7 +19,7 @@ package ppm_java.typelib;
  * A module or construct which can receive some low level 
  * control commands (start/stop etc.).
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public interface IControllable
 {

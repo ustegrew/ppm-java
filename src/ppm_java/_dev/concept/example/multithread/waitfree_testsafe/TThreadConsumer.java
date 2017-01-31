@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java._dev.concept.example.multithread.waitfree_testsafe;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  */
 class TThreadConsumer extends Thread
 {

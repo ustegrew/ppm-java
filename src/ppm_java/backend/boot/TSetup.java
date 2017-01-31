@@ -19,7 +19,7 @@ import ppm_java.backend.TController;
 import ppm_java.util.logging.TLogger;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TSetup

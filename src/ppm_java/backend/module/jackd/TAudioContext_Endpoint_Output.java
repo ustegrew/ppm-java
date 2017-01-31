@@ -19,7 +19,7 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Output_Chunks_NeedsBuffer;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  */
 public class TAudioContext_Endpoint_Output extends VAudioPort_Output_Chunks_NeedsBuffer
 {

@@ -35,7 +35,7 @@ import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
  * and passes those on to further stages. Also, initiates cycle time correction to the GUI timer
  * if we have data loss.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TNodePump 
     extends     VAudioProcessor 

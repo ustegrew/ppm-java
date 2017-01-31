@@ -25,7 +25,7 @@ import de.gulden.framework.jjack.JJackSystem;
  * a running instance of JackD; therefore the problem was with my application, 
  * not with JJack. 
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TDev_Trial_JJack_load_01 implements JJackAudioProcessor
 {

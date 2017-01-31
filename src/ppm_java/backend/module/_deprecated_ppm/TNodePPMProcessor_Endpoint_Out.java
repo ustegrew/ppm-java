@@ -19,7 +19,7 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Output_Samples;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 @SuppressWarnings ("deprecation")

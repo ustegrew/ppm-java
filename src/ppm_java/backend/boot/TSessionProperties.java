@@ -18,7 +18,7 @@ package ppm_java.backend.boot;
 import org.apache.commons.cli.CommandLine;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TSessionProperties

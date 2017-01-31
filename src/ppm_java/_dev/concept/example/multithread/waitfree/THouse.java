@@ -18,7 +18,7 @@ package ppm_java._dev.concept.example.multithread.waitfree;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class THouse

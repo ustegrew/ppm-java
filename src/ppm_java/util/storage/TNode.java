@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.util.storage;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 class TNode<T>

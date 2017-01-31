@@ -26,7 +26,7 @@ import ppm_java.util.logging.TLogger;
  * Loads the JJack driver, connects to a running instance of JackD and prints
  * the peak of every incoming frame to stdout.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TDev_Trial_JJack_process_01 implements JJackAudioProcessor
 {

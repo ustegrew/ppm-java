@@ -34,7 +34,7 @@ import ppm_java.util.debug.TWndDebug;
  * gauge component with minimal amount of coding. For now I will keep the debug window 
  * alongside this one.
  * 
- * @author peter
+ * @author Peter Hoppe
  * @see    https://github.com/HanSolo/SteelSeries-Swing
  */
 class TGUINeedle_WndPPM extends javax.swing.JFrame

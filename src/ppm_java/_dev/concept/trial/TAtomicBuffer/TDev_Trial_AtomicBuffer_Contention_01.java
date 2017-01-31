@@ -1115,7 +1115,7 @@ Stat counters: overruns: 283, underruns: 760, contentions: 184
  * ({@link TAtomicBuffer#GetNumUnderruns()}). 
  * If everything works, the underrun counter should stay at zero value.
  *  
- * @author peter
+ * @author Peter Hoppe
  */
 public class TDev_Trial_AtomicBuffer_Contention_01
 {

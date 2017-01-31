@@ -18,7 +18,7 @@ package ppm_java.typelib;
 import ppm_java.util.storage.TArrayMap;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public abstract class VAudioProcessor extends VAudioObject

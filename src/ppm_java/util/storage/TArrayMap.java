@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TArrayMap<T>

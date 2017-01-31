@@ -19,7 +19,7 @@ import ppm_java.typelib.IEvented;
 import ppm_java.typelib.VBrowseable;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  */
 class TBrokerSubscription
 {

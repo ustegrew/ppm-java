@@ -45,7 +45,7 @@ import ppm_java.backend.boot.TSetup;
  * some boilerplate code and modules with trivial functionality (e.g. the peak estimator). 
  * However, the flexibility trumps, as it makes the design much more scalable. 
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TMain
 {

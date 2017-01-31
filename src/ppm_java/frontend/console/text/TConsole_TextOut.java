@@ -27,7 +27,7 @@ import ppm_java.typelib.VFrontend;
  * denotes the value of the peak level. Channel numbers map as 0 (zero) for 
  * the left channel and 1 (one) for the right channel. 
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TConsole_TextOut extends VFrontend implements IControllable
 {

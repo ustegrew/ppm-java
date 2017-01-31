@@ -19,7 +19,7 @@ import ppm_java.typelib.IStats;
 import ppm_java.util.storage.TAtomicDouble;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TNodePeakEstimator_Stats implements IStats

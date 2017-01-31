@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import ppm_java.typelib.IStats;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TNodePump_Stats implements IStats

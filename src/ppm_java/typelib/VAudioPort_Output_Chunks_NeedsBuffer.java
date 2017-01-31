@@ -25,7 +25,7 @@ import ppm_java.util.storage.TAtomicBuffer_Stats;
  * which run in a different thread space than the 
  * processors receiving data.
  * 
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Output

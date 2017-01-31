@@ -21,7 +21,7 @@ import ppm_java.typelib.VFrontend;
 import ppm_java.util.timer.TTickTimer;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TConsole_LinearGauge extends VFrontend implements IControllable

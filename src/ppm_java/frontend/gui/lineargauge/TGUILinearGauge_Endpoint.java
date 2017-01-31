@@ -17,7 +17,7 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TGUILinearGauge_Endpoint extends VAudioPort_Input_Samples

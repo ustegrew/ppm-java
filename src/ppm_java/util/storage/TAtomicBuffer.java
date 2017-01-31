@@ -164,7 +164,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * on some platforms the <code>synchronized</code> primitive is quite costly, i.e.
  * time consuming. The {@link AtomicInteger#compareAndSet(int, int)} is much faster.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TAtomicBuffer
 {

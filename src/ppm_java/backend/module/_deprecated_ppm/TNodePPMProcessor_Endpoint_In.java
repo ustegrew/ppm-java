@@ -21,7 +21,7 @@ import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 @SuppressWarnings ("deprecation")

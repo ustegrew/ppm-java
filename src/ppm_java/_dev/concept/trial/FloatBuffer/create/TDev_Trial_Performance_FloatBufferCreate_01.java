@@ -403,7 +403,7 @@ import java.nio.FloatBuffer;
  * with creating a new FloatBuffer with every iteration of the audio 
  * processing loop.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TDev_Trial_Performance_FloatBufferCreate_01
 {

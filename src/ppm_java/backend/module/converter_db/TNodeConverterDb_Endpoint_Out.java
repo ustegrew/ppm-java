@@ -20,7 +20,7 @@ import ppm_java.typelib.VAudioPort_Output_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TNodeConverterDb_Endpoint_Out extends VAudioPort_Output_Samples

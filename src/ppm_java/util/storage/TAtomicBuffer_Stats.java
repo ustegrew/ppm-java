@@ -22,7 +22,7 @@ import ppm_java.typelib.IStats;
 /**
  * Runtime statistics of a {@link TAtomicBuffer}. 
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TAtomicBuffer_Stats implements IStats
 {

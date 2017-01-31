@@ -29,7 +29,7 @@ import ppm_java.util.logging.TLogger;
  * Note - this program never finishes by itself unless terminated 
  *        from a thread separate from the main thread.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TDev_Trial_JJack_process_02 implements JJackAudioProcessor
 {

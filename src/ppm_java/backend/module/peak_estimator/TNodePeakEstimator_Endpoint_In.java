@@ -21,7 +21,7 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Unbuffered;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TNodePeakEstimator_Endpoint_In extends VAudioPort_Input_Chunks_Unbuffered

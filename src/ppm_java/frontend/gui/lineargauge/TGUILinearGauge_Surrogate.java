@@ -19,7 +19,7 @@ import ppm_java.typelib.VFrontend;
 
 /**
  *
- * @author peter
+ * @author Peter Hoppe
  */
 public class TGUILinearGauge_Surrogate 
     extends     VFrontend 

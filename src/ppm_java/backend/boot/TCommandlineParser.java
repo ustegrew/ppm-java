@@ -27,7 +27,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TCommandlineParser

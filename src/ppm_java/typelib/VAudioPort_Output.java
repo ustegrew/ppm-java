@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public abstract class VAudioPort_Output extends VAudioPort

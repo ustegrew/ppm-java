@@ -18,7 +18,7 @@ package ppm_java._dev.concept.example.multithread.waitfree_testsafe;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TDev_Example_multithread_waitfree_safe

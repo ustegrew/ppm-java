@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import ppm_java.typelib.VBrowseable;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 class TBrokerSubscriptionList

@@ -26,7 +26,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TWndDebug extends JFrame

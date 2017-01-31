@@ -18,7 +18,7 @@ package ppm_java.typelib;
 import java.nio.FloatBuffer;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public abstract class VAudioPort_Input_Chunks_Unbuffered extends VAudioPort_Input

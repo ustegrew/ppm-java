@@ -18,7 +18,7 @@ package ppm_java.frontend.console.lineargauge;
 import ppm_java.util.timer.TTickTimer;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TConsole_LinearGauge_MeterUI

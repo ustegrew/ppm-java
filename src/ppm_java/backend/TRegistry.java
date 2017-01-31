@@ -22,7 +22,7 @@ import ppm_java.util.logging.TLogger;
 import ppm_java.util.storage.TArrayMap;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TRegistry

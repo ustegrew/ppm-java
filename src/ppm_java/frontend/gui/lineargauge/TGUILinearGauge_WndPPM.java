@@ -23,7 +23,7 @@ import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate.EClipType;
  * Replaced it with a steelseries-swing gauge LinearBargraph component 
  * (https://github.com/HanSolo/SteelSeries-Swing) - which is very responsive. 
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 class TGUILinearGauge_WndPPM extends javax.swing.JFrame
 {

@@ -21,7 +21,7 @@ import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffered

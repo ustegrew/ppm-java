@@ -31,7 +31,7 @@ import ppm_java.util.logging.TLogger;
 /**
  * Audio driver for the JackD server.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public final class TAudioContext_JackD 
     extends     VAudioDriver 

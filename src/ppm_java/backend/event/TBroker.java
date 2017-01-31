@@ -24,7 +24,7 @@ import ppm_java.util.storage.TAtomicArrayMap;
  * This is the backbone of the runtime control messaging  
  * system connecting the various modules.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TBroker
 {

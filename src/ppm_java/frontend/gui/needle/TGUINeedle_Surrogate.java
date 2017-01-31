@@ -21,7 +21,7 @@ import ppm_java.typelib.VFrontend;
 
 /**
  *
- * @author peter
+ * @author Peter Hoppe
  */
 public class TGUINeedle_Surrogate 
     extends     VFrontend 

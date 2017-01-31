@@ -18,7 +18,7 @@ package ppm_java.util.storage;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TAtomicDouble

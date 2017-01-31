@@ -22,7 +22,7 @@ import ppm_java.typelib.VBrowseable;
 import ppm_java.util.logging.TLogger;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TTimer 

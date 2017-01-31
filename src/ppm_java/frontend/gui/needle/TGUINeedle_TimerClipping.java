@@ -32,7 +32,7 @@ import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate.EClipType;
  * simple state machine which receives the requests and 
  * does the corresponding transistions.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 class TGUINeedle_TimerClipping extends Thread 
 {

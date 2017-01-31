@@ -42,7 +42,7 @@ import ppm_java.util.debug.TWndDebug;
 import ppm_java.util.logging.TLogger;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  */
 @SuppressWarnings ("deprecation")
 public final class TController

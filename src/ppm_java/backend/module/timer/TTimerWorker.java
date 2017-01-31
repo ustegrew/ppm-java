@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 class TTimerWorker extends Thread

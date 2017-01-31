@@ -33,7 +33,7 @@ import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate.EClipType;
  * simple state machine which receives the requests and 
  * does the corresponding transistions.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 class TGUILinearGauge_TimerClipping extends Thread 
 {

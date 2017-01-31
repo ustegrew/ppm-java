@@ -22,7 +22,7 @@ import java.nio.FloatBuffer;
  * Should be used as output for audio processors running in 
  * the same thread space.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public abstract class VAudioPort_Output_Chunks_NoBuffer extends VAudioPort_Output
 {

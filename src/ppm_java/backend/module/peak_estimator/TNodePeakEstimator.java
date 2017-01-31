@@ -23,7 +23,7 @@ import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TNodePeakEstimator 

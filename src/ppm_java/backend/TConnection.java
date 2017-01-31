@@ -20,7 +20,7 @@ import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.typelib.VBrowseable;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TConnection extends VBrowseable

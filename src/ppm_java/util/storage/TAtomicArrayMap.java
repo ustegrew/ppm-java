@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Thread safe {@link TArrayMap} wrapper.
  * 
- * @author peter
+ * @author Peter Hoppe
  */
 public class TAtomicArrayMap<T>
 {

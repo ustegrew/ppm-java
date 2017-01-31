@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TLogger

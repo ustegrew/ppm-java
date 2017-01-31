@@ -20,7 +20,7 @@ import ppm_java.typelib.VAudioPort_Input_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
- * @author peter
+ * @author Peter Hoppe
  *
  */
 public class TNodeIntegrator_PPMBallistics_Endpoint_In extends VAudioPort_Input_Samples
