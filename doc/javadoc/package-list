@@ -1,5 +1,10 @@
 ppm_java
 ppm_java._dev.concept.example.TAtomicBuffer
+ppm_java._dev.concept.example.multithread.safe
+ppm_java._dev.concept.example.multithread.unsafe
+ppm_java._dev.concept.example.multithread.wait
+ppm_java._dev.concept.example.multithread.waitfree
+ppm_java._dev.concept.example.multithread.waitfree_testsafe
 ppm_java._dev.concept.trial.FloatBuffer.create
 ppm_java._dev.concept.trial.FloatBuffer.readWrite
 ppm_java._dev.concept.trial.JJack
