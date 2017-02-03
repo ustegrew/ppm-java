@@ -215,7 +215,7 @@ public class TNodePump
             fTCycleDesired = tDelta;
         }
         xSampleRate         = fAudioDriver.GetSampleRate ();
-        nSamplesPerCycle    = tDelta * xSampleRate / 1000;
+        nSamplesPerCycle    = tDelta * xSampleRate / 1000;              /* [140] */
         
         fTDelta             = tDelta;
         fTLast              = tNow;
@@ -260,7 +260,7 @@ public class TNodePump
                 fTCycleDesired--;
                 TController.PostEvent (gkEventTimerAdjustInterval, fTCycleDesired, id);
             }
-            st.Clear ();                                            /* [130 */
+            st.Clear ();                                                /* [130 */
         }
         else if (stRec.fDiffOverUnderruns < 0)
         {   /* Underruns - meaning the GUI update cycle tries to draw too
@@ -354,5 +354,25 @@ public class TNodePump
         we copy the data here, the atomic buffer has released it's critical 
         sections and the producer might rewrite the buffer which will give us 
         faulty data here. Unfortunately there isn't an easy way around this.
+        It was this place which inspired the TAtomicBuffer kNoCopy policy, and the
+        only place where this policy would make some sense. We leave the policy 
+        in place, just in case we find a way to use it without compromising 
+        thread safety. For future developments. For now, the extra copy doesn't 
+        seem to have a visible impact on the GUI behaviour. 
 [130]   Otherwise stRec.fDiffOverUnderruns won't converge to zero without more over/underruns
+[140]   Imbalance problem: Number of samples is based on GUI cycle time and sampling frequency.
+        We will get a situation where during one GUI cycle we process a majority of the last 
+        Jack frame; then in the next GUI cycle we compute process that frame's leftovers
+        (as Jack hasn't delivered a new frame yet). The first GUI cycle will have a lot of 
+        samples, the next GUI cycle will have a few remaining samples. 
+        Mitigation: We need to compute the GUI cycle number of samples in such a way that this
+        imbalance is minimized -> the calculation must include the Jack frame size, dividing 
+        the Jack frame evenly among the successive GUI cycles as known at the time of calculation. 
+        This calculation must be renewed each GUI cycle, i.e. happen inside _RecomputeRuntimeStats().
+        This means, we need to modify the calculation at the source line with footnote [140] 
+        to include Jack frame size and approx. evenly distribute sample chunk size per GUI cycle. 
+        It'll never be totally even, as the number of samples can only be an integer, and 
+        "really even" would mean a real number, i.e. in the mathematical set of real numbers.
+        You simply can't have a "real number" of samples, only a "Natural{0, 1, 2, ...} number" 
+        of samples. 
  */
