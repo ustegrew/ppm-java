@@ -18,6 +18,8 @@ package ppm_java.util.storage;
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import ppm_java.typelib.IStatEnabled;
+
 /**
  * An atomic-access wrapper around a <code>FloatBuffer</code>. Designed 
  * for situations where we need to transport data between a high priority
@@ -166,7 +168,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  * @author Peter Hoppe
  */
-public class TAtomicBuffer
+public class TAtomicBuffer implements IStatEnabled
 {
     /**
      * The Copy policy. To be supplied as argument to the constructor.
