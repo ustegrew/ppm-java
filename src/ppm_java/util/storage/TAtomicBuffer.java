@@ -228,8 +228,8 @@ public class TAtomicBuffer implements IStatEnabled
      */
     public static enum EIfInvalidPolicy
     {
-        kReturnNull,
-        kReturnEmpty
+        kReturnEmpty,
+        kReturnNull
     }
     
     private static final int                gkFree                  = 0;
@@ -363,30 +363,6 @@ public class TAtomicBuffer implements IStatEnabled
     }
     
     /**
-     * Clears the associated runtime statistics.
-     * Not thread safe, but good enough to use 
-     * for automatic compensation of problems.
-     * 
-     * @see TAtomicBuffer_Stats
-     */
-    public void StatsClear ()
-    {
-        fStats.Clear ();
-    }
-    
-    /**
-     * @return      The associated runtime statistics.
-     *              Not thread safe, but good enough to use 
-     *              for automatic compensation of problems.
-     * 
-     * @see TAtomicBuffer_Stats
-     */
-    public TAtomicBuffer_Stats StatsGet ()
-    {
-        return fStats;
-    }
-    
-    /**
      * Returns <code>true</code> if the critical section is locked. 
      * It's not thread-safe because by the time the result is returned
      * the blocking thread may already have (un)locked the critical 
@@ -454,6 +430,30 @@ public class TAtomicBuffer implements IStatEnabled
                 fStats.IncrementContentions ();
             }
         }
+    }
+    
+    /**
+     * Clears the associated runtime statistics.
+     * Not thread safe, but good enough to use 
+     * for automatic compensation of problems.
+     * 
+     * @see TAtomicBuffer_Stats
+     */
+    public void StatsClear ()
+    {
+        fStats.Clear ();
+    }
+    
+    /**
+     * @return      The associated runtime statistics.
+     *              Not thread safe, but good enough to use 
+     *              for automatic compensation of problems.
+     * 
+     * @see TAtomicBuffer_Stats
+     */
+    public TAtomicBuffer_Stats StatsGet ()
+    {
+        return fStats;
     }
     
     /**
