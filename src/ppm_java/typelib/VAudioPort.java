@@ -15,26 +15,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.typelib;
 
+import java.nio.FloatBuffer;
+
 /**
+ * Base class for all audio ports. An audio port is always associated with a hosting {@link VAudioProcessor}. 
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort extends VAudioObject
 {
+    /**
+     * Type of port. 
+     */
     public static enum EConnectibleType
     {
+        /**
+         * This port accepts / sends sample chunks ({@link FloatBuffer}).
+         */
         kConn_Chunks,
+        
+        /**
+         * This port accepts / sends single samples.
+         */
         kConn_Samples
     }
 
+    /**
+     * The audio processor hosting this port.
+     */
     private VAudioProcessor         fHost;
     
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this port.
+     * @param host          The audio processor hosting this port.
+     */
     public VAudioPort (String id, VAudioProcessor host)
     {
         super (id);
         fHost = host;
     }
     
+    /**
+     * @return  The audio processor hosting this port.
+     */
     protected VAudioProcessor _GetHost ()
     {
         return fHost;

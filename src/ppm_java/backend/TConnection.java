@@ -20,11 +20,20 @@ import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.typelib.VBrowseable;
 
 /**
+ * A connection between two endpoints. This object just ensures that the 
+ * connection is browseable. It won't handle any data flow.  
+ * 
  * @author Peter Hoppe
- *
  */
 public class TConnection extends VBrowseable
 {
+    /**
+     * Creates a connection from endpoint <code>idFromPort</code> to 
+     * endpoint <code>idToPort</code>. 
+     * 
+     * @param idFromPort    Unique ID, source port.
+     * @param idToPort      Unique ID, target port.
+     */
     public static void CreateInstance (String idFromPort, String idToPort)
     {
         VAudioPort_Output           fromPort;
@@ -36,7 +45,14 @@ public class TConnection extends VBrowseable
         new TConnection (fromPort, toPort);
     }
     
+    /**
+     * Counter to achieve unique ID of this connection.
+     */
     private static int gCounter = -1;
+    
+    /**
+     * @return  Creates the unique ID as which we register this connection.
+     */
     private static String _GetID ()
     {
         String ret;
@@ -47,9 +63,24 @@ public class TConnection extends VBrowseable
         return ret;
     }
     
+    /**
+     * The Source port
+     */
     private VAudioPort_Output               fSource;
+    
+    
+    /**
+     * The target port
+     */
     private VAudioPort_Input                fTarget;
     
+    /**
+     * cTor. Caches fromPort and toPort, so we won't need to query those 
+     * from the global registry.
+     * 
+     * @param fromPort      Source port
+     * @param toPort        Target port
+     */
     private TConnection (VAudioPort_Output fromPort, VAudioPort_Input toPort)
     {
         super (TConnection._GetID ());
@@ -58,11 +89,17 @@ public class TConnection extends VBrowseable
         fTarget     = toPort;
     }
     
+    /**
+     * @return  The source port.
+     */
     public VAudioPort_Output Get_FromPort ()
     {
         return fSource;
     }
     
+    /**
+     * @return  The target port.
+     */
     public VAudioPort_Input Get_ToPort ()
     {
         return fTarget;

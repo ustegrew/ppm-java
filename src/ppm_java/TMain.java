@@ -47,24 +47,51 @@ import ppm_java.backend.boot.TSetup;
  * 
  * @author Peter Hoppe
  */
+/**
+ * @author peter
+ *
+ */
+/**
+ * @author peter
+ *
+ */
 public class TMain
 {
     /**
-     * @param args
+     * Application entry point.
+     * 
+     * @param args          Commandline arguments. See user documentation.
      */
     public static void main (String[] args)
     {
         new TMain (args);
     }
     
+    /**
+     * Properties for the current session.
+     */
     private TSessionProperties                  fSessionProps;
+    
+    /**
+     * The setup executor. 
+     */
     private TSetup                              fSetupAgent;
     
-    public TMain (String[] args)
+    /**
+     * cTor. 
+     * 
+     * @param args          Commandline arguments. See user documentation.
+     */
+    private TMain (String[] args)
     {
         _Init (args);
     }
     
+    /**
+     * Initializer. Sets up the session according to the commandline args and starts all the modules.
+     * 
+     * @param args          Commandline arguments. See user documentation.
+     */
     private void _Init (String[] args)
     {
         TCommandlineParser          cp;

@@ -16,11 +16,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
+ * Base class for all browseable audio objects.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioObject extends VBrowseable
 {
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this audio object.
+     */
     public VAudioObject (String id)
     {
         super (id);

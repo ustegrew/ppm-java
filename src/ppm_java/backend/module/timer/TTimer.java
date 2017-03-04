@@ -16,34 +16,58 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.module.timer;
 
 import ppm_java.backend.TController;
+import ppm_java.backend.module.pump.TNodePump;
 import ppm_java.typelib.IControllable;
 import ppm_java.typelib.IEvented;
 import ppm_java.typelib.VBrowseable;
 import ppm_java.util.logging.TLogger;
 
 /**
- * @author Peter Hoppe
- *
+ * Emits a constant stream of {@link IEvented#gkEventTimerTick} events,
+ * on event per given interval. Modules can subscribe to this timer and
+ * will then receive the events. Recipients can use the timer events
+ * to perform regular tasks.
+ * 
+ * Modules, in turn can send {@link IEvented#gkEventTimerAdjustInterval}
+ * events to change the interval time in this timer. This is the basis 
+ * of the data contention compensation we use in the display engine.
+ * 
+ * @author  Peter Hoppe
+ * @see     TController#Create_Connection_Events(String, String)
+ * @see     TNodePump#_Resolve_DataLoss()
  */
 public class TTimer 
     extends         VBrowseable
     implements      IControllable, IEvented
 {
+    /**
+     * Minimum interval.
+     */
     public static final int gkLoopIntervalMin = 10;
 
-    public static TTimer CreateInstance (String id, int intervalMs)
+    /**
+     * Creates a new TTimer instance. 
+     * 
+     * @param id            Unique ID as which we register this timer.
+     * @param intervalMs    Requested timer interval, in ms. We enforce a lower limit
+     *                      of {@link #gkLoopIntervalMin} ms.
+     */
+    public static void CreateInstance (String id, int intervalMs)
     {
-        TTimer ret;
-        
-        ret = new TTimer (id, intervalMs);
-        
-        return ret;
+        new TTimer (id, intervalMs);
     }
     
+    /**
+     * The internal worker thread which does the actual looping and event triggering.
+     */
     private TTimerWorker                fWorker;
     
     /**
-     * @param id
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this timer.
+     * @param delayMs       Requested timer interval, in ms. We enforce a lower limit
+     *                      of {@link #gkLoopIntervalMin} ms.
      */
     private TTimer (String id, int delayMs)
     {
@@ -55,6 +79,9 @@ public class TTimer
         fWorker = new TTimerWorker (this, d);
     }
     
+    /**
+     * @return  This timer's interval in ms.
+     */
     public long GetInterval ()
     {
         long ret;
@@ -105,11 +132,17 @@ public class TTimer
         // Do nothing
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IControllable#Start()
+     */
     public void Start ()
     {
         fWorker.start ();
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IControllable#Stop()
+     */
     public void Stop ()
     {
         fWorker.Stop ();
@@ -124,6 +157,9 @@ public class TTimer
         TController.Register (this);
     }
 
+    /**
+     * Sends the {@link IEvented#gkEventTimerTick} event to all subscribers.
+     */
     void SendTimerEvent ()
     {
         String id;
@@ -132,6 +168,12 @@ public class TTimer
         TController.PostEvent (IEvented.gkEventTimerTick, id);
     }
     
+    /**
+     * @param   delayMs     The suggested interval.
+     * @return              The suggested interval, if it's larger than (or equal to)
+     *                      {@link #gkLoopIntervalMin}. Otherwise, returns 
+     *                      {@link #gkLoopIntervalMin} 
+     */
     private long _GetSaneInterval (long delayMs)
     {
         long ret;

@@ -18,23 +18,57 @@ package ppm_java.backend.module.timer;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import ppm_java.typelib.IEvented;
+
 /**
+ * Internal worker thread. Runs in an endless loop and triggers 
+ * the {@link IEvented#gkEventTimerTick} events. This worker can
+ * only run once, i.e. has no suspend state. 
+ * 
  * @author Peter Hoppe
- *
  */
 class TTimerWorker extends Thread
 {
+    /**
+     * Minimum Interval.
+     */
     private static final int        gkLoopInterval          = TTimer.gkLoopIntervalMin;
+    
+    /**
+     * Internal state: Worker thread is running. 
+     */
     private static final int        gkStateRun              = 1;
+    
+    /**
+     * Internal state: Worker thread is being stopped / is stopped. 
+     */
     private static final int        gkStateStop             = 2;
+    
+    /**
+     * Internal state: Worker thread is in wait state, i.e. not yet started. 
+     */
     private static final int        gkStateWait             = 0;
     
+    /**
+     * The hosting timer module.
+     */
     private TTimer          fHost;
+    
+    /**
+     * The loop interval. Can be changed. To make it thread safe we choose an atomic variable.
+     */
     private AtomicLong      fIntervalMs;                                /* [100] */
+    
+    /**
+     * The internal state. Changed from outside.  To make it thread safe we choose an atomic variable.
+     */
     private AtomicInteger   fState;                                     /* [100] */
     
     /**
-     * @param id
+     * cTor.
+     * 
+     * @param host          The hosting timer module.
+     * @param delayMs       The initial interval.
      */
     TTimerWorker (TTimer host, long delayMs)
     {
@@ -44,7 +78,7 @@ class TTimerWorker extends Thread
     }
 
     /**
-     * @return
+     * @return  The current interval.
      */
     public long GetInterval ()
     {
@@ -85,11 +119,19 @@ class TTimerWorker extends Thread
         } while (state == gkStateRun);
     }
     
+    /**
+     * Sets ithe interval to a new value.
+     * 
+     * @param intervalMs        The new interval value.
+     */
     void SetInterval (long intervalMs)
     {
         fIntervalMs.getAndSet (intervalMs);
     }
 
+    /**
+     * Stops this thread, i.e. terminates it. The worker thread can't be restarted.
+     */
     void Stop ()
     {
         fState.compareAndSet (gkStateRun, gkStateStop);                 /* [120] */
