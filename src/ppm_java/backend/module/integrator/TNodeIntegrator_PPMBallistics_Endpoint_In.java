@@ -17,6 +17,7 @@ package ppm_java.backend.module.integrator;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
+import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
@@ -30,9 +31,9 @@ public class TNodeIntegrator_PPMBallistics_Endpoint_In extends VAudioPort_Input_
      * @param host
      * @param iPort
      */
-    public TNodeIntegrator_PPMBallistics_Endpoint_In (String id, VAudioProcessor host, int iPort)
+    public TNodeIntegrator_PPMBallistics_Endpoint_In (String id, VAudioProcessor host)
     {
-        super (id, host, iPort);
+        super (id, host);
     }
 
     /* (non-Javadoc)
@@ -56,4 +57,12 @@ public class TNodeIntegrator_PPMBallistics_Endpoint_In extends VAudioPort_Input_
         TController.Register (this);
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#Accept(ppm_java.typelib.VAudioPort_Output)
+     */
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source.Visit (this);
+    }
 }

@@ -19,6 +19,7 @@ import java.nio.FloatBuffer;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Unbuffered;
+import ppm_java.typelib.VAudioPort_Output;
 
 /**
  * @author Peter Hoppe
@@ -33,7 +34,7 @@ public class TNodePeakEstimator_Endpoint_In extends VAudioPort_Input_Chunks_Unbu
      */
     protected TNodePeakEstimator_Endpoint_In (String id, TNodePeakEstimator host)
     {
-        super (id, host, 0);
+        super (id, host);
     }
 
     /* (non-Javadoc)
@@ -55,5 +56,14 @@ public class TNodePeakEstimator_Endpoint_In extends VAudioPort_Input_Chunks_Unbu
     protected void _Register ()
     {
         TController.Register (this);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#Accept(ppm_java.typelib.VAudioPort_Output)
+     */
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source.Visit (this);
     }
 }

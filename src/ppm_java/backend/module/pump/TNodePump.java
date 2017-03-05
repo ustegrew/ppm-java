@@ -24,10 +24,9 @@ import ppm_java.typelib.IEvented;
 import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
-import ppm_java.util.logging.TLogger;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
 import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java.util.storage.TAtomicBuffer_Stats;
 import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
 
 /**
@@ -84,8 +83,7 @@ public class TNodePump
     {
         TNodePump_Endpoint_In       p;
         
-        TLogger.LogMessage ("Creating input port '" + id + "'", this, "CreatePort_In ('" + id + "')");
-        p = new TNodePump_Endpoint_In (id, this, 0, ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnNull);
+        p = new TNodePump_Endpoint_In (id, this, ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnNull);
         AddPortIn (p);
     }
 
@@ -97,7 +95,6 @@ public class TNodePump
     {
         TNodePump_Endpoint_Out      p;
         
-        TLogger.LogMessage ("Creating output port '" + id + "'", this, "CreatePort_Out ('" + id + "')");
         p = new TNodePump_Endpoint_Out (id, this);
         AddPortOut (p);
     }

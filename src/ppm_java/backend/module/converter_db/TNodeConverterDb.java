@@ -53,7 +53,7 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
     {
         TNodeConverterDb_Endpoint_In        p;
         
-        p = new TNodeConverterDb_Endpoint_In (id, this, 0);
+        p = new TNodeConverterDb_Endpoint_In (id, this);
         AddPortIn (p);
     }
 

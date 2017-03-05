@@ -59,7 +59,7 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
      */
     public TConsole_LinearGauge (String id, int barLen)
     {
-        super (id, 2, 0);
+        super (id, 2);
         
         _Init (barLen);
         fMeterL             = new TConsole_LinearGauge_MeterUI (fBarLen);
@@ -73,11 +73,9 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     @Override
     public void CreatePort_In (String id)
     {
-        int                                 iP;
         TConsole_LinearGauge_Endpoint       p;
         
-        iP  = GetNumPortsIn ();
-        p   = new TConsole_LinearGauge_Endpoint (id, this, iP);
+        p = new TConsole_LinearGauge_Endpoint (id, this);
         AddPortIn (p);
     }
 

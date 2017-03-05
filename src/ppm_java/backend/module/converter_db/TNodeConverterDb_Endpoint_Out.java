@@ -32,7 +32,6 @@ public class TNodeConverterDb_Endpoint_Out extends VAudioPort_Output_Samples
     public TNodeConverterDb_Endpoint_Out (String id, VAudioProcessor host)
     {
         super (id, host);
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)
@@ -43,5 +42,4 @@ public class TNodeConverterDb_Endpoint_Out extends VAudioPort_Output_Samples
     {
         TController.Register (this);
     }
-
 }

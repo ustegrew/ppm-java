@@ -44,6 +44,7 @@ public class TNodePeakEstimator
     private TNodePeakEstimator (String id)
     {
         super (id, 1, 1);
+        
         fPeakLast   = 0;
         fStats      = new TNodePeakEstimator_Stats (this);
         TController.StatAddProvider (this);

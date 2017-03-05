@@ -16,18 +16,29 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
+ * Base class for an output that sends single sample values.
+ * 
  * @author Peter Hoppe
  *
  */
 public abstract class VAudioPort_Output_Samples extends VAudioPort_Output
 {
-    public static final EConnectibleType        kConnType = EConnectibleType.kConn_Samples;
-
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this port.
+     * @param host          The audio processor hosting this port.
+     */
     public VAudioPort_Output_Samples (String id, VAudioProcessor host)
     {
         super (id, host);
     }
 
+    /**
+     * Pushes a sample value to the connected {@link VAudioPort_Input input}.
+     * 
+     * @param sample        The sample value to send.
+     */
     public void PushSample (float sample)
     {
         VAudioPort_Input_Samples target;
@@ -36,8 +47,18 @@ public abstract class VAudioPort_Output_Samples extends VAudioPort_Output
         target.ReceiveSample (sample);
     }
     
-    public void SetTarget (VAudioPort_Input_Samples target)
+    public void Visit (VAudioPort_Input_Chunks_Buffered target)
     {
-        super.SetTarget (target);
+        _SetTarget_Log (target, true);
+    }
+    
+    public void Visit (VAudioPort_Input_Chunks_Unbuffered target)
+    {
+        _SetTarget_Log (target, true);
+    }
+    
+    public void Visit (VAudioPort_Input_Samples target)
+    {
+        _SetTarget (target);
     }
 }

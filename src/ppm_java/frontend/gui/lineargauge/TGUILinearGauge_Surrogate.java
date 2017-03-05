@@ -50,7 +50,8 @@ public class TGUILinearGauge_Surrogate
     
     private TGUILinearGauge_Surrogate (String id)
     {
-        super (id, 2, 0);
+        super (id, 2);
+        
         fGUI = new TGUILinearGauge_WndPPM (this);
         fStat = new TGUILinearGauge_Surrogate_Stats (this);
         TController.StatAddProvider (this);
@@ -62,13 +63,11 @@ public class TGUILinearGauge_Surrogate
     @Override
     public void CreatePort_In (String id)
     {
-        int                 iPort;
-        TGUILinearGauge_Endpoint       port;
+        TGUILinearGauge_Endpoint       p;
         
-        iPort   = GetNumPortsIn ();
-        port    = new TGUILinearGauge_Endpoint (id, this, iPort);
+        p = new TGUILinearGauge_Endpoint (id, this);
         fStat.AddChannel ();
-        AddPortIn (port);
+        AddPortIn (p);
     }
     
     /* (non-Javadoc)

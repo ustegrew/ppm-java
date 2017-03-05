@@ -17,6 +17,7 @@ package ppm_java.frontend.console.text;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
+import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
@@ -29,9 +30,9 @@ public class TConsole_TextOut_Endpoint extends VAudioPort_Input_Samples
      * @param host
      * @param iPort
      */
-    public TConsole_TextOut_Endpoint (String id, VAudioProcessor host, int iPort)
+    public TConsole_TextOut_Endpoint (String id, VAudioProcessor host)
     {
-        super (id, host, iPort);
+        super (id, host);
     }
 
     /* (non-Javadoc)
@@ -55,5 +56,14 @@ public class TConsole_TextOut_Endpoint extends VAudioPort_Input_Samples
     protected void _Register ()
     {
         TController.Register (this);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#Accept(ppm_java.typelib.VAudioPort_Output)
+     */
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source.Visit (this);
     }
 }

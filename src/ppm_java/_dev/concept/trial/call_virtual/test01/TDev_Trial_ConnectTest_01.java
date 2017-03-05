@@ -13,29 +13,33 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.typelib;
-
-import ppm_java.backend.TController;
+package ppm_java._dev.concept.trial.call_virtual.test01;
 
 /**
- * @author Peter Hoppe
- *
+ * Fails! Output:
+ * 
+ * VSource: Called Connect (VTarget t) -> ERROR
+ * VSource: Called Connect (VTarget t) -> ERROR
+ * VSource: Called Connect (VTarget t) -> ERROR
+ * VSource: Called Connect (VTarget t) -> ERROR
  */
-public abstract class VFrontend extends VAudioProcessor
+public class TDev_Trial_ConnectTest_01
 {
-    /**
-     * @param id
-     */
-    public VFrontend (String id, int nMaxChanIn)
+    public static void main (String[] args)
     {
-        super (id, nMaxChanIn, 0);
-    }
-    
-    protected void _OnTerminate ()
-    {
-        String  id;
+        VSource     src_a;
+        VSource     src_b;
+        VTarget     trg_a;
+        VTarget     trg_b;
         
-        id = GetID ();
-        TController.OnTerminate (id);
+        src_a = new TSource_A ();
+        src_b = new TSource_B ();
+        trg_a = new TTarget_A ();
+        trg_b = new TTarget_B ();
+        
+        src_a.Connect (trg_a);
+        src_a.Connect (trg_b);
+        src_b.Connect (trg_a);
+        src_b.Connect (trg_b);
     }
 }

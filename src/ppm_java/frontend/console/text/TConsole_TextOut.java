@@ -53,7 +53,7 @@ public class TConsole_TextOut extends VFrontend implements IControllable
      */
     private TConsole_TextOut (String id)
     {
-        super (id, 2, 0);
+        super (id, 2);
     }
 
     /* (non-Javadoc)
@@ -62,11 +62,9 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     @Override
     public void CreatePort_In (String id)
     {
-        int                         iPort;
         TConsole_TextOut_Endpoint   p;
         
-        iPort   = GetNumPortsIn ();
-        p       = new TConsole_TextOut_Endpoint (id, this, iPort);
+        p       = new TConsole_TextOut_Endpoint (id, this);
         AddPortIn (p);
     }
 

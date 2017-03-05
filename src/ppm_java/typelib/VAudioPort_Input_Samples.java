@@ -16,15 +16,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
+ * Base class for an input that receives single sample values.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort_Input_Samples extends VAudioPort_Input
 {
-    public VAudioPort_Input_Samples (String id, VAudioProcessor host, int iPort)
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this port.
+     * @param host          The audio processor hosting this port.
+     */
+    public VAudioPort_Input_Samples (String id, VAudioProcessor host)
     {
-        super (id, host, iPort);
+        super (id, host);
     }
 
+    /**
+     * Receives a sample value from the connected {@link VAudioPort_Output output}.
+     * 
+     * @param sample        The sample value received.
+     */
     public abstract void ReceiveSample (float sample);
 }

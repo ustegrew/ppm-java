@@ -16,18 +16,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
+ * Base class for all audio drivers.
+ * 
+ * An audio driver receives data from an external entity (e.g. jackd audio server)
+ * and passes it on to other modules.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioDriver extends VAudioProcessor
 {
     /**
-     * @param id
-     * @param nMaxChanIn
-     * @param nMaxChanOut
+     * cTor.
+     * 
+     * @param id                The unique ID under which we register this object 
+     *                          with the registry.
+     * @param nMaxChanOut       Maximum number of output channels. Specify <code>-1</code>
+     *                          for: No limit.
      */
-    public VAudioDriver (String id, int nMaxChanIn, int nMaxChanOut)
+    public VAudioDriver (String id, int nMaxChanOut)
     {
-        super (id, nMaxChanIn, nMaxChanOut);
+        super (id, 0, nMaxChanOut);
     }
 }

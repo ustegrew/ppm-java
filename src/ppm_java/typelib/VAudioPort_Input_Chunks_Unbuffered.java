@@ -23,9 +23,9 @@ import java.nio.FloatBuffer;
  */
 public abstract class VAudioPort_Input_Chunks_Unbuffered extends VAudioPort_Input
 {
-    protected VAudioPort_Input_Chunks_Unbuffered (String id, VAudioProcessor host, int iPort)
+    protected VAudioPort_Input_Chunks_Unbuffered (String id, VAudioProcessor host)
     {
-        super (id, host, iPort);
+        super (id, host);
     }
     
     public abstract void ReceivePacket (FloatBuffer chunk);

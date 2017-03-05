@@ -43,11 +43,6 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
         target.ReceivePacket (chunk);
     }
     
-    public void SetTarget (VAudioPort_Input_Chunks_Buffered target)
-    {
-        super.SetTarget (target);
-    }
-    
     public void TargetStatsClear ()
     {
         VAudioPort_Input_Chunks_Buffered    target;
@@ -55,7 +50,7 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
         target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
         target.StatsClear ();
     }
-
+    
     public TAtomicBuffer_Stats TargetStatsGet ()
     {
         VAudioPort_Input_Chunks_Buffered    target;
@@ -65,5 +60,20 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
         ret    = target.StatsGet ();
         
         return ret;
+    }
+    
+    public void Visit (VAudioPort_Input_Chunks_Buffered target)
+    {
+        _SetTarget (target);
+    }
+    
+    public void Visit (VAudioPort_Input_Chunks_Unbuffered target)
+    {
+        _SetTarget_Log (target, true);
+    }
+
+    public void Visit (VAudioPort_Input_Samples target)
+    {
+        _SetTarget_Log (target, true);
     }
 }

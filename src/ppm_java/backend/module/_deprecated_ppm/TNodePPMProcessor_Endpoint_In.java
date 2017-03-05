@@ -17,6 +17,7 @@ package ppm_java.backend.module._deprecated_ppm;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Buffered;
+import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
 
@@ -33,9 +34,9 @@ public class TNodePPMProcessor_Endpoint_In extends VAudioPort_Input_Chunks_Buffe
      * @param iPort
      * @param copyPolicy
      */
-    protected TNodePPMProcessor_Endpoint_In (String id, TNodePPMProcessor host, int iPort, ECopyPolicy copyPolicy)
+    protected TNodePPMProcessor_Endpoint_In (String id, TNodePPMProcessor host, ECopyPolicy copyPolicy)
     {
-        super (id, host, iPort, copyPolicy, EIfInvalidPolicy.kReturnNull);
+        super (id, host, copyPolicy, EIfInvalidPolicy.kReturnNull);
     }
 
     /* (non-Javadoc)
@@ -45,5 +46,14 @@ public class TNodePPMProcessor_Endpoint_In extends VAudioPort_Input_Chunks_Buffe
     protected void _Register ()
     {
         TController.Register (this);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#Accept(ppm_java.typelib.VAudioPort_Output)
+     */
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source.Visit (this);
     }
 }

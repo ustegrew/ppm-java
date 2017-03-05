@@ -47,14 +47,6 @@ import ppm_java.backend.boot.TSetup;
  * 
  * @author Peter Hoppe
  */
-/**
- * @author peter
- *
- */
-/**
- * @author peter
- *
- */
 public class TMain
 {
     /**

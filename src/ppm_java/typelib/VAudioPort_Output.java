@@ -15,26 +15,96 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.typelib;
 
+import ppm_java.util.logging.TLogger;
+
 /**
+ * Base class for an output audio port.
+ * 
+ * An output port is always associated with a hosting audio
+ * {@link VAudioProcessor processor}. It's connected with 
+ * another {@link VAudioPort_Input} to where it sends its data.
+ * Every time this port sends data it will trigger a processing
+ * cycle in the audio processor associated with the connected
+ * input.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort_Output extends VAudioPort
 {
+    /**
+     * The index as which this output port can be accessed in the hosting
+     * audio {@link VAudioProcessor processor}.
+     */
+    private int                     fIPort;
+    
+    /**
+     * The input connected to this output.
+     */
     private VAudioPort_Input        fTarget;
     
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this port.
+     */
     public VAudioPort_Output (String id, VAudioProcessor host)
     {
         super (id, host);
+        
+        fIPort = host.GetNumPortsOut ();
+        TLogger.LogMessage ("Processor: '" + host.GetID () + "': Creating output port '" + id + "'", this, "cTor");
     }
     
+    /**
+     * @return  The index under which this port is stored with the
+     *          hosting audio processor. The index is zero based.
+     */
+    public int GetPortNum ()
+    {
+        return fIPort;
+    }
+    
+    public void SetTarget (VAudioPort_Input target)
+    {
+        target._Accept (this);
+    }
+    
+    /**
+     * @return  The input port we are connected to. 
+     */
     protected VAudioPort_Input _GetTarget ()
     {
         return fTarget;
     }
     
-    public void SetTarget (VAudioPort_Input target)
+    protected void _SetTarget (VAudioPort_Input target)
     {
         fTarget = target;
+        _SetTarget_Log (target, false);
     }
+
+    protected void _SetTarget_Log (VAudioPort_Input target, boolean isErr)
+    {
+        String      idS;
+        String      idT;
+        String      msg;
+        
+        idS  = GetID ();
+        idT  = target.GetID ();
+        msg  = "Connecting endpoints: '" + idS + "' -> '" + idT + "': ";
+        if (isErr)
+        {
+            msg += "Failure (incompatible endpoint types)";
+            TLogger.LogError (msg, this, "SetTarget");
+        }
+        else
+        {
+            msg += "OK";
+            TLogger.LogMessage (msg, this, "SetTarget");
+        }
+    }
+    
+    public abstract void Visit (VAudioPort_Input_Chunks_Buffered target);
+    public abstract void Visit (VAudioPort_Input_Chunks_Unbuffered target);
+    public abstract void Visit (VAudioPort_Input_Samples target);
 }

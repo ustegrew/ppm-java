@@ -13,29 +13,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.typelib;
+package ppm_java._dev.concept.trial.call_virtual.test02;
 
-import ppm_java.backend.TController;
-
-/**
- * @author Peter Hoppe
- *
- */
-public abstract class VFrontend extends VAudioProcessor
+abstract class VSource
 {
-    /**
-     * @param id
-     */
-    public VFrontend (String id, int nMaxChanIn)
+    public void ConnectTo (VTarget t)
     {
-        super (id, nMaxChanIn, 0);
+        t.Accept (this);
     }
     
-    protected void _OnTerminate ()
-    {
-        String  id;
-        
-        id = GetID ();
-        TController.OnTerminate (id);
-    }
+    abstract void Visit (TTarget_A s);
+    abstract void Visit (TTarget_B s);
 }

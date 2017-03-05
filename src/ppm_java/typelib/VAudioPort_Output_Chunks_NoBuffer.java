@@ -39,8 +39,18 @@ public abstract class VAudioPort_Output_Chunks_NoBuffer extends VAudioPort_Outpu
         target.ReceivePacket (chunk);
     }
     
-    public void SetTarget (VAudioPort_Input_Chunks_Unbuffered target)
+    public void Visit (VAudioPort_Input_Chunks_Buffered target)
     {
-        super.SetTarget (target);
+        _SetTarget_Log (target, true);
+    }
+    
+    public void Visit (VAudioPort_Input_Chunks_Unbuffered target)
+    {
+        _SetTarget (target);
+    }
+    
+    public void Visit (VAudioPort_Input_Samples target)
+    {
+        _SetTarget_Log (target, true);
     }
 }

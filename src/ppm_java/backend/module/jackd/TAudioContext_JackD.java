@@ -87,7 +87,7 @@ public final class TAudioContext_JackD
      */
     private TAudioContext_JackD (String idClient)
     {
-        super (idClient, -1, -1);
+        super (idClient, -1);
         
         TLogger.LogMessage ("Creating JackD bridge (singleton)", this, "cTor ('" + idClient + ")");
         fStats          = new TAudioContext_JackD_Stats (this);
@@ -102,12 +102,9 @@ public final class TAudioContext_JackD
     @Override
     public void CreatePort_In (String id)
     {
-        int                                 iPort;
         TAudioContext_Endpoint_Input        p;
         
-        TLogger.LogMessage ("Creating input port '" + id + "'", this, "CreatePort_In ('" + id + "')");
-        iPort   = GetNumPortsIn ();
-        p       = new TAudioContext_Endpoint_Input (id, this, iPort);
+        p = new TAudioContext_Endpoint_Input (id, this);
         AddPortIn (p);
     }
     
@@ -119,8 +116,7 @@ public final class TAudioContext_JackD
     {
         TAudioContext_Endpoint_Output       p;
         
-        TLogger.LogMessage ("Creating output port '" + id + "'", this, "CreatePort_Out ('" + id + "')");
-        p   = new TAudioContext_Endpoint_Output (id, this);
+        p = new TAudioContext_Endpoint_Output (id, this);
         AddPortOut (p);
     }
     

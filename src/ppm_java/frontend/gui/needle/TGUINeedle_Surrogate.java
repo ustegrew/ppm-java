@@ -52,7 +52,8 @@ public class TGUINeedle_Surrogate
     
     private TGUINeedle_Surrogate (String id)
     {
-        super (id, 2, 0);
+        super (id, 2);
+        
         fGUI  = new TGUINeedle_WndPPM (this);
         fStat = new TGUINeedle_Surrogate_Stats (this);
         TController.StatAddProvider (this);
@@ -64,13 +65,11 @@ public class TGUINeedle_Surrogate
     @Override
     public void CreatePort_In (String id)
     {
-        int                 iPort;
-        TGUINeedle_Endpoint       port;
+        TGUINeedle_Endpoint     p;
         
-        iPort   = GetNumPortsIn ();
-        port    = new TGUINeedle_Endpoint (id, this, iPort);
+        p = new TGUINeedle_Endpoint (id, this);
         fStat.AddChannel ();
-        AddPortIn (port);
+        AddPortIn (p);
     }
     
     /* (non-Javadoc)

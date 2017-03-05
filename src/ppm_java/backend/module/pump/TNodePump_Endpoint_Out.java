@@ -24,7 +24,6 @@ import ppm_java.typelib.VAudioPort_Output_Chunks_NoBuffer;
  */
 public class TNodePump_Endpoint_Out extends VAudioPort_Output_Chunks_NoBuffer
 {
-
     /**
      * @param id
      * @param host
@@ -32,7 +31,6 @@ public class TNodePump_Endpoint_Out extends VAudioPort_Output_Chunks_NoBuffer
     public TNodePump_Endpoint_Out (String id, TNodePump host)
     {
         super (id, host);
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)

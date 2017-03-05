@@ -17,6 +17,7 @@ package ppm_java.frontend.gui.needle;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
+import ppm_java.typelib.VAudioPort_Output;
 
 /**
  * @author Peter Hoppe
@@ -24,9 +25,9 @@ import ppm_java.typelib.VAudioPort_Input_Samples;
  */
 public class TGUINeedle_Endpoint extends VAudioPort_Input_Samples
 {
-    public TGUINeedle_Endpoint (String id, TGUINeedle_Surrogate host, int iChannel)
+    public TGUINeedle_Endpoint (String id, TGUINeedle_Surrogate host)
     {
-        super (id, host, iChannel);
+        super (id, host);
     }
 
     /* (non-Javadoc)
@@ -50,5 +51,14 @@ public class TGUINeedle_Endpoint extends VAudioPort_Input_Samples
     protected void _Register ()
     {
         TController.Register (this);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#Accept(ppm_java.typelib.VAudioPort_Output)
+     */
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source.Visit (this);
     }
 }

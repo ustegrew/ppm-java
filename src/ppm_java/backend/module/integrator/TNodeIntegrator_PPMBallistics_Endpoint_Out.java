@@ -43,5 +43,4 @@ public class TNodeIntegrator_PPMBallistics_Endpoint_Out extends VAudioPort_Outpu
     {
         TController.Register (this);
     }
-
 }

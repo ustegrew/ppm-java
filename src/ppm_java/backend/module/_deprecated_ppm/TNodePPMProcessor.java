@@ -24,9 +24,8 @@ import ppm_java.typelib.IEvented;
 import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
-import ppm_java.util.logging.TLogger;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
 import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java.util.storage.TAtomicBuffer_Stats;
 import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
 
 /**
@@ -94,11 +93,9 @@ public class TNodePPMProcessor
     @Override
     public void CreatePort_In (String id)
     {
-        int                                     iPort;
         TNodePPMProcessor_Endpoint_In           p;
         
-        iPort   = GetNumPortsIn ();
-        p       = new TNodePPMProcessor_Endpoint_In (id, this, iPort, ECopyPolicy.kCopyOnGet);
+        p = new TNodePPMProcessor_Endpoint_In (id, this, ECopyPolicy.kCopyOnGet);
         AddPortIn (p);
     }
 
@@ -108,9 +105,8 @@ public class TNodePPMProcessor
     @Override
     public void CreatePort_Out (String id)
     {
-        TNodePPMProcessor_Endpoint_Out p;
+        TNodePPMProcessor_Endpoint_Out  p;
 
-        TLogger.LogMessage ("Creating output port '" + id + "'", this, "CreatePort_Out ('" + id + "')");
         p = new TNodePPMProcessor_Endpoint_Out (id, this);
         AddPortOut (p);
     }

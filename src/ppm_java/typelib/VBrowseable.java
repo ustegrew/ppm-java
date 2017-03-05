@@ -16,8 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
- * A browseable object. Will automatically register with the global 
- * registry and can thus be accessed with an opaque ID. The ID must
+ * Base class for all browseable objects.
+ * 
+ * Will automatically register with the global registry 
+ * and can thus be accessed with an opaque ID. The ID must
  * be unique; the registry will reject any double entries.
  * 
  * Every module, endpoint and connection in ppm-java is registered 

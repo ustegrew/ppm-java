@@ -29,18 +29,23 @@ public class TConnection extends VBrowseable
 {
     /**
      * Creates a connection from endpoint <code>idFromPort</code> to 
-     * endpoint <code>idToPort</code>. 
+     * endpoint <code>idToPort</code>.
      * 
      * @param idFromPort    Unique ID, source port.
      * @param idToPort      Unique ID, target port.
+     * 
+     * TODO: Migrate to visitor pattern!
+     *       Due to opaque handle plus generic cast we ride into deep 
+     *       water here as we loose the type safety which ensures that 
+     *       same type inputs and outputs are connected!   
      */
     public static void CreateInstance (String idFromPort, String idToPort)
     {
-        VAudioPort_Output           fromPort;
-        VAudioPort_Input            toPort;
+        VAudioPort_Output   fromPort;
+        VAudioPort_Input    toPort;
         
         fromPort        = (VAudioPort_Output) TController.GetObject (idFromPort);
-        toPort          = (VAudioPort_Input) TController.GetObject  (idToPort);
+        toPort          = (VAudioPort_Input)  TController.GetObject (idToPort);
         fromPort.SetTarget (toPort);
         new TConnection (fromPort, toPort);
     }

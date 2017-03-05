@@ -15,22 +15,48 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.typelib;
 
+import ppm_java.util.logging.TLogger;
+
 /**
+ * Base class for an input audio port.
+ * 
+ * An input port is always associated with a hosting audio 
+ * {@link VAudioProcessor processor}. It's connected with 
+ * another {@link VAudioPort_Output output} port from where it 
+ * receives its data.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort_Input extends VAudioPort
 {
+    /**
+     * The index as which this input port can be accessed in the hosting
+     * audio {@link VAudioProcessor processor}.
+     */
     private int                 fIPort;
     
-    public VAudioPort_Input (String id, VAudioProcessor host, int iPort)
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this port.
+     * @param host          The audio processor hosting this port.
+     */
+    public VAudioPort_Input (String id, VAudioProcessor host)
     {
         super (id, host);
-        fIPort = iPort;
+     
+        fIPort = host.GetNumPortsIn ();
+        TLogger.LogMessage ("Processor: '" + host.GetID () + "': Creating input port '" + id + "'", this, "cTor");
     }
     
+    /**
+     * @return  The index under which this port is stored with the
+     *          hosting audio processor. The index is zero based.
+     */
     public int GetPortNum ()
     {
         return fIPort;
     }
+    
+    protected abstract void _Accept (VAudioPort_Output source);
 }

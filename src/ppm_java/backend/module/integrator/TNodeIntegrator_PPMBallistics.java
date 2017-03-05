@@ -54,6 +54,7 @@ public class TNodeIntegrator_PPMBallistics
     private TNodeIntegrator_PPMBallistics (String id)
     {
         super (id, 1, 1);
+        
         fStats                  = new TNodeIntegrator_PPMBallistics_Stats (this);
         fHasNotBeenInitialized  = true;
         fTLast                  = 0;
@@ -72,7 +73,7 @@ public class TNodeIntegrator_PPMBallistics
     {
         TNodeIntegrator_PPMBallistics_Endpoint_In       p;
         
-        p = new TNodeIntegrator_PPMBallistics_Endpoint_In (id, this, 0);
+        p = new TNodeIntegrator_PPMBallistics_Endpoint_In (id, this);
         AddPortIn (p);
     }
 

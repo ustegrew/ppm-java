@@ -34,12 +34,11 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
     (
         String              id, 
         VAudioProcessor     host, 
-        int                 iPort, 
         ECopyPolicy         copyPolicy,
         EIfInvalidPolicy    ifInvalidPolicy
     )
     {
-        super (id, host, iPort);
+        super (id, host);
         fBuffer = new TAtomicBuffer (copyPolicy, ifInvalidPolicy);
     }
     
