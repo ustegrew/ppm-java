@@ -77,13 +77,13 @@ public abstract class VAudioPort_Output extends VAudioPort
         return fTarget;
     }
     
-    protected void _SetTarget (VAudioPort_Input target)
+    protected final void _SetTarget (VAudioPort_Input target)
     {
         fTarget = target;
         _SetTarget_Log (target, false);
     }
 
-    protected void _SetTarget_Log (VAudioPort_Input target, boolean isErr)
+    protected final void _SetTarget_Log (VAudioPort_Input target, boolean isErr)
     {
         String      msg;
         
