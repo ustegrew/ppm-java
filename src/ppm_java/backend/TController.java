@@ -35,6 +35,8 @@ import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioDriver;
 import ppm_java.typelib.VAudioObject;
+import ppm_java.typelib.VAudioPort_Input;
+import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.typelib.VAudioProcessor;
 import ppm_java.typelib.VBrowseable;
 import ppm_java.typelib.VFrontend;
@@ -43,92 +45,199 @@ import ppm_java.util.debug.TWndDebug;
 import ppm_java.util.logging.TLogger;
 
 /**
+ * Central application point. Contains the API to set up a ppm-java signal 
+ * processing network and to run it. Note that every object we create is
+ * stored in the global registry and identifiable by a unique ID 
+ * (opaque handle). This simplifies the syntax for the setup of the signal
+ * network enormously.
+ * 
  * @author Peter Hoppe
+ * @see    ppm_java.backend.boot.TSetup  The service class that contains the 
+ *                                       signal processing network setup.  
  */
 @SuppressWarnings ("deprecation")
 public final class TController
 {
+    /**
+     * Singleton <code>TController</code> instance. 
+     */
     private static TController gController = new TController ();
     
+    /**
+     * Creates the audio driver.
+     * 
+     * @param id    Unique ID of the audio driver. 
+     */
     public static void Create_AudioContext (String id)
     {
         TAudioContext_JackD.CreateInstance (id);
     }
     
     /**
-     * @param idFromPort
-     * @param idToPort
+     * Creates a connection between two compatible endpoints. The following
+     * connections are possible:
+     * 
+     * <table>
+     *     <tr>
+     *         <th>From port type</th>
+     *         <th>To port type</th>
+     *     </tr>
+     *     <tr>
+     *         <td><code>VAudioPort_Output_Samples</code></td>
+     *         <td><code>VAudioPort_Input_Samples</code></td>
+     *     </tr>
+     *     <tr>
+     *         <td><code>VAudioPort_Output_Chunks_NeedsBuffer</code></td>
+     *         <td><code>VAudioPort_Input_Chunks_Buffered</code></td>
+     *     </tr>
+     *     <tr>
+     *         <td><code>VAudioPort_Output_Chunks_NoBuffer</code></td>
+     *         <td><code>VAudioPort_Input_Chunks_Unbuffered</code></td>
+     *     </tr>
+     * </table>
+     * 
+     * @param idFromPort        Unique ID of the source port.
+     * @param idToPort          Unique ID of the target port.
      */
     public static void Create_Connection_Data (String idFromPort, String idToPort)
     {
         TConnection.CreateInstance (idFromPort, idToPort);
     }
     
+    /**
+     * Subscribes an {@link IEvented} object (subscriber) to receive events from another
+     * {@link IEvented} (subscribed). The subscriber will receive all events emitted by 
+     * the subscribed and needs to implement its own event filtering to listen to the 
+     * events it's interested in.
+     * 
+     * @param idSource          Unique ID, subscribed.
+     * @param idRecipient       Unique ID, subscriber.
+     */
     public static void Create_Connection_Events (String idSource, String idRecipient)
     {
         gController._SubscribeToEvents (idSource, idRecipient);
     }
     
+    /**
+     * Creates a frontend module (console): Linear gauge.  
+     * 
+     * @param id            Unique ID of the frontend.
+     * @param widthCols     Length of the gauge, in characters.
+     * @see                 TConsole_LinearGauge
+     */
     public static final void Create_Frontend_Console_LinearGauge (String id, int widthCols)
     {
         TConsole_LinearGauge.CreateInstance (id, widthCols);
     }
     
+    /**
+     * Creates a frontend module (console): Audio level values as stream 
+     * of records in text format, to stdout.
+     * 
+     * @param id            Unique ID of the frontend.
+     * @see                 TConsole_TextOut
+     */
     public static final void Create_Frontend_Console_TextOut (String id)
     {
         TConsole_TextOut.CreateInstance (id);
     }
     
+    /**
+     * Creates a frontend module (GUI): Linear gauge.
+     * 
+     * @param id            Unique ID of the frontend.
+     * @see                 TGUILinearGauge_Surrogate
+     */
     public static final void Create_Frontend_GUI_LinearGauge (String id)
     {
         TGUILinearGauge_Surrogate.CreateInstance (id);
     }
     
     /**
-     * @param string
+     * Creates a frontend module (GUI): PPM lookalike.
+     * 
+     * @param id            Unique ID of the frontend.
+     * @see                 TGUINeedle_Surrogate
      */
     public static void Create_Frontend_GUI_Needle (String id)
     {
         TGUINeedle_Surrogate.CreateInstance (id);
     }
     
+    /**
+     * Creates a backend module: Converter Raw values [0..1] to dB.
+     * 
+     * @param id            Unique ID of the module.
+     * @see                 TNodeConverterDb
+     */
     public static void Create_Module_ConverterDB (String id)
     {
         TNodeConverterDb.CreateInstance (id);
     }
     
+    /**
+     * Creates a backend module: Stepwise integrator to emulate PPM ballistics.
+     * 
+     * @param id            Unique ID of the module.
+     * @see                 TNodeIntegrator_PPMBallistics
+     */
     public static void Create_Module_IntegratorPPMBallistics (String id)
     {
         TNodeIntegrator_PPMBallistics.CreateInstance (id);
     }
     
+    /**
+     * Creates a backend module: Peak estimator.
+     * 
+     * @param id            Unique ID of the module
+     * @see                 TNodePeakEstimator
+     */
     public static void Create_Module_PeakEstimator (String id)
     {
         TNodePeakEstimator.CreateInstance (id);
     }
     
+    /**
+     * Creates a backend module: Data pump.
+     * 
+     * @param id            Unique ID of the module
+     * @see                 TNodePump
+     */
     public static void Create_Module_Pump (String id)
     {
         TNodePump.CreateInstance (id);
     }
     
     /**
-     * @param id
-     * @deprecated      PPMProcessor has been superseded by a more modular framework
+     * Creates a backend module: PPM processor.
+     * 
+     * @param id            Unique ID of the module
+     * @see                 TNodePPMProcessor
+     * @deprecated          PPMProcessor has been superseded by a more modular framework
      */
     public static void Create_Module_PPMProcessor (String id)
     {
         TNodePPMProcessor.CreateInstance (id);
     }
     
+    /**
+     * Creates a timer.
+     * 
+     * @param id            Unique ID of the module
+     * @param intervalMs    Initial timer interval in ms.
+     * @see                 TTimer
+     */
     public static void Create_Module_Timer (String id, int intervalMs)
     {
         TTimer.CreateInstance (id, intervalMs);
     }
     
     /**
-     * @param string
-     * @param string2
+     * Creates an input port.
+     * 
+     * @param idModule      The module which we attach the port to.
+     * @param idPort        Unique ID of the port.
+     * @see                 VAudioPort_Input
      */
     public static void Create_Port_In (String idModule, String idPort)
     {
@@ -139,8 +248,11 @@ public final class TController
     }
     
     /**
-     * @param string
-     * @param string2
+     * Creates an output port.
+     * 
+     * @param idModule      The module which we attach the port to.
+     * @param idPort        Unique ID of the port.
+     * @see                 VAudioPort_Output
      */
     public static void Create_Port_Out (String idModule, String idPort)
     {
@@ -151,7 +263,11 @@ public final class TController
     }
     
     /**
-     * @param idModuleToStart
+     * Creates an entry in the application's start list. When the network
+     * starts, this entry will start the corresponding module. Modules 
+     * will be started in the order of the start list. 
+     * 
+     * @param idModuleToStart   ID of the module to start.
      */
     public static void Create_StartListEntry (String idModuleToStart)
     {
@@ -159,23 +275,40 @@ public final class TController
     }
 
     /**
-     * @param string
+     * Creates an entry in the application's stop list. When the network
+     * terminates, this entry will stop the corresponding module. Modules 
+     * will be stopped in the order of the stop list. 
+     * 
+     * @param idModuleToStart   ID of the module to stop.
      */
     public static void Create_StopListEntry (String idModuleToStop)
     {
         gController._Create_StopListEntry (idModuleToStop);
     }
     
+    /**
+     * Shows the debug window.
+     * @see TWndDebug
+     */
     public static void DebugWindowShow ()
     {
         TWndDebug.Show ();
     }
 
+    /**
+     * Set's the debug window's content.
+     * 
+     * @param text      The text to set.
+     * @see             TWndDebug
+     */
     public static void DebugWindowSetText (String text)
     {
         TWndDebug.SetText (text);
     }
     
+    /**
+     * @return  The global audio driver instance.
+     */
     public static TAudioContext_JackD GetAudioDriver ()
     {
         TAudioContext_JackD ret;
@@ -185,6 +318,12 @@ public final class TController
         return ret;
     }
 
+    /**
+     * Looks up an audio object by ID.
+     * 
+     * @param   id      The ID being searched for.
+     * @return          The object associated with the given ID. 
+     */
     public static VAudioObject GetObject (String id)
     {
         VAudioObject ret;
@@ -194,13 +333,22 @@ public final class TController
         return ret;
     }
     
+    /**
+     * Handler, called when a module has been terminated.
+     * 
+     * @param id        The module that's heen terminated.
+     */
     public static void OnTerminate (String id)
     {
         gController._Unregister (id);
     }
     
     /**
-     * @param e
+     * Event API: Module <code>idSource</code> posts an event. Will
+     * be distributed to subscribers.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
      */
     public static void PostEvent (int e, String idSource)
     {
@@ -208,23 +356,47 @@ public final class TController
     }
     
     /**
-     * @param e
+     * Event API: Module <code>idSource</code> posts an event. Will
+     * be distributed to subscribers. Carries an extra argument as 
+     * in-band data. Useful if the listener needs some more qualifying 
+     * information with the event.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @param arg0          The in-band data.
+     * @see   IEvented
      */
     public static void PostEvent (int e, int arg0, String idSource)
     {
         gController._PostEvent (e, arg0, idSource);
     }
     
-    
     /**
-     * @param e
+     * Event API: Module <code>idSource</code> posts an event. Will
+     * be distributed to subscribers. Carries an extra argument as 
+     * in-band data. Useful if the listener needs some more qualifying 
+     * information with the event.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @param arg0          The in-band data.
+     * @see   IEvented
      */
     public static void PostEvent (int e, long arg0, String idSource)
     {
         gController._PostEvent (e, arg0, idSource);
     }
+
     /**
-     * @param e
+     * Event API: Module <code>idSource</code> posts an event. Will
+     * be distributed to subscribers. Carries an extra argument as 
+     * in-band data. Useful if the listener needs some more qualifying 
+     * information with the event.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @param arg0          The in-band data.
+     * @see   IEvented
      */
     public static void PostEvent (int e, String arg0, String idSource)
     {
@@ -232,7 +404,9 @@ public final class TController
     }
     
     /**
-     * @param object
+     * Registers an audio driver with the global registry.
+     * 
+     * @param driver    The audio driver being registered.
      */
     public static void Register (VAudioDriver driver)
     {
@@ -240,7 +414,9 @@ public final class TController
     }
     
     /**
-     * @param object
+     * Registers a browseable object with the global registry.
+     * 
+     * @param object    The object being registered.
      */
     public static void Register (VBrowseable object)
     {
@@ -248,31 +424,50 @@ public final class TController
     }
     
     /**
-     * @param object
+     * Registers a frontend with the global registry.
+     * 
+     * @param object    The front end being registered.
      */
     public static void Register (VFrontend fe)
     {
         gController._Register (fe);
     }
     
+    /**
+     * Sets a flag so that we'll show the debug UI.
+     */
     public static void SetDebugUI_On ()
     {
         gController._SetDebugUI_On ();
     }
     
     /**
+     * Starts all modules in the start list. Modules will be started 
+     * in the order the entries appear in the list.
      * 
+     *  @see    #_Create_StartListEntry(String)
      */
     public static void Start ()
     {
         gController._StartStop (true);
     }
     
+    /**
+     * Adds a runtime statistics provider, so its statistics 
+     * appears on the debug UI.
+     * 
+     * @param p     The provider being added.
+     * @see   #StatGetDumpStr()
+     */
     public static void StatAddProvider (IStatEnabled p)
     {
         gController._StatCreateProviderListEntry (p);
     }
     
+    /**
+     * @return The accumulated statistics from all statistics providers.
+     * @see    #StatAddProvider(IStatEnabled)
+     */
     public static String StatGetDumpStr ()
     {
         String ret;
@@ -282,6 +477,9 @@ public final class TController
         return ret;
     }
     
+    /**
+     * Terminates the program.
+     */
     static void SystemTerminate ()
     {
         gController._StartStop (false);
