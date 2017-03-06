@@ -62,27 +62,27 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
         return ret;
     }
     
-    public void Visit (VAudioPort_Input_Chunks_Buffered target)
-    {
-        _SetTarget (target);
-    }
-    
-    public void Visit (VAudioPort_Input_Chunks_Unbuffered target)
-    {
-        _SetTarget_Log (target, true);
-    }
-    
-    public void Visit (VAudioPort_Input_Samples target)
-    {
-        _SetTarget_Log (target, true);
-    }
-
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort#GetType()
      */
     @Override
-    protected String _GetType ()
+    protected final String _GetType ()
     {
         return "VAudioPort_Output_Chunks_NeedsBuffer";
+    }
+    
+    protected final void _Visit (VAudioPort_Input_Chunks_Buffered target)
+    {
+        _SetTarget (target);
+    }
+    
+    protected final void _Visit (VAudioPort_Input_Chunks_Unbuffered target)
+    {
+        _SetTarget_Log (target, true);
+    }
+
+    protected final void _Visit (VAudioPort_Input_Samples target)
+    {
+        _SetTarget_Log (target, true);
     }
 }

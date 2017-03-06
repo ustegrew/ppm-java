@@ -30,11 +30,17 @@ public abstract class VAudioPort_Input_Chunks_Unbuffered extends VAudioPort_Inpu
 
     public abstract void ReceivePacket (FloatBuffer chunk);
     
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source._Visit (this);
+    }
+
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort#GetType()
      */
     @Override
-    protected String _GetType ()
+    protected final String _GetType ()
     {
         return "VAudioPort_Input_Chunks_Unbuffered";
     }

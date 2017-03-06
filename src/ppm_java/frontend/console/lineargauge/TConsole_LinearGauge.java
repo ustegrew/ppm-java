@@ -80,15 +80,6 @@ public class TConsole_LinearGauge extends VFrontend implements IControllable
     }
 
     /* (non-Javadoc)
-     * @see ppm_java.typelib.VAudioProcessor#CreatePort_Out(java.lang.String)
-     */
-    @Override
-    public void CreatePort_Out (String id)
-    {
-        throw new IllegalStateException ("This is a front end class - it doesn't use output ports.");
-    }
-
-    /* (non-Javadoc)
      * @see ppm_java.typelib.IControllable#Start()
      */
     @Override

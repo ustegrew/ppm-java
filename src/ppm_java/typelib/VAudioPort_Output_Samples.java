@@ -47,27 +47,27 @@ public abstract class VAudioPort_Output_Samples extends VAudioPort_Output
         target.ReceiveSample (sample);
     }
 
-    public void Visit (VAudioPort_Input_Chunks_Buffered target)
-    {
-        _SetTarget_Log (target, true);
-    }
-    
-    public void Visit (VAudioPort_Input_Chunks_Unbuffered target)
-    {
-        _SetTarget_Log (target, true);
-    }
-    
-    public void Visit (VAudioPort_Input_Samples target)
-    {
-        _SetTarget (target);
-    }
-    
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort#GetType()
      */
     @Override
-    protected String _GetType ()
+    protected final String _GetType ()
     {
         return "VAudioPort_Output_Samples";
+    }
+    
+    protected final void _Visit (VAudioPort_Input_Chunks_Buffered target)
+    {
+        _SetTarget_Log (target, true);
+    }
+    
+    protected final void _Visit (VAudioPort_Input_Chunks_Unbuffered target)
+    {
+        _SetTarget_Log (target, true);
+    }
+    
+    protected final void _Visit (VAudioPort_Input_Samples target)
+    {
+        _SetTarget (target);
     }
 }

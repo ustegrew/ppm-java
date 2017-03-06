@@ -40,13 +40,13 @@ import ppm_java.backend.module.timer.TTimer;
  */
 public interface IEvented
 {
+    public static final int     gkEventBufferNotifyOverrun      = 1210;
+    public static final int     gkEventBufferNotifyUnderrun     = 1200;
     public static final int     gkEventStart                    = 1000;
     public static final int     gkEventStop                     = 1010;
-    public static final int     gkEventTimerTick                = 1100;
-    public static final int     gkEventTimerNotifyInterval      = 1110;
     public static final int     gkEventTimerAdjustInterval      = 1120;
-    public static final int     gkEventBufferNotifyUnderrun     = 1200;
-    public static final int     gkEventBufferNotifyOverrun      = 1210;
+    public static final int     gkEventTimerNotifyInterval      = 1110;
+    public static final int     gkEventTimerTick                = 1100;
     
     /**
      * Receive an event with no parameter.

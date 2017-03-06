@@ -15,6 +15,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.typelib;
 
+import ppm_java.util.logging.TLogger;
+
 /**
  * Base class for all audio drivers.
  * 
@@ -36,5 +38,14 @@ public abstract class VAudioDriver extends VAudioProcessor
     public VAudioDriver (String id, int nMaxChanOut)
     {
         super (id, 0, nMaxChanOut);
+    }
+    
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
+     */
+    @Override
+    public final void CreatePort_In (String id)
+    {
+        TLogger.LogWarning ("This is an audio driver. It doesn't provide input ports.", this, "CreatePort_In ('" + id + "')");
     }
 }

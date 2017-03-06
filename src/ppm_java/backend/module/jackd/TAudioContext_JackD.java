@@ -97,18 +97,6 @@ public final class TAudioContext_JackD
     }
     
     /* (non-Javadoc)
-     * @see ppm_java.typelib.VAudioProcessor#CreatePortIn(java.lang.String)
-     */
-    @Override
-    public void CreatePort_In (String id)
-    {
-        TAudioContext_Endpoint_Input        p;
-        
-        p = new TAudioContext_Endpoint_Input (id, this);
-        AddPortIn (p);
-    }
-    
-    /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioProcessor#CreatePortOut(java.lang.String)
      */
     @Override

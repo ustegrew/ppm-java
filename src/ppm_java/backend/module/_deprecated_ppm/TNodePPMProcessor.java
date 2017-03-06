@@ -23,6 +23,7 @@ import ppm_java.backend.module.timer.TTimer;
 import ppm_java.typelib.IEvented;
 import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.IStats;
+import ppm_java.typelib.VAudioPort_Input_Chunks_Buffered;
 import ppm_java.typelib.VAudioProcessor;
 import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer_Stats;
@@ -93,7 +94,7 @@ public class TNodePPMProcessor
     @Override
     public void CreatePort_In (String id)
     {
-        TNodePPMProcessor_Endpoint_In           p;
+        TNodePPMProcessor_Endpoint_In p;
         
         p = new TNodePPMProcessor_Endpoint_In (id, this, ECopyPolicy.kCopyOnGet);
         AddPortIn (p);
@@ -183,11 +184,11 @@ public class TNodePPMProcessor
      */
     private void _CompensateCongestions ()
     {
-        TNodePPMProcessor_Endpoint_In   in;
+        VAudioPort_Input_Chunks_Buffered   in;
         TAtomicBuffer_Stats            stats;
         TRecord                         stRec;
         
-        in      = (TNodePPMProcessor_Endpoint_In) GetPortIn (0); 
+        in      = (VAudioPort_Input_Chunks_Buffered) GetPortIn (0); 
         stats   = in.StatsGet ();
         stRec   = stats.GetRecord ();
         
@@ -257,7 +258,7 @@ public class TNodePPMProcessor
     private void _ProcessChunk ()
     {
         TAudioContext_JackD                 drv;
-        TNodePPMProcessor_Endpoint_In       in;
+        VAudioPort_Input_Chunks_Buffered       in;
         TNodePPMProcessor_Endpoint_Out      out;
         FloatBuffer                         packetNew;
         long                                nowT;
@@ -287,7 +288,7 @@ public class TNodePPMProcessor
         fStats.SetNumSamplesPerCycle    (fNSamplesPerCycle);
         
         /* Analyze next chunk of data. */
-        in          = (TNodePPMProcessor_Endpoint_In) GetPortIn (0);
+        in          = (VAudioPort_Input_Chunks_Buffered) GetPortIn (0);
         packetNew   = in.FetchPacket ();
         if (packetNew != null)
         {

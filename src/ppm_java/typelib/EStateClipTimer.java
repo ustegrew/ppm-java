@@ -22,6 +22,6 @@ package ppm_java.typelib;
 public enum EStateClipTimer
 {
     kClear,
-    kWarn,
-    kClip
+    kClip,
+    kWarn
 }

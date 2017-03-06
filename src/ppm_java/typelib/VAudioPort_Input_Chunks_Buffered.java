@@ -70,11 +70,17 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         return ret;
     }
     
+    @Override
+    protected void _Accept (VAudioPort_Output source)
+    {
+        source._Visit (this);
+    }
+
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort#GetType()
      */
     @Override
-    protected String _GetType ()
+    protected final String _GetType ()
     {
         return "VAudioPort_Input_Chunks_Buffered";
     }

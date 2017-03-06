@@ -56,7 +56,7 @@ public class TNodePeakEstimator
     @Override
     public void CreatePort_In (String id)
     {
-        TNodePeakEstimator_Endpoint_In          p;
+        TNodePeakEstimator_Endpoint_In p;
         
         p = new TNodePeakEstimator_Endpoint_In (id, this);
         AddPortIn (p);

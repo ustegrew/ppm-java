@@ -108,7 +108,7 @@ public abstract class VAudioPort_Output extends VAudioPort
         }
     }
     
-    public abstract void Visit (VAudioPort_Input_Chunks_Buffered target);
-    public abstract void Visit (VAudioPort_Input_Chunks_Unbuffered target);
-    public abstract void Visit (VAudioPort_Input_Samples target);
+    protected abstract void _Visit (VAudioPort_Input_Chunks_Buffered target);
+    protected abstract void _Visit (VAudioPort_Input_Chunks_Unbuffered target);
+    protected abstract void _Visit (VAudioPort_Input_Samples target);
 }

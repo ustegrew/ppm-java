@@ -17,7 +17,6 @@ package ppm_java.backend.module.converter_db;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
-import ppm_java.typelib.VAudioPort_Output;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
@@ -55,14 +54,5 @@ public class TNodeConverterDb_Endpoint_In extends VAudioPort_Input_Samples
     protected void _Register ()
     {
         TController.Register (this);
-    }
-
-    /* (non-Javadoc)
-     * @see ppm_java.typelib.VAudioPort_Input#Accept(ppm_java.typelib.VAudioPort_Output)
-     */
-    @Override
-    protected void _Accept (VAudioPort_Output source)
-    {
-        source.Visit (this);
     }
 }

@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 import ppm_java.backend.TController;
+import ppm_java.util.logging.TLogger;
 
 /**
  * @author Peter Hoppe
@@ -30,7 +31,16 @@ public abstract class VFrontend extends VAudioProcessor
     {
         super (id, nMaxChanIn, 0);
     }
-    
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioProcessor#CreatePort_Out(java.lang.String)
+     */
+    @Override
+    public final void CreatePort_Out (String id)
+    {
+        TLogger.LogWarning ("This is a front end. It doesn't provide output ports.", this, "CreatePort_Out ('" + id + "')");
+    }
+
     protected void _OnTerminate ()
     {
         String  id;
