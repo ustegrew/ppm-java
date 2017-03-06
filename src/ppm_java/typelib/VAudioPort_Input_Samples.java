@@ -39,4 +39,13 @@ public abstract class VAudioPort_Input_Samples extends VAudioPort_Input
      * @param sample        The sample value received.
      */
     public abstract void ReceiveSample (float sample);
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort#GetType()
+     */
+    @Override
+    protected String _GetType ()
+    {
+        return "VAudioPort_Input_Samples";
+    }
 }

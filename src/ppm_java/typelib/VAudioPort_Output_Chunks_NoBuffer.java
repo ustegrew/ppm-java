@@ -30,7 +30,7 @@ public abstract class VAudioPort_Output_Chunks_NoBuffer extends VAudioPort_Outpu
     {
         super (id, host);
     }
-    
+
     public void PushPacket (FloatBuffer chunk)
     {
         VAudioPort_Input_Chunks_Unbuffered target;
@@ -52,5 +52,14 @@ public abstract class VAudioPort_Output_Chunks_NoBuffer extends VAudioPort_Outpu
     public void Visit (VAudioPort_Input_Samples target)
     {
         _SetTarget_Log (target, true);
+    }
+    
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort#GetType()
+     */
+    @Override
+    protected String _GetType ()
+    {
+        return "VAudioPort_Output_Chunks_NoBuffer";
     }
 }

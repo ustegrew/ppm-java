@@ -50,17 +50,17 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         
         return ret;
     }
-    
+
     public void ReceivePacket (FloatBuffer chunk)
     {
         fBuffer.Set (chunk);
     }
-
+    
     public void StatsClear ()
     {
         fBuffer.StatsClear ();
     }
-    
+
     public TAtomicBuffer_Stats StatsGet ()
     {
         TAtomicBuffer_Stats ret;
@@ -68,5 +68,14 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         ret = fBuffer.StatsGet ();
         
         return ret;
+    }
+    
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort#GetType()
+     */
+    @Override
+    protected String _GetType ()
+    {
+        return "VAudioPort_Input_Chunks_Buffered";
     }
 }

@@ -85,17 +85,21 @@ public abstract class VAudioPort_Output extends VAudioPort
 
     protected void _SetTarget_Log (VAudioPort_Input target, boolean isErr)
     {
-        String      idS;
-        String      idT;
         String      msg;
         
-        idS  = GetID ();
-        idT  = target.GetID ();
-        msg  = "Connecting endpoints: '" + idS + "' -> '" + idT + "': ";
+        msg  =     "Connecting endpoints: '" 
+                 + GetID() 
+                 + "' (" 
+                 + _GetType () 
+                 + ")  -> '" 
+                 + target.GetID () 
+                 + "' (" 
+                 + target._GetType () 
+                 + "): ";
         if (isErr)
         {
-            msg += "Failure (incompatible endpoint types)";
-            TLogger.LogError (msg, this, "SetTarget");
+            msg += "Failure: Incompatible endpoint types";
+            TLogger.LogWarning (msg, this, "SetTarget");
         }
         else
         {

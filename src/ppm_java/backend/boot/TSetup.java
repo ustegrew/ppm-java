@@ -153,6 +153,8 @@ public class TSetup
         TController.Create_Connection_Data                  ("converterdb.r.out",       "intgrppm.r.in"                         );
         TController.Create_Connection_Data                  ("intgrppm.l.out",          "gui.in.l"                              );
         TController.Create_Connection_Data                  ("intgrppm.r.out",          "gui.in.r"                              );
+
+        TController.Create_Connection_Data                  ("ppm.out.l",               "gui.in.l"                         );
         
         /* Subscribe PPM processor to timer events */
         TController.Create_Connection_Events                ("timer",                   "datapump.l"                            );

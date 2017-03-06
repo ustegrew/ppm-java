@@ -49,4 +49,20 @@ public abstract class VAudioPort extends VAudioObject
     {
         return fHost;
     }
+
+    /**
+     * Returns textual information of a concrete child's direct super type. 
+     * To accomodate a special case where clients connect incompatible endpoints;
+     * We then throw an exception which reports the incompatibility with 
+     * details about the conflicting types.
+     * 
+     * If this application remains a Java application we could use
+     * Java introspection. However, it's going to be ported to C++, and there
+     * we'd have to resort to ominous tricks to get the name of the supertype
+     * of a class. It's much more straight forward to provide a short method 
+     * that returns a string. It's just one of them things saying "ouch"...
+     * 
+     * @return Type information as text  
+     */
+    protected abstract String _GetType ();
 }

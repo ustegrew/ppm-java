@@ -46,7 +46,7 @@ public abstract class VAudioPort_Output_Samples extends VAudioPort_Output
         target = (VAudioPort_Input_Samples) _GetTarget ();
         target.ReceiveSample (sample);
     }
-    
+
     public void Visit (VAudioPort_Input_Chunks_Buffered target)
     {
         _SetTarget_Log (target, true);
@@ -60,5 +60,14 @@ public abstract class VAudioPort_Output_Samples extends VAudioPort_Output
     public void Visit (VAudioPort_Input_Samples target)
     {
         _SetTarget (target);
+    }
+    
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort#GetType()
+     */
+    @Override
+    protected String _GetType ()
+    {
+        return "VAudioPort_Output_Samples";
     }
 }

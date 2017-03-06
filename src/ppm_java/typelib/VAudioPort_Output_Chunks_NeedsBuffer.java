@@ -34,7 +34,7 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     {
         super (id, host);
     }
-    
+
     public void PushPacket (FloatBuffer chunk)
     {
         VAudioPort_Input_Chunks_Buffered target;
@@ -71,9 +71,18 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     {
         _SetTarget_Log (target, true);
     }
-
+    
     public void Visit (VAudioPort_Input_Samples target)
     {
         _SetTarget_Log (target, true);
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort#GetType()
+     */
+    @Override
+    protected String _GetType ()
+    {
+        return "VAudioPort_Output_Chunks_NeedsBuffer";
     }
 }
