@@ -22,15 +22,37 @@ import ppm_java.util.logging.TLogger;
 import ppm_java.util.storage.TArrayMap;
 
 /**
+ * A registry for {@link VBrowseable browseable} Objects. 
+ * Every object is registered by unique ID (Registry won't
+ * allow duplicate ID's). Clients can query and retrieve 
+ * registered objects by their unique ID. 
+ * 
  * @author Peter Hoppe
- *
  */
 public class TRegistry
 {
-    private VBrowseable             fAudioDriver;
+    /**
+     * The audio driver.
+     */
+    private VAudioDriver            fAudioDriver;
+    
+    /**
+     * Active frontend(s). These are kept in the {@link #fObjectsMap main}
+     * storage as well as in this storage. We need this extra bookkeeping 
+     * so we can detect when the last frontend has been closed.
+     * In practice we'll use one front end only. But we still cater for 
+     * the possibility to support multiple frontends.  
+     */
     private TArrayMap<VFrontend>    fFrontends;
+    
+    /**
+     * The registry's main storage.
+     */
     private TArrayMap<VBrowseable>  fObjectsMap;
     
+    /**
+     * cTor.
+     */
     public TRegistry ()
     {
         fObjectsMap     = new TArrayMap<> ();
@@ -38,11 +60,17 @@ public class TRegistry
         fAudioDriver    = null;
     }
     
-    public VBrowseable GetAudioDriver ()
+    /**
+     * @return  The audio driver.
+     */
+    public VAudioDriver GetAudioDriver ()
     {
         return fAudioDriver;
     }
     
+    /**
+     * @return  The number of active front ends.
+     */
     public int GetNumFrontends ()
     {
         int ret;
@@ -52,6 +80,9 @@ public class TRegistry
         return ret;
     }
     
+    /**
+     * @return  The number of {@link VBrowseable browseables} stored.
+     */
     public int GetNumObjects ()
     {
         int ret;
@@ -61,6 +92,12 @@ public class TRegistry
         return ret;
     }
     
+    /**
+     * Queries the central storage for object <code>id</code>.
+     * 
+     * @param id    ID of the object searched for. 
+     * @return      Queried object.
+     */
     public VBrowseable GetObject (String id)
     {
         boolean         hasObject;
@@ -80,19 +117,25 @@ public class TRegistry
         return ret;
     }
     
+    /**
+     * Registers the audio driver. If another audio driver instance is 
+     * already registered we'll log an error instead.
+     * 
+     * @param d     The driver to be registered.
+     */
     public void Register (VAudioDriver d)
     {
         String      id;
         
-        id = d.GetID ();
-        fObjectsMap.Set (id, d);
         if (fAudioDriver == null)
-        {
-            fAudioDriver = d;
+        {   /* No driver registered yet - go ahead. */
+            id              = d.GetID ();
+            fAudioDriver    = d;
+            fObjectsMap.Set (id, d);
             TLogger.LogMessage ("Audio driver registered", this, "Register (" + id + ")");
         }
         else
-        {
+        {   /* Another audio driver is already registered. */
             TLogger.LogError 
             (
                 "Audio driver already assigned to module: '" + fAudioDriver.GetID () + 
@@ -103,6 +146,11 @@ public class TRegistry
         }
     }
     
+    /**
+     * Registers the given browseable.
+     * 
+     * @param b     Object to be registered.
+     */
     public void Register (VBrowseable b)
     {
         String      id;
@@ -112,6 +160,11 @@ public class TRegistry
         TLogger.LogMessage ("Object registered", this, "Register (" + id + ")");
     }
     
+    /**
+     * Registers the given frontend.
+     * 
+     * @param fe    Frontend to be registered.
+     */
     public void Register (VFrontend fe)
     {
         String      id;
@@ -122,6 +175,11 @@ public class TRegistry
         TLogger.LogMessage ("Frontend registered", this, "Register (" + id + ")");
     }
     
+    /**
+     * Unregisters the object with the given ID.
+     * 
+     * @param id        ID of the object to be unregistered.
+     */
     public void Unregister (String id)
     {
         boolean         isFrontend;

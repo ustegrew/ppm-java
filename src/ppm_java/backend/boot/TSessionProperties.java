@@ -17,30 +17,88 @@ package ppm_java.backend.boot;
 
 import org.apache.commons.cli.CommandLine;
 
+import ppm_java.typelib.EFrontendType;
+
 /**
+ * Properties of a ppm-java session.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TSessionProperties
 {
-    public static final int                 gkDefaultOptConsoleWidth                = 56;                               /* [100] */
+    /**
+     * Default option: Width for console based linear gauge: 
+     *     56 = 7 * 8 = seven PPM segments, each having eight sub sections. 
+     */
+    public static final int                 gkDefaultOptConsoleWidth                = 56;
+    
+    /**
+     * Default option: Show debug UI?
+     */
     public static final boolean             gkDefaultOptShowDebugWindow             = false;
+    
+    /**
+     * Default option: Display engine, timer cycle interval.
+     */
     public static final int                 gkDefaultOptTimerIntervalMs             = 20;
+    
+    /**
+     * Default option: Which UI to show.
+     */
     public static final EFrontendType       gkDefaultOptUIType                      = EFrontendType.kConsoleLinearGauge;
+    
+    /**
+     * Default option: Use the earlier monolithic PPM processor?
+     */
     public static final boolean             gkDefaultOptUseDeprecatedPPMProcessor   = false;
     
+    /**
+     * Error message when there's a problem with the commandline options. 
+     */
     private String                          fErrorMsg;
+    
+    /**
+     * Help text, for the user.
+     */
     private String                          fHelpText;
+    
+    /**
+     * Commandline options valid, i.e. syntax correct, and values acceptable?
+     */
     private boolean                         fIsValid;
+    
+    /**
+     * Runtime option: Width for console based linear gauge.
+     */
     private int                             fOptConsoleWidth;
+    
+    /**
+     * Runtime option: Where to write the log file.
+     */
     private String                          fOptLogFilePath;
+    
+    /**
+     * Runtime option: Print the help text?
+     */
     private boolean                         fOptPrintHelp;
+    
+    /**
+     * Runtime option: Show the debug UI?
+     */
     private boolean                         fOptShowDebugWindow;
+    
+    /**
+     * Runtime option: Which Frontend?
+     */
     private EFrontendType                   fOptUIType;
+    
+    /**
+     * Runtime option: Use the earlier monolithic PPM processor?
+     */
     private boolean                         fOptUseDeprecatedPPMProcessor;
 
     /**
-     * 
+     * cTor. Sets runtime properties to sensible defaults.
      */
     public TSessionProperties ()
     {
@@ -55,20 +113,23 @@ public class TSessionProperties
     }
     
     /**
-     * @return
+     * @return  If commandline faulty: Explanatory text.
      */
     public String GetErrorMessage ()
     {
         return fErrorMsg;
     }
     
+    /**
+     * @return  Help text.
+     */
     public String GetHelpText ()
     {
         return fHelpText;
     }
     
     /**
-     * @return the fOptConsoleWidth
+     * @return  Width for console based linear gauge.
      */
     public final int GetOptConsoleWidth ()
     {
@@ -76,7 +137,7 @@ public class TSessionProperties
     }
     
     /**
-     * @return the fOptLogFilePath
+     * @return  Path where to write the log file.
      */
     public final String GetOptLogFilePath ()
     {
@@ -84,7 +145,7 @@ public class TSessionProperties
     }
     
     /**
-     * @return the fOptUIType
+     * @return  Option which UI type to use.
      */
     public final EFrontendType GetOptUIType ()
     {
@@ -92,7 +153,7 @@ public class TSessionProperties
     }
     
     /**
-     * @return the fOptPrintHelp
+     * @return  Whether to print the help file (<code>true</code>) or not (<code>false</code>).
      */
     public final boolean IsOptPrintHelp ()
     {
@@ -100,7 +161,7 @@ public class TSessionProperties
     }
 
     /**
-     * @return the fOptShowDebugWindow
+     * @return  Whether show the debug UI (<code>true</code>) or not (<code>false</code>).
      */
     public final boolean IsOptShowDebugWindow ()
     {
@@ -108,7 +169,7 @@ public class TSessionProperties
     }
     
     /**
-     * @return the fOptUseDeprecatedPPMProcessor
+     * @return  Whether to use the earlier monolithic PPM processor (<code>true</code>) or not (<code>false</code>).
      */
     public final boolean IsOptUseDeprecatedPPMProcessor ()
     {
@@ -116,13 +177,18 @@ public class TSessionProperties
     }
 
     /**
-     * @return
+     * @return  Whether the commandline options are valid (<code>true</code>) or not (<code>false</code>).
      */
     public boolean IsValid ()
     {
         return fIsValid;
     }
 
+    /**
+     * Sets the options from the parsed commandline.
+     * 
+     * @param cl    Parsed commandline.
+     */
     void Set (CommandLine cl)
     {
         boolean     doContinue;
@@ -235,23 +301,34 @@ public class TSessionProperties
         }
     }
     
+    /**
+     * Sets the help text.
+     * 
+     * @param ht    The help text.
+     */
     void SetHelpText (String ht)
     {
         fHelpText = ht;
     }
     
+    /**
+     * Sets the explanatory message if commandline is faulty.
+     * 
+     * @param m     The explanatory message.
+     */
     void SetErrorMessage (String m)
     {
         fErrorMsg = m;
     }
     
+    /**
+     * Invalidates this session property container.
+     * 
+     * @param errMsg    Explanatory message.
+     */
     private void _Invalidate (String errMsg)
     {
         fIsValid   = false;
-        fErrorMsg  = "Missing option: 'uiType'";
+        fErrorMsg  = errMsg;
     }
 }
-
-/*
-[100]   For console based linear gauge: 56 = 7 * 8 = seven PPM segments, each having eight sub sections. 
-*/

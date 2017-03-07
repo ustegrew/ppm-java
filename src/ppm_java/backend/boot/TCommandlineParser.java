@@ -27,27 +27,45 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
+ * Bespoke parser for ppm-java commandline options.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TCommandlineParser
 {
+    /**
+     * Commandline syntax explanation, for the help text.
+     */
     private static final String     gkCommandlineSyntax =
               "java -jar /path/to/ppm.jar [-h | --help] [-d | --debug] [-x | --dPPMProc] "
             + "(-l <path> | --logFile=<path>) (-u <ui_type> | --uiType=<ui_type>) "
             + "(-w <n> | --consoleWidth=<n>)"; 
     
+    /**
+     * Commandline option template. Options will be validated against this.
+     */
     private Options                 fCommandlineOptions;
+    
+    /**
+     * Help text, when shown.
+     */
     private String                  fHelpText;
     
     /**
-     * 
+     * cTor.
      */
     public TCommandlineParser ()
     {
         _Init ();
     }
 
+    /**
+     * Parses the given commandline arguments. Show help text if 
+     * there's a problem with the arguments.  
+     * 
+     * @param args      Given commandline arguments.
+     * @return          The session properties, or <code>null</code> if there's a problem.
+     */
     public TSessionProperties Parse (String[] args)
     {
         boolean                 isOK;
@@ -81,6 +99,9 @@ public class TCommandlineParser
         return ret;
     }
     
+    /**
+     * Sets up the parsing template and help text.
+     */
     private void _Init ()
     {
         Option                  printHelp;
@@ -123,6 +144,9 @@ public class TCommandlineParser
         fHelpText = _GetHelpText ();
     }
 
+    /**
+     * @return  The help text.
+     */
     private String _GetHelpText ()
     {
         StringWriter        sw;

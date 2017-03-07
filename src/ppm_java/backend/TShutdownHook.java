@@ -18,8 +18,9 @@ package ppm_java.backend;
 import ppm_java.util.logging.TLogger;
 
 /**
+ * JVM shutdown hook, when user presses ctrl-c.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TShutdownHook extends Thread
 {

@@ -13,16 +13,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.backend.boot;
+package ppm_java.typelib;
 
 /**
+ * The various types of frontends available. 
+ * 
  * @author Peter Hoppe
- *
  */
 public enum EFrontendType
 {
+    /**
+     * Horizontal linear gauge on the console. 
+     */
     kConsoleLinearGauge,
+    
+    /**
+     * Text stream to stdout.
+     */
     kConsoleTextOut,
+    
+    /**
+     * Horizontal LED bar graph GUI.
+     */
     kGUILinearGauge,
+    
+    /**
+     * PPM lookalike GUI.
+     */
     kGUINeedle
 }

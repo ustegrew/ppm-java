@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.boot;
 
 import ppm_java.backend.TController;
+import ppm_java.typelib.EFrontendType;
 import ppm_java.util.logging.TLogger;
 
 /**
