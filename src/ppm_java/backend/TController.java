@@ -59,14 +59,20 @@ import ppm_java.util.logging.TLogger;
 public final class TController
 {
     /**
+     * For start/stop sequence: Time between module starts or stops (in ms). 
+     * This gives each module time to settle before starting/stopping the next module.  
+     */
+    private static final int            gkTimeBetweenStartOrStop = 500;
+    
+    /**
      * Singleton <code>TController</code> instance. 
      */
     private static TController gController = new TController ();
     
     /**
-     * Creates the audio driver.
+     * Creates the global audio driver.
      * 
-     * @param id    Unique ID of the audio driver. 
+     * @param id    ID of the audio driver. 
      */
     public static void Create_AudioContext (String id)
     {
@@ -74,10 +80,10 @@ public final class TController
     }
     
     /**
-     * Creates a connection between two compatible endpoints. The following
-     * connections are possible:
+     * Creates a connection for sample data, i.e. between two compatible audio ports
+     * The following connections are possible:
      * 
-     * <table>
+     * <table style="border:1px;">
      *     <tr>
      *         <th>From port type</th>
      *         <th>To port type</th>
@@ -96,8 +102,8 @@ public final class TController
      *     </tr>
      * </table>
      * 
-     * @param idFromPort        Unique ID of the source port.
-     * @param idToPort          Unique ID of the target port.
+     * @param idFromPort        ID of the source port.
+     * @param idToPort          ID of the target port.
      */
     public static void Create_Connection_Data (String idFromPort, String idToPort)
     {
@@ -105,13 +111,14 @@ public final class TController
     }
     
     /**
-     * Subscribes an {@link IEvented} object (subscriber) to receive events from another
+     * Creates a connection for events. This subscribes an {@link IEvented} 
+     * object (subscriber) to receive events from another
      * {@link IEvented} (subscribed). The subscriber will receive all events emitted by 
      * the subscribed and needs to implement its own event filtering to listen to the 
      * events it's interested in.
      * 
-     * @param idSource          Unique ID, subscribed.
-     * @param idRecipient       Unique ID, subscriber.
+     * @param idSource          ID, subscribed.
+     * @param idRecipient       ID, subscriber.
      */
     public static void Create_Connection_Events (String idSource, String idRecipient)
     {
@@ -121,7 +128,7 @@ public final class TController
     /**
      * Creates a frontend module (console): Linear gauge.  
      * 
-     * @param id            Unique ID of the frontend.
+     * @param id            ID of the frontend.
      * @param widthCols     Length of the gauge, in characters.
      * @see                 TConsole_LinearGauge
      */
@@ -134,7 +141,7 @@ public final class TController
      * Creates a frontend module (console): Audio level values as stream 
      * of records in text format, to stdout.
      * 
-     * @param id            Unique ID of the frontend.
+     * @param id            ID of the frontend.
      * @see                 TConsole_TextOut
      */
     public static final void Create_Frontend_Console_TextOut (String id)
@@ -145,7 +152,7 @@ public final class TController
     /**
      * Creates a frontend module (GUI): Linear gauge.
      * 
-     * @param id            Unique ID of the frontend.
+     * @param id            ID of the frontend.
      * @see                 TGUILinearGauge_Surrogate
      */
     public static final void Create_Frontend_GUI_LinearGauge (String id)
@@ -156,7 +163,7 @@ public final class TController
     /**
      * Creates a frontend module (GUI): PPM lookalike.
      * 
-     * @param id            Unique ID of the frontend.
+     * @param id            ID of the frontend.
      * @see                 TGUINeedle_Surrogate
      */
     public static void Create_Frontend_GUI_Needle (String id)
@@ -165,9 +172,9 @@ public final class TController
     }
     
     /**
-     * Creates a backend module: Converter Raw values [0..1] to dB.
+     * Creates a backend module: Converter, raw values [0..1] to dB.
      * 
-     * @param id            Unique ID of the module.
+     * @param id            ID of the module.
      * @see                 TNodeConverterDb
      */
     public static void Create_Module_ConverterDB (String id)
@@ -178,7 +185,7 @@ public final class TController
     /**
      * Creates a backend module: Stepwise integrator to emulate PPM ballistics.
      * 
-     * @param id            Unique ID of the module.
+     * @param id            ID of the module.
      * @see                 TNodeIntegrator_PPMBallistics
      */
     public static void Create_Module_IntegratorPPMBallistics (String id)
@@ -189,7 +196,7 @@ public final class TController
     /**
      * Creates a backend module: Peak estimator.
      * 
-     * @param id            Unique ID of the module
+     * @param id            ID of the module.
      * @see                 TNodePeakEstimator
      */
     public static void Create_Module_PeakEstimator (String id)
@@ -198,20 +205,11 @@ public final class TController
     }
     
     /**
-     * Creates a backend module: Data pump.
+     * Creates a backend module: PPM processor. This is an all-in-one
+     * (monolithic) unit from an earlier development. Kept for 
+     * educational purposes.
      * 
-     * @param id            Unique ID of the module
-     * @see                 TNodePump
-     */
-    public static void Create_Module_Pump (String id)
-    {
-        TNodePump.CreateInstance (id);
-    }
-    
-    /**
-     * Creates a backend module: PPM processor.
-     * 
-     * @param id            Unique ID of the module
+     * @param id            ID of the module.
      * @see                 TNodePPMProcessor
      * @deprecated          PPMProcessor has been superseded by a more modular framework
      */
@@ -221,9 +219,22 @@ public final class TController
     }
     
     /**
-     * Creates a timer.
+     * Creates a backend module: Data pump.
      * 
-     * @param id            Unique ID of the module
+     * @param id            ID of the module.
+     * @see                 TNodePump
+     */
+    public static void Create_Module_Pump (String id)
+    {
+        TNodePump.CreateInstance (id);
+    }
+    
+    /**
+     * Creates a clock timer which posts a timer 
+     * {@link IEvented#gkEventTimerTick event} every 
+     * <code>intervalMs</code> ms.
+     * 
+     * @param id            ID of the module.
      * @param intervalMs    Initial timer interval in ms.
      * @see                 TTimer
      */
@@ -233,10 +244,10 @@ public final class TController
     }
     
     /**
-     * Creates an input port.
+     * Creates an input port on a module.
      * 
-     * @param idModule      The module which we attach the port to.
-     * @param idPort        Unique ID of the port.
+     * @param idModule      ID of the module.
+     * @param idPort        ID of the port.
      * @see                 VAudioPort_Input
      */
     public static void Create_Port_In (String idModule, String idPort)
@@ -248,10 +259,10 @@ public final class TController
     }
     
     /**
-     * Creates an output port.
+     * Creates an output port on a module.
      * 
-     * @param idModule      The module which we attach the port to.
-     * @param idPort        Unique ID of the port.
+     * @param idModule      ID of the module.
+     * @param idPort        ID of the port.
      * @see                 VAudioPort_Output
      */
     public static void Create_Port_Out (String idModule, String idPort)
@@ -261,11 +272,12 @@ public final class TController
         proc = (VAudioProcessor) gController._GetAudioObject (idModule);
         proc.CreatePort_Out (idPort);
     }
-    
+
     /**
-     * Creates an entry in the application's start list. When the network
-     * starts, this entry will start the corresponding module. Modules 
-     * will be started in the order of the start list. 
+     * Creates an entry at the end of the global start list. 
+     * When we start the network, this entry will start the 
+     * corresponding module. Modules will be started in 
+     * list order. 
      * 
      * @param idModuleToStart   ID of the module to start.
      */
@@ -273,26 +285,18 @@ public final class TController
     {
         gController._Create_StartListEntry (idModuleToStart);
     }
-
+    
     /**
-     * Creates an entry in the application's stop list. When the network
-     * terminates, this entry will stop the corresponding module. Modules 
-     * will be stopped in the order of the stop list. 
+     * Creates an entry at the end of the global stop list. 
+     * When we terminate the network, this entry will stop the 
+     * corresponding module. Modules will be stopped in 
+     * list order. 
      * 
      * @param idModuleToStart   ID of the module to stop.
      */
     public static void Create_StopListEntry (String idModuleToStop)
     {
         gController._Create_StopListEntry (idModuleToStop);
-    }
-    
-    /**
-     * Shows the debug window.
-     * @see TWndDebug
-     */
-    public static void DebugWindowShow ()
-    {
-        TWndDebug.Show ();
     }
 
     /**
@@ -307,6 +311,16 @@ public final class TController
     }
     
     /**
+     * Shows the debug window.
+     * 
+     * @see TWndDebug
+     */
+    public static void DebugWindowShow ()
+    {
+        TWndDebug.Show ();
+    }
+
+    /**
      * @return  The global audio driver instance.
      */
     public static TAudioContext_JackD GetAudioDriver ()
@@ -317,7 +331,7 @@ public final class TController
         
         return ret;
     }
-
+    
     /**
      * Looks up an audio object by ID.
      * 
@@ -344,26 +358,15 @@ public final class TController
     }
     
     /**
-     * Event API: Module <code>idSource</code> posts an event. Will
-     * be distributed to subscribers.
-     * 
-     * @param e             Event posted.
-     * @param idSource      ID of the module posting the event.
-     */
-    public static void PostEvent (int e, String idSource)
-    {
-        gController._PostEvent (e, idSource);
-    }
-    
-    /**
-     * Event API: Module <code>idSource</code> posts an event. Will
-     * be distributed to subscribers. Carries an extra argument as 
-     * in-band data. Useful if the listener needs some more qualifying 
-     * information with the event.
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers. 
+     * Carries an extra argument as in-band data. Useful if the 
+     * subscribers needs some more qualifying information with the event.
      * 
      * @param e             Event posted.
      * @param idSource      ID of the module posting the event.
      * @param arg0          The in-band data.
+     * @see   #Create_Connection_Events(String, String)
      * @see   IEvented
      */
     public static void PostEvent (int e, int arg0, String idSource)
@@ -372,14 +375,15 @@ public final class TController
     }
     
     /**
-     * Event API: Module <code>idSource</code> posts an event. Will
-     * be distributed to subscribers. Carries an extra argument as 
-     * in-band data. Useful if the listener needs some more qualifying 
-     * information with the event.
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers. 
+     * Carries an extra argument as in-band data. Useful if the 
+     * subscribers needs some more qualifying information with the event.
      * 
      * @param e             Event posted.
      * @param idSource      ID of the module posting the event.
      * @param arg0          The in-band data.
+     * @see   #Create_Connection_Events(String, String)
      * @see   IEvented
      */
     public static void PostEvent (int e, long arg0, String idSource)
@@ -388,14 +392,29 @@ public final class TController
     }
 
     /**
-     * Event API: Module <code>idSource</code> posts an event. Will
-     * be distributed to subscribers. Carries an extra argument as 
-     * in-band data. Useful if the listener needs some more qualifying 
-     * information with the event.
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers. 
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @see   #Create_Connection_Events(String, String)
+     * @see   IEvented
+     */
+    public static void PostEvent (int e, String idSource)
+    {
+        gController._PostEvent (e, idSource);
+    }
+    
+    /**
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers.
+     * Carries an extra argument as in-band data. Useful if the 
+     * subscribers needs some more qualifying information with the event.
      * 
      * @param e             Event posted.
      * @param idSource      ID of the module posting the event.
      * @param arg0          The in-band data.
+     * @see   #Create_Connection_Events(String, String)
      * @see   IEvented
      */
     public static void PostEvent (int e, String arg0, String idSource)
@@ -426,7 +445,7 @@ public final class TController
     /**
      * Registers a frontend with the global registry.
      * 
-     * @param object    The front end being registered.
+     * @param object    The frontend being registered.
      */
     public static void Register (VFrontend fe)
     {
@@ -434,7 +453,8 @@ public final class TController
     }
     
     /**
-     * Sets a flag so that we'll show the debug UI.
+     * Sets a flag so that we'll start/stop the debug UI when
+     * we start/stop the network.
      */
     public static void SetDebugUI_On ()
     {
@@ -445,7 +465,7 @@ public final class TController
      * Starts all modules in the start list. Modules will be started 
      * in the order the entries appear in the list.
      * 
-     *  @see    #_Create_StartListEntry(String)
+     *  @see    #Create_StartListEntry(String)
      */
     public static void Start ()
     {
@@ -453,8 +473,8 @@ public final class TController
     }
     
     /**
-     * Adds a runtime statistics provider, so its statistics 
-     * appears on the debug UI.
+     * Activates a runtime statistics provider, so its statistics appears 
+     * on the debug UI.
      * 
      * @param p     The provider being added.
      * @see   #StatGetDumpStr()
@@ -465,7 +485,9 @@ public final class TController
     }
     
     /**
-     * @return The accumulated statistics from all statistics providers.
+     * @return The accumulated statistics from all activated statistics 
+     *         providers as formatted text.
+     * 
      * @see    #StatAddProvider(IStatEnabled)
      */
     public static String StatGetDumpStr ()
@@ -484,17 +506,45 @@ public final class TController
     {
         gController._StartStop (false);
     }
-    
-    private static final int            gkTimeBetweenStartOrStop = 500;
 
-    private TBroker                     fEventBus;
-    private ArrayList<String>           fListIDModulesStart;
-    private ArrayList<String>           fListIDModulesStop;
-    private TRegistry                   fRegistry;
-    private ArrayList<IStatEnabled>     fStatProviders;
+    /**
+     * The debug info update worker.
+     */
     private TTimerDebugUpdate           fDebugUpdateWorker;
+    
+    /**
+     * If <code>true</code>, show debug UI when we start the network.
+     */
     private boolean                     fDoShowDebugUI;
     
+    /**
+     * Event API: The event broker.
+     */
+    private TBroker                     fEventBus;
+    
+    /**
+     * Module start list.
+     */
+    private ArrayList<String>           fListIDModulesStart;
+    
+    /**
+     * Module stop list.
+     */
+    private ArrayList<String>           fListIDModulesStop;
+    
+    /**
+     * Global object registry.
+     */
+    private TRegistry                   fRegistry;
+    
+    /**
+     * Registry of activated statistics providers.
+     */
+    private ArrayList<IStatEnabled>     fStatProviders;
+    
+    /**
+     * cTor. Made private, so nobody else can instantiate this class.
+     */
     private TController ()
     {
         TShutdownHook           sh;
@@ -514,7 +564,12 @@ public final class TController
     }
     
     /**
-     * @param idModuleToStart
+     * Creates an entry at the end of the global start list. 
+     * When we start the network, this entry will start the 
+     * corresponding module. Modules will be started in 
+     * list order. 
+     * 
+     * @param idModuleToStart   ID of the module to start.
      */
     private void _Create_StartListEntry (String idModuleToStart)
     {
@@ -522,13 +577,21 @@ public final class TController
     }
     
     /**
-     * @param idModuleToStop
+     * Creates an entry at the end of the global stop list. 
+     * When we terminate the network, this entry will stop the 
+     * corresponding module. Modules will be stopped in 
+     * list order. 
+     * 
+     * @param idModuleToStart   ID of the module to stop.
      */
     private void _Create_StopListEntry (String idModuleToStop)
     {
         fListIDModulesStop.add (idModuleToStop);
     }
     
+    /**
+     * @return  The global audio driver instance.
+     */
     private TAudioContext_JackD _GetAudioDriver ()
     {
         TAudioContext_JackD ret;
@@ -538,6 +601,12 @@ public final class TController
         return ret;
     }
 
+    /**
+     * Looks up an audio object by ID.
+     * 
+     * @param   id      The ID being searched for.
+     * @return          The object associated with the given ID. 
+     */
     private VAudioObject _GetAudioObject (String id)
     {
         VAudioObject        ret;
@@ -547,49 +616,116 @@ public final class TController
         return ret;
     }
     
-    private void _PostEvent (int e, String idSource)
-    {
-        fEventBus.Broker (e, idSource);
-    }
-    
+    /**
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers. 
+     * Carries an extra argument as in-band data. Useful if the 
+     * subscribers needs some more qualifying information with the event.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @param arg0          The in-band data.
+     * @see   IEvented
+     */
     private void _PostEvent (int e, int arg0, String idSource)
     {
         fEventBus.Broker (e, arg0, idSource);
     }
     
+    /**
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers. 
+     * Carries an extra argument as in-band data. Useful if the 
+     * subscribers needs some more qualifying information with the event.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @param arg0          The in-band data.
+     * @see   IEvented
+     */
     private void _PostEvent (int e, long arg0, String idSource)
     {
         fEventBus.Broker (e, arg0, idSource);
     }
     
+    /**
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers. 
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @see   IEvented
+     */
+    private void _PostEvent (int e, String idSource)
+    {
+        fEventBus.Broker (e, idSource);
+    }
+    
+    /**
+     * Event API: Whenever the module <code>idSource</code> posts 
+     * an event it will be distributed to the module's subscribers.
+     * Carries an extra argument as in-band data. Useful if the 
+     * subscribers needs some more qualifying information with the event.
+     * 
+     * @param e             Event posted.
+     * @param idSource      ID of the module posting the event.
+     * @param arg0          The in-band data.
+     * @see   IEvented
+     */
     private void _PostEvent (int e, String arg0, String idSource)
     {
         fEventBus.Broker (e, arg0, idSource);
     }
     
+    /**
+     * Registers an audio driver with the global registry.
+     * 
+     * @param driver    The audio driver being registered.
+     */
     private void _Register (VAudioDriver d)
     {
         TLogger.LogMessage ("Registering object: '" + d.GetID () + "'", this, "_Register (VAudioDriver d)");
         fRegistry.Register (d);
     }
     
+    /**
+     * Registers a browseable object with the global registry.
+     * 
+     * @param object    The object being registered.
+     */
     private void _Register (VBrowseable b)
     {
         TLogger.LogMessage ("Registering object: '" + b.GetID () + "'", this, "_Register (VBrowseable b)");
         fRegistry.Register (b);
     }
     
+    /**
+     * Registers a frontend with the global registry.
+     * 
+     * @param object    The frontend being registered.
+     */
     private void _Register (VFrontend fe)
     {
         TLogger.LogMessage ("Registering object: '" + fe.GetID () + "'", this, "_Register (VFrontend fe)");
         fRegistry.Register (fe);
     }
     
+    /**
+     * Sets a flag so that we'll start/stop the debug UI when
+     * we start/stop the network.
+     */
     private void _SetDebugUI_On ()
     {
         fDoShowDebugUI = true;
     }
     
+    /**
+     * Starts/stops all modules in the start list. Modules will be processed 
+     * in the order the entries appear in the resp. list.
+     * 
+     * @param  doStart      If <code>true</code>, start modules in the start list.
+     *                      Otherwise, stop modules in the stop list.
+     */
     private void _StartStop (boolean doStart)
     {
         int                 i;
@@ -637,11 +773,21 @@ public final class TController
         }
     }
 
+    /**
+     * Activates a runtime statistics provider, so its statistics appears 
+     * on the debug UI.
+     * 
+     * @param sp    The provider being added.
+     */
     private void _StatCreateProviderListEntry (IStatEnabled sp)
     {
         fStatProviders.add (sp);
     }
 
+    /**
+     * @return The accumulated statistics from all activated statistics 
+     *         providers as formatted text.
+     */
     private String _StatGetDumpStr ()
     {
         int             i;
@@ -672,6 +818,15 @@ public final class TController
         return ret;
     }
 
+    /**
+     * Subscribes an {@link IEvented} object (subscriber) to receive events from another
+     * {@link IEvented} (subscribed). The subscriber will receive all events emitted by 
+     * the subscribed and needs to implement its own event filtering to listen to the 
+     * events it's interested in.
+     * 
+     * @param keySubscribed     ID, subscribed.
+     * @param keySubscriber     ID, subscriber.
+     */
     private void _SubscribeToEvents (String keySubscribed, String keySubscriber)
     {
         VBrowseable         subscribed;
@@ -682,12 +837,21 @@ public final class TController
         fEventBus.Subscribe (subscribed, subscriber);
     }
 
+    /**
+     * Hard terminates this program, i.e. by call to <code>System.exit()</code>. 
+     */
     private void _SystemTerminate ()
     {
         TLogger.LogMessage ("Terminating application", this, "_SystemTerminate ()");
         System.exit (0);                                                /* [150] */
     }
 
+    /**
+     * Unregisters a module from the registry. If it's the last
+     * frontend then we hard terminate the application. 
+     * 
+     * @param id        ID of the module being terminated.
+     */
     private void _Unregister (String id)
     {
         int n;
