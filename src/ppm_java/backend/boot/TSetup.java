@@ -20,20 +20,44 @@ import ppm_java.typelib.EFrontendType;
 import ppm_java.util.logging.TLogger;
 
 /**
+ * Session setup agent. Builds and starts the signalling network. 
+ * 
  * @author Peter Hoppe
- *
  */
 public class TSetup
 {
+    /**
+     * Option: Width for console based linear gauge.
+     */
     private int                             fOptConsoleWidth;
+    
+    /**
+     * Option: Where to write the log file.
+     */
     private String                          fOptLogFilePath;
+    
+    /**
+     * Option: Print the help text?
+     */
     private boolean                         fOptPrintHelp;
+    
+    /**
+     * Option: Show the debug UI?
+     */
     private boolean                         fOptShowDebugWindow;
+    
+    /**
+     * Option: Which Frontend?
+     */
     private EFrontendType                   fOptUIType;
+    
+    /**
+     * Option: Use the earlier monolithic PPM processor?
+     */
     private boolean                         fOptUseDeprecatedPPMProcessor;
     
     /**
-     * 
+     * cTor. Sets all options to sensible defaults.
      */
     public TSetup ()
     {
@@ -46,7 +70,9 @@ public class TSetup
     }
 
     /**
-     * @param fSessionProps
+     * Sets up a session with the given session properties.
+     * 
+     * @param sessionProps      The session properties to use.
      */
     public void ExecuteWith (TSessionProperties sessionProps)
     {
@@ -79,7 +105,7 @@ public class TSetup
     }
 
     /**
-     * 
+     * Setup using current modular framework.
      */
     private void _Setup ()
     {
@@ -185,6 +211,9 @@ public class TSetup
         TController.Start ();
     }
 
+    /**
+     * Setup, using the earlier monolithic PPM processor.
+     */
     @SuppressWarnings ("deprecation")
     private void _Setup_UseDeprecatedPPMProcessor ()
     {

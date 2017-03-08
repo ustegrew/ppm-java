@@ -113,7 +113,7 @@ public final class TController
     /**
      * Creates a connection for events. This subscribes an {@link IEvented} 
      * object (subscriber) to receive events from another
-     * {@link IEvented} (subscribed). The subscriber will receive all events emitted by 
+     * {@link VBrowseable} (subscribed). The subscriber will receive all events emitted by 
      * the subscribed and needs to implement its own event filtering to listen to the 
      * events it's interested in.
      * 
@@ -820,7 +820,7 @@ public final class TController
 
     /**
      * Subscribes an {@link IEvented} object (subscriber) to receive events from another
-     * {@link IEvented} (subscribed). The subscriber will receive all events emitted by 
+     * {@link VBrowseable} (subscribed). The subscriber will receive all events emitted by 
      * the subscribed and needs to implement its own event filtering to listen to the 
      * events it's interested in.
      * 
