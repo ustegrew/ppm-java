@@ -20,25 +20,49 @@ import java.util.ArrayList;
 import ppm_java.typelib.VBrowseable;
 
 /**
+ * List of subscribers listening for the events posted by a {@link VBrowseable} (subscribed).
+ * 
  * @author Peter Hoppe
- *
  */
 class TBrokerSubscriptionList
 {
+    /**
+     * List holding the subscriptions.
+     */
     private ArrayList<TBrokerSubscription>  fMembers;
+    
+    /**
+     * The object posting the events.
+     */
     private VBrowseable                     fSubscribed;
     
+    /**
+     * cTor. Sets the object everyone is listening to.
+     * 
+     * @param subscribed    The object posting the events.
+     */
     public TBrokerSubscriptionList (VBrowseable subscribed)
     {
         fSubscribed     = subscribed;
         fMembers        = new ArrayList<> ();
     }
     
+    /**
+     * Adds a new subscription.
+     * 
+     * @param subscription
+     */
     public void Add (TBrokerSubscription subscription)
     {
         fMembers.add (subscription);
     }
     
+    /**
+     * Returns the i<sup>th</sup> subscription.
+     * 
+     * @param   i   Zero based index of the requested subscription.
+     * @return      The subscription requested.
+     */
     public TBrokerSubscription Get (int i)
     {
         TBrokerSubscription     ret;
@@ -48,6 +72,9 @@ class TBrokerSubscriptionList
         return ret;
     }
     
+    /**
+     * @return  The number of subscriptions registered.
+     */
     public int GetNumElements ()
     {
         int ret;
@@ -57,6 +84,9 @@ class TBrokerSubscriptionList
         return ret;
     }
     
+    /**
+     * @return  The subscribed, i.e. the object sending the events everyone listens for.
+     */
     public VBrowseable GetSubscribed ()
     {
         return fSubscribed;

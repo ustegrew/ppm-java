@@ -19,15 +19,18 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Output_Samples;
 
 /**
+ * Concrete implementation of an audio output port for a {@link TNodePPMProcessor}.
+ * 
  * @author Peter Hoppe
- *
  */
 @SuppressWarnings ("deprecation")
 public class TNodePPMProcessor_Endpoint_Out extends VAudioPort_Output_Samples
 {
     /**
-     * @param id
-     * @param host
+     * cTor.
+     * 
+     * @param id        ID of this output port.
+     * @param host      The audio processor hosting this port.
      */
     public TNodePPMProcessor_Endpoint_Out (String id, TNodePPMProcessor host)
     {

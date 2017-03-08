@@ -19,13 +19,29 @@ import ppm_java.typelib.IEvented;
 import ppm_java.typelib.VBrowseable;
 
 /**
+ * A subscription of an {@link IEvented} (subscriber) to listen to 
+ * events posted by another {@link VBrowseable} (subscribed). 
+ * 
  * @author Peter Hoppe
  */
 class TBrokerSubscription
 {
+    /**
+     * The subscribed.
+     */
     private VBrowseable         fSubscribed;
+    
+    /**
+     * The subscriber
+     */
     private IEvented            fSubscriber;
     
+    /**
+     * cTor. Sets subscribed and subscriber.
+     * 
+     * @param subscribed        The subscribed.
+     * @param subscriber        The subscriber.
+     */
     public TBrokerSubscription
     (
         VBrowseable         subscribed,
@@ -37,7 +53,7 @@ class TBrokerSubscription
     }
 
     /**
-     * @return 
+     * @return  The subscribed.
      */
     public VBrowseable GetSubscribed ()
     {
@@ -45,7 +61,7 @@ class TBrokerSubscription
     }
 
     /**
-     * @return 
+     * @return  The subscriber.
      */
     public IEvented GetSubscriber ()
     {

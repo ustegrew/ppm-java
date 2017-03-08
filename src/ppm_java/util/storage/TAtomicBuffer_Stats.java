@@ -26,6 +26,11 @@ import ppm_java.typelib.IStats;
  */
 public class TAtomicBuffer_Stats implements IStats
 {
+    /**
+     * The record class. 
+     * 
+     * @author peter
+     */
     public static class TRecord
     {
         public int      fNumContentions;

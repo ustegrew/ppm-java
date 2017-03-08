@@ -21,13 +21,21 @@ import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * Converts a raw value <code>[0 .. 1]</code> into its equivalent dB value.
+ * 
+ * Conversion scheme:
+ * <ul>
+ *     <li></li>
+ *     <li></li>
+ * </ul>
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
 {
     public static final double              gkMinDB         = -130;
     public static final double              gkMinThreshold  = 3.16E-08f;
+    
     public static void CreateInstance (String id)
     {
         new TNodeConverterDb (id);

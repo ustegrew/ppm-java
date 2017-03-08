@@ -31,9 +31,11 @@ import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
 
 /**
  * PPM meter class. Updates all associated front ends with one 
- * level value per cycle, emulating PPM ballistics.
+ * level value per cycle, emulating PPM ballistics. Note that 
+ * a PPM processor treats a single channel, so for multiple 
+ * channels use multiple processors.
  * 
- * @author          peter
+ * @author          Peter Hoppe
  * @deprecated      Tries to achieve too much which results in 
  *                  an overcomplicated design. Protocol has now been
  *                  split up in a number of simple modules. This class 
@@ -43,33 +45,111 @@ public class TNodePPMProcessor
     extends         VAudioProcessor
     implements      IEvented, IStatEnabled
 {
+    /**
+     * Fallback: Range.
+     */
+    private static final double     gkIntegrFallRangedB =  -24;         /* [110] */
+
+    /**
+     * Fallback: Time [ms] to traverse {@link #gkIntegrFallRangedB}.
+     */
+    private static final long       gkIntegrFallTime    = 2800;         /* [110] */
+    
+    /**
+     * Integration: Range.
+     */
+    private static final double     gkIntegrRiseRangedB =   23;         /* [110] */
+    
+    /**
+     * Integration: Time [ms] to traverse {@link #gkIntegrRiseRangedB}.
+     */
+    private static final long       gkIntegrRiseTime    =   10;         /* [110] */
+    
+    /**
+     * Hearing threshold: -130dB equals 3.16 * 10^-8 V.
+     */
+    private static final double     gkMinThreshold      = 3.16E-08f;    /* [120] */
+    
+    /**
+     * Creates a new PPM Processor instance.
+     * 
+     * @param id    Unique ID as which we register this PPM Processor
+     */
     public static void CreateInstance (String id)
     {
         new TNodePPMProcessor (id);
     }
-
-    private static final double     gkIntegrRiseRangedB =   23;         /* [110] */
-    private static final double     gkIntegrFallRangedB =  -24;         /* [110] */
-    private static final long       gkIntegrFallTime    = 2800;         /* [110] */
-    private static final long       gkIntegrRiseTime    =   10;         /* [110] */
-    private static final double     gkMinThreshold      = 3.16E-08f;    /* [120] */
     
+    /**
+     * If <code>false</code>, then we still need to determine the time of the 
+     * first incoming {@link IEvented#gkEventTimerTick}. This time of the first
+     * timer event will become the initial time. From the second timer tick 
+     * onwards we can compute the time difference to the previous frame which 
+     * we need to calculate the current display position.
+     */
     private boolean                             fHasInitialTime;
+    
+    /**
+     * The last incoming sample chunk.
+     */
     private FloatBuffer                         fInPacket;
+    
+    /**
+     * How many samples fit into one timer cycle? 
+     */
     private long                                fNSamplesPerCycle;
+    
+    /**
+     * The approximated peak value we are sending out to the associated frontends. 
+     * Converted to dB from {@link #fPeak_Raw} and includes the PPM ballistics. 
+     */
     private double                              fPeak_dB;
+    
+    /**
+     * The raw peak value as detected in the last sample chunk. 
+     */
     private double                              fPeak_Raw;
-    private double                              fPeakDeltaRise;
+    
+    /**
+     * Indicator fall speed, in dB/ms
+     */
     private double                              fPeakDeltaFall;
+    
+    /**
+     * Indicator rise speed, in dB/ms
+     */
+    private double                              fPeakDeltaRise;
+    
+    /**
+     * Sample rate, as used by jackd.
+     */
     private long                                fSampleRate;
-    private TNodePPMProcessor_Stats            fStats;
-    private long                                fTLast;
+    
+    /**
+     * The statistics record. Updated during runtime.
+     */
+    private TNodePPMProcessor_Stats             fStats;
+    
+    /**
+     * Buffer over/underrun compensation: Amount by which the display 
+     * engine clock cycle time has to be adjusted for the next cycle.  
+     */
     private long                                fTDeltaRequested;
     
     /**
-     * @param id
-     * @param nMaxChanIn
-     * @param nMaxChanOut
+     * Time the last cycle started. (in ms, between the current 
+     * time and midnight, January 1, 1970 UTC). Wee need this to 
+     * compute the time difference between this cycle and the last cycle.
+     * We incorporate the time difference in the display interpolator;
+     * hence the display should change with the same speed on fast systems
+     * as on slow systems. 
+     */
+    private long                                fTLast;
+    
+    /**
+     * cTor.
+     * 
+     * @param id    Unique ID as which we register this PPM processor.
      */
     private TNodePPMProcessor (String id)
     {
@@ -180,7 +260,8 @@ public class TNodePPMProcessor
     }
     
     /**
-     * Auto compensation for Overruns/Underruns on Atomic buffer associated with input.
+     * Auto compensation for Overruns/Underruns on the 
+     * atomic buffer associated with the input.
      */
     private void _CompensateCongestions ()
     {
@@ -214,6 +295,17 @@ public class TNodePPMProcessor
         }
     }
     
+    /**
+     * Finds the raw peak value of (a part of) the given 
+     * sample chunk and returns its absolute value. 
+     * We only process up to <code>forNSamples</code>
+     * samples - in effect, not more samples than defined by
+     * {@link #fNSamplesPerCycle}.
+     * 
+     * @param b                 The sample chunk.
+     * @param forNSamples       How many samples we use to search. 
+     * @return
+     */
     private double _FindPeak (FloatBuffer b, long forNSamples)
     {
         boolean doContinue;
@@ -251,9 +343,16 @@ public class TNodePPMProcessor
     /**
      * The central computation piece of the PPM level meter. Sends one level update
      * per cycle to the attached meter frontend. Output is one single floating 
-     * point value per cycle. Level value is in dB.<br/>
+     * point value per cycle. Level value is in dB. The method performs the 
+     * necessary ballistics of a PPM meter.
      * 
-     * The method performs the necessary ballistics of a PPM meter:<br/>
+     * We only process up to {@link #fNSamplesPerCycle} samples during one cycle,
+     * whatever is left is processed during the next cycle(s). That way we can reconcile
+     * the given {@link #fSampleRate sample rate} and the calculated 
+     * {@link #fNSamplesPerCycle samples per cycle}.
+     * 
+     * New data always takes priority over old data. If new data comes in whilst 
+     * there's still unprocessed data, we discard the old data and use the new data.  
      */
     private void _ProcessChunk ()
     {
@@ -376,6 +475,7 @@ public class TNodePPMProcessor
 [110]   PPM type II ballistics (strict):
         Rise: -24dB -> - 1dB:   10  ms  =  23dB /   10mS =  2.3      dB/mS 
         Fall:   0dB -> -24dB: 2800  ms  = -24dB / 2800ms ~ -0.00857  dB/ms
+        
 [120]   For each sample, JJack delivers a floating point value
         in the range [-1.0, 1.0] floating point units.
         For each frame, we map all negative values to the 
@@ -408,6 +508,14 @@ public class TNodePPMProcessor
                 pdB = -130
             for p: ]3.16E-08, 1.0]
                 pdB = 20 * log (p)
+                
+        This value assumes that there's a one-to-one relationship between 
+        the RMS voltage at the sound card's input and the corresponding 
+        sample value, so that: 0V => 0; 1V => 1. Most likely this won't 
+        be the case, but with every soundcard the value mapping will be 
+        different. In reality, this may correspond to wildly differing 
+        voltages, so it (really) is just an arbitrary number.
+
 [130]   There are situations where downcasting from double to float 
         is dangerous. Here it's fairly safe:
         * We deal with dB values, i.e. the really interesting part 
@@ -419,9 +527,11 @@ public class TNodePPMProcessor
         * We produce a use-once value, i.e. we won't use this value 
           as a base for the next peak calculations. Therefore we won't
           have accumulating errors.
+          
 [140]   For time measurement. We will use the first cycle after starting 
         to just set an initial time point and otherwise do no data processing.
         Otherwise, the first cycle could provide non-sensical values, maybe 
         even leading to an exception.
+        
 [150]   Otherwise stRec.fDiffOverUnderruns won't converge to zero without more over/underruns
 */
