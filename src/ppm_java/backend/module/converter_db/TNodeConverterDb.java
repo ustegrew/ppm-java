@@ -21,30 +21,57 @@ import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
- * Converts a raw value <code>[0 .. 1]</code> into its equivalent dB value.
- * 
- * Conversion scheme:
- * <ul>
- *     <li></li>
- *     <li></li>
- * </ul>
+ * Converts a raw value <code>[0, 1]</code> into its equivalent dB value.
+ * We use the following conversion scheme:
+ * <table border="1">
+ *     <tr>
+ *         <td>Raw values</td>
+ *         <td>Values (dB)</td>
+ *     </tr>
+ *     <tr>
+ *         <td><code>&lt; 10<sup>-7.5</sup><code></td>
+ *         <td>-130</td>
+ *     </tr>
+ *     <tr>
+ *         <td><code>10<sup>-7.5</sup> .. 1</code></td>
+ *         <td><code>-130 .. 0</code></td>
+ *     </tr>
+ * </table>   
  * 
  * @author Peter Hoppe
  */
 public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
 {
-    public static final double              gkMinDB         = -130;
-    public static final double              gkMinThreshold  = 3.16E-08f;
+    /**
+     * Minimum dB level. Maps to PPM 0 .. PPM 1
+     */
+    public static final double              gkMinDB         = -130;         /* [100] */
     
+    /**
+     * Voltage (= raw value) corresponding to {@link #gkMinDB}.
+     * See [100] in the java source.
+     */
+    public static final double              gkMinThreshold  = 3.16E-08f;    /* [100] */
+    
+    /**
+     * Creates a new dB converter instance.
+     * 
+     * @param id    Unique ID as which we register this dB converter.
+     */
     public static void CreateInstance (String id)
     {
         new TNodeConverterDb (id);
     }
     
+    /**
+     * The statistics record. Updated during runtime.
+     */
     private TNodeConverterDb_Stats          fStats;
     
     /**
-     * @param id
+     * cTor.
+     * 
+     * @param id    Unique ID as which we register this PPM processor.
      */
     private TNodeConverterDb (String id)
     {
@@ -96,13 +123,18 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
         TController.Register (this);
     }
 
+    /**
+     * Receives a sample value from the associated endpoint.
+     * 
+     * @param sample        The sample value.
+     */
     void Receive (float sample)
     {
         double                          x;
         float                           dB;
         TNodeConverterDb_Endpoint_Out   out;
         
-        if (sample >= gkMinThreshold)
+        if (sample >= gkMinThreshold)                                   /* Re calculations: [100] */
         {
             x = 20 * Math.log10 (sample);
         }
@@ -111,7 +143,7 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
             x = gkMinDB;
         }
         
-        dB  = (float) x;                                                /* [120] */
+        dB  = (float) x;                                                /* [110] */
         
         fStats.SetValue (sample);
         fStats.SetDB    (dB);
@@ -122,7 +154,36 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
 }
 
 /*
-[100]   Generic formula: ratio (vdB): Signal Voltage (v) against reference voltage (vr):
+[100]   Peak values, Raw values, Calibration and all that...
+
+        For each sample, JJack delivers a floating point value
+        in the range [-1.0, 1.0] floating point units.
+        For each frame, we map all negative values to the 
+        positive range, effectively rectifying the signal.  
+        The positive maximum value in each frame becomes the 
+        peak value.
+
+        Peak value vs. Input signal voltage
+        -----------------------------------
+        Our calculations make the simplifying assumption
+        that the raw values delivered by jackd map directly 
+        to voltage, e.g. 0.5 means: 0.5V. It's an arbitrary
+        assumption; in reality the voltage will differ wildly
+        from sound card to sound card. That's why we can't 
+        use a unified calibration procedure. Future developments 
+        could include an input gain setting that calibrates the 
+        PPM to map peak value 1.0 against PPM 7 + 4dB (i.e. 
+        an imaginary PPM 8) to add some headroom. 
+        This is a very crude measurement. For now, if the sound 
+        card input is connected to a mixer output, then use the 
+        mixer's VU meter and match +4dB to PPM 7. 
+
+        Calculations
+        ------------
+        Range (peak value, fpU):                floating point units, from JJack provided values
+            [0.0, 1.0]
+            
+        Generic formula: ratio (vdB): Signal Voltage (v) against reference voltage (vr):
         
             vdB = 20 * log (v / vr)
             
@@ -131,17 +192,21 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
         
         Our mapping fpU -> dB:
             fpU = [0.0, 10^-7.5]:  -130
-                  ]10^-7.5,   1]:     0
+                  ]10^-7.5,   1]:  -130 .. 0
 
-[110]   Note re gkMinThreshold 
+        Note that 
             -130dB: Hearing threshold
         
             which computes to a voltage of:
             10 ^ (-130/20) = 10^-7.5 = 3.16 * 10^-8
+            
+        Calculating peak values in dB:
+            for p: [0, 3.16E-08]
+                pdB = -130
+            for p: ]3.16E-08, 1.0]
+                pdB = 20 * log (p)
 
-
-
-[120]   There are situations where downcasting from double to float 
+[110]   There are situations where downcasting from double to float 
         is dangerous. Here it's fairly safe:
         * We deal with dB values, i.e. the really interesting part 
           is to the left of the decimal point. To the human ear, 

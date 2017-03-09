@@ -28,7 +28,7 @@ import ppm_java.backend.boot.TSetup;
  * <dl>
  *     <dt>Lightweight modules</dt> 
  *     <dd>
- *         A group of modules, each havin g a very limited functionality, connected
+ *         A group of modules, each having a very limited functionality, connected
  *         to form a complex apparatus. This is the current design.
  *     </dd>
  *     <dt>Monolithic module</dt> 
@@ -43,7 +43,7 @@ import ppm_java.backend.boot.TSetup;
  * inexpensive to create new kinds of modules (e.g. a history view showing the last minute
  * of metering data). It comes at a price of multiple data copying between some modules and 
  * some boilerplate code and modules with trivial functionality (e.g. the peak estimator). 
- * However, the flexibility trumps, as it makes the design much more scalable. 
+ * However, the flexibility trumps, as it makes the design much more scalable.
  * 
  * @author Peter Hoppe
  */

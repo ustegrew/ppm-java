@@ -476,16 +476,35 @@ public class TNodePPMProcessor
         Rise: -24dB -> - 1dB:   10  ms  =  23dB /   10mS =  2.3      dB/mS 
         Fall:   0dB -> -24dB: 2800  ms  = -24dB / 2800ms ~ -0.00857  dB/ms
         
-[120]   For each sample, JJack delivers a floating point value
+[120]   Peak values, Raw values, Calibration and all that...
+
+        For each sample, JJack delivers a floating point value
         in the range [-1.0, 1.0] floating point units.
         For each frame, we map all negative values to the 
-        positive range, effectively rectifying the signal.          
+        positive range, effectively rectifying the signal.  
         The positive maximum value in each frame becomes the 
         peak value.
 
+        Peak value vs. Input signal voltage
+        -----------------------------------
+        Our calculations make the simplifying assumption
+        that the raw values delivered by jackd map directly 
+        to voltage, e.g. 0.5 means: 0.5V. It's an arbitrary
+        assumption; in reality the voltage will differ wildly
+        from sound card to sound card. That's why we can't 
+        use a unified calibration procedure. Future developments 
+        could include an input gain setting that calibrates the 
+        PPM to map peak value 1.0 against PPM 7 + 4dB (i.e. 
+        an imaginary PPM 8) to add some headroom. 
+        This is a very crude measurement. For now, if the sound 
+        card input is connected to a mixer output, then use the 
+        mixer's VU meter and match +4dB to PPM 7. 
+
+        Calculations
+        ------------
         Range (peak value, fpU):                floating point units, from JJack provided values
             [0.0, 1.0]
-
+            
         Generic formula: ratio (vdB): Signal Voltage (v) against reference voltage (vr):
         
             vdB = 20 * log (v / vr)
@@ -495,7 +514,7 @@ public class TNodePPMProcessor
         
         Our mapping fpU -> dB:
             fpU = [0.0, 10^-7.5]:  -130
-                  ]10^-7.5,   1]:     0
+                  ]10^-7.5,   1]:  -130 .. 0
 
         Note that 
             -130dB: Hearing threshold
@@ -509,13 +528,6 @@ public class TNodePPMProcessor
             for p: ]3.16E-08, 1.0]
                 pdB = 20 * log (p)
                 
-        This value assumes that there's a one-to-one relationship between 
-        the RMS voltage at the sound card's input and the corresponding 
-        sample value, so that: 0V => 0; 1V => 1. Most likely this won't 
-        be the case, but with every soundcard the value mapping will be 
-        different. In reality, this may correspond to wildly differing 
-        voltages, so it (really) is just an arbitrary number.
-
 [130]   There are situations where downcasting from double to float 
         is dangerous. Here it's fairly safe:
         * We deal with dB values, i.e. the really interesting part 
