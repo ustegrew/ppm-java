@@ -21,7 +21,7 @@ import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
 
 /**
- * Concrete implementation of an audio input port for a {@link TNodePPMProcessor}.
+ * Audio input port for a {@link TNodePPMProcessor}.
  * Since we expect this endpoint to be connected to an audio driver (which runs 
  * in a  high priority thread), we use a buffered design, so that we prevent
  * priority inversion. 
@@ -35,7 +35,7 @@ public class TNodePPMProcessor_Endpoint_In extends VAudioPort_Input_Chunks_Buffe
      * cTor.
      * 
      * @param id            ID of this input port.
-     * @param host          The audio processor hosting this port.
+     * @param host          The module this port is part of.
      * @param copyPolicy    If the other peer is running in a high priority thread, set this to
      *                      {@link ECopyPolicy#kCopyOnGet}. This means that the incoming data
      *                      is being copied when the hosting PPM processor collects it. 

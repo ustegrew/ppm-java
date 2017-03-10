@@ -20,15 +20,17 @@ import ppm_java.typelib.VAudioPort_Input_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * Audio input port for a {@link TNodeConverterDb}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodeConverterDb_Endpoint_In extends VAudioPort_Input_Samples
 {
     /**
-     * @param id
-     * @param host
-     * @param iPort
+     * cTor.
+     * 
+     * @param id            ID of this input port.
+     * @param host          The module this port is part of.
      */
     public TNodeConverterDb_Endpoint_In (String id, VAudioProcessor host)
     {

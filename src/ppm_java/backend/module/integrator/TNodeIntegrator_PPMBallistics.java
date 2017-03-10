@@ -22,34 +22,90 @@ import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * A stepwise integrator to implement PPM ballistics. Receives a stream 
+ * of level values and creates a stream of values that follow the rise 
+ * and fall ballistics of a PPM.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodeIntegrator_PPMBallistics 
     extends     VAudioProcessor 
     implements  IStatEnabled, IEvented
 {
+    /**
+     * Fallback: Range.
+     */
+    private static final double     gkIntegrFallRangedB =  -24;         /* [110] */
+    
+    /**
+     * Fallback: Time [ms] to traverse {@link #gkIntegrFallRangedB}.
+     */
+    private static final double     gkIntegrFallTime    = 2800;         /* [110] */
+    
+    /**
+     * Rise: Range
+     */
+    private static final double     gkIntegrRiseRangedB =   23;         /* [110] */
+    
+    /**
+     * Rise: Time [ms] to traverse {@link #gkIntegrRiseRangedB}.
+     */
+    private static final double     gkIntegrRiseTime    =   10;         /* [110] */
+    
+    /**
+     * Creates a new instance of this module.
+     * 
+     * @param id    Unique ID as which we register this module.
+     */
     public static void CreateInstance (String id)
     {
         new TNodeIntegrator_PPMBallistics (id);
     }
-    
-    private static final double     gkIntegrFallRangedB =  -24;         /* [110] */
-    private static final double     gkIntegrFallTime    = 2800;         /* [110] */
-    private static final double     gkIntegrRiseRangedB =   23;         /* [110] */
-    private static final double     gkIntegrRiseTime    =   10;         /* [110] */
 
-    private TNodeIntegrator_PPMBallistics_Stats     fStats;
+    /**
+     * If <code>true</code>, then we still need to determine the time of the 
+     * first incoming {@link IEvented#gkEventTimerTick}. This time of the first
+     * timer event will become the initial time. From the second timer tick 
+     * onwards we always compute the time difference to the previous frame which 
+     * we need to calculate the current display position.
+     */
     private boolean                                 fHasNotBeenInitialized;
+    
+    /**
+     * The statistics record. Updated during runtime. 
+     */
+    private TNodeIntegrator_PPMBallistics_Stats     fStats;
+    
+    /**
+     * Time the current cycle started (in ms, between the current 
+     * time and midnight, January 1, 1970 UTC). Wee need this to 
+     * compute the time difference between this cycle and the previous cycle.
+     * We incorporate the time difference in the display intergrator;
+     * hence the display should change with the same speed on fast systems
+     * as on slow systems. 
+     */
     private double                                  fTLast;
-    private double                                  fVDB;
-    private double                                  fValueDeltaRise;
+    
+    /**
+     * Indicator fall speed, in dB/ms.
+     */
     private double                                  fValueDeltaFall;
     
     /**
-     * @param id
-     * @param nMaxChanIn
-     * @param nMaxChanOut
+     * Indicator rise speed, in dB/ms.
+     */
+    private double                                  fValueDeltaRise;
+    
+    
+    /**
+     * The approximated peak value we are sending out to the associated frontends.
+     */
+    private double                                  fVDB;
+    
+    /**
+     * cTor.
+     * 
+     * @param id        
      */
     private TNodeIntegrator_PPMBallistics (String id)
     {
@@ -150,6 +206,13 @@ public class TNodeIntegrator_PPMBallistics
         TController.Register (this);
     }
 
+    /**
+     * Updates input value, then recomputes output value to 
+     * follow with the set rise/fall ballistics of a PPM. Will then 
+     * push new output value to the output port.
+     * 
+     * @param dBValue   The new input value.
+     */
     void SetRef (float dBValue)
     {
         double                                      t0;

@@ -19,15 +19,32 @@ import ppm_java.typelib.IStats;
 import ppm_java.util.storage.TAtomicDouble;
 
 /**
+ * Runtime statistics of a {@link TNodeConverterDb}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodeConverterDb_Stats implements IStats
 {
+    /**
+     * The current dB value.
+     */
     private TAtomicDouble               fDB;
+    
+    /**
+     * The hosting module.
+     */
     private TNodeConverterDb            fHost;
+    
+    /**
+     * The current raw value.
+     */
     private TAtomicDouble               fValue;
     
+    /**
+     * cTor.
+     * 
+     * @param host      The hosting module.
+     */
     public TNodeConverterDb_Stats (TNodeConverterDb host)
     {
         fHost   = host;
@@ -50,11 +67,21 @@ public class TNodeConverterDb_Stats implements IStats
         return ret;
     }
 
+    /**
+     * Sets the current dB value.
+     * 
+     * @param dB        dB value.
+     */
     void SetDB (float dB)
     {
         fDB.Set (dB);
     }
     
+    /**
+     * Sets the current raw value.
+     * 
+     * @param v     Raw value.
+     */
     void SetValue (float v)
     {
         fValue.Set (v);

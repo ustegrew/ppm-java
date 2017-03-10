@@ -67,7 +67,7 @@ public final class TNodePPMProcessor_Stats implements IStats
     /**
      * cTor.
      * 
-     * @param host      The hosting PPM processor.
+     * @param host      The hosting module.
      */
     public TNodePPMProcessor_Stats (TNodePPMProcessor host)
     {

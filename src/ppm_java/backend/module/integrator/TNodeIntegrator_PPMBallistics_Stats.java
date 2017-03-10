@@ -19,20 +19,37 @@ import ppm_java.typelib.IStats;
 import ppm_java.util.storage.TAtomicDouble;
 
 /**
- * @author Peter Hoppe
- *
+ * Runtime statistics of a {@link TNodeIntegrator_PPMBallistics}.
+ * 
+ * @author peter
  */
 public class TNodeIntegrator_PPMBallistics_Stats implements IStats
 {
+    /**
+     * The hosting module.
+     */
     private TNodeIntegrator_PPMBallistics           fHost;
-    private TAtomicDouble                           fTimeCycle;
-    private TAtomicDouble                           fValueDBActual;
-    private TAtomicDouble                           fValueDBRef;
-    private TAtomicDouble                           fValueErr;
     
     /**
-     * 
+     * The time it took between the previous cycle and the current cycle.
      */
+    private TAtomicDouble                           fTimeCycle;
+    
+    /**
+     * The computed output value after application of the PPM ballistics. 
+     */
+    private TAtomicDouble                           fValueDBActual;
+    
+    /**
+     * The input value for the current cycle.
+     */
+    private TAtomicDouble                           fValueDBRef;
+    
+    /**
+     * Difference between input value and output value.
+     */
+    private TAtomicDouble                           fValueErr;
+    
     public TNodeIntegrator_PPMBallistics_Stats (TNodeIntegrator_PPMBallistics host)
     {
         fHost                   = host;
@@ -59,23 +76,41 @@ public class TNodeIntegrator_PPMBallistics_Stats implements IStats
         return ret;
     }
 
+    /**
+     * Sets the time it took between the previous cycle and the current cycle.
+     * 
+     * @param t         Time [ms].
+     */
     void SetTimeCycle (double t)
     {
         fTimeCycle.Set (t);
     }
     
+    /**
+     * Sets the computed output value after application of the PPM ballistics. 
+     * 
+     * @param value     Output value.
+     */
     void SetValueDBActual (double value)
     {
         fValueDBActual.Set (value);
         _RecomputeDiff ();
     }
     
+    /**
+     * Sets the input value for the current cycle.
+     * 
+     * @param value     Input value.
+     */
     void SetValueDBRef (double value)
     {
         fValueDBRef.Set (value);
         _RecomputeDiff ();
     }
     
+    /**
+     * Recomputes the difference between input value and output value.
+     */
     private void _RecomputeDiff ()
     {
         double yAct;

@@ -56,12 +56,12 @@ public class TNodePPMProcessor
     private static final long       gkIntegrFallTime    = 2800;         /* [110] */
     
     /**
-     * Integration: Range.
+     * Rise: Range.
      */
     private static final double     gkIntegrRiseRangedB =   23;         /* [110] */
     
     /**
-     * Integration: Time [ms] to traverse {@link #gkIntegrRiseRangedB}.
+     * Rise: Time [ms] to traverse {@link #gkIntegrRiseRangedB}.
      */
     private static final long       gkIntegrRiseTime    =   10;         /* [110] */
     
@@ -71,9 +71,9 @@ public class TNodePPMProcessor
     private static final double     gkMinThreshold      = 3.16E-08f;    /* [120] */
     
     /**
-     * Creates a new PPM Processor instance.
+     * Creates a new instance of this module.
      * 
-     * @param id    Unique ID as which we register this PPM Processor
+     * @param id    Unique ID as which we register this module.
      */
     public static void CreateInstance (String id)
     {
@@ -84,7 +84,7 @@ public class TNodePPMProcessor
      * If <code>false</code>, then we still need to determine the time of the 
      * first incoming {@link IEvented#gkEventTimerTick}. This time of the first
      * timer event will become the initial time. From the second timer tick 
-     * onwards we can compute the time difference to the previous frame which 
+     * onwards we always compute the time difference to the previous frame which 
      * we need to calculate the current display position.
      */
     private boolean                             fHasInitialTime;
@@ -137,10 +137,10 @@ public class TNodePPMProcessor
     private long                                fTDeltaRequested;
     
     /**
-     * Time the last cycle started. (in ms, between the current 
+     * Time the current cycle started (in ms, between the current 
      * time and midnight, January 1, 1970 UTC). Wee need this to 
-     * compute the time difference between this cycle and the last cycle.
-     * We incorporate the time difference in the display interpolator;
+     * compute the time difference between this cycle and the previous cycle.
+     * We incorporate the time difference in the display intergrator;
      * hence the display should change with the same speed on fast systems
      * as on slow systems. 
      */
@@ -149,7 +149,7 @@ public class TNodePPMProcessor
     /**
      * cTor.
      * 
-     * @param id    Unique ID as which we register this PPM processor.
+     * @param id    Unique ID as which we register this module.
      */
     private TNodePPMProcessor (String id)
     {

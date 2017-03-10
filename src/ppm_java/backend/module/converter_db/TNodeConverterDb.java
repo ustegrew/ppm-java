@@ -54,9 +54,9 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
     public static final double              gkMinThreshold  = 3.16E-08f;    /* [100] */
     
     /**
-     * Creates a new dB converter instance.
+     * Creates a new instance of this module.
      * 
-     * @param id    Unique ID as which we register this dB converter.
+     * @param id    Unique ID as which we register this module.
      */
     public static void CreateInstance (String id)
     {
@@ -71,7 +71,7 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
     /**
      * cTor.
      * 
-     * @param id    Unique ID as which we register this PPM processor.
+     * @param id    Unique ID as which we register this module.
      */
     private TNodeConverterDb (String id)
     {
@@ -124,7 +124,8 @@ public class TNodeConverterDb extends VAudioProcessor implements IStatEnabled
     }
 
     /**
-     * Receives a sample value from the associated endpoint.
+     * Receives a sample value from the associated endpoint and converts it 
+     * to its equivalent value in dB. 
      * 
      * @param sample        The sample value.
      */

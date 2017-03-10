@@ -20,15 +20,17 @@ import ppm_java.typelib.VAudioPort_Output_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * Audio output port for a {@link TNodeIntegrator_PPMBallistics}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodeIntegrator_PPMBallistics_Endpoint_Out extends VAudioPort_Output_Samples
 {
-
     /**
-     * @param id
-     * @param host
+     * cTor.
+     * 
+     * @param id            ID of this output port.
+     * @param host          The module this port is part of.
      */
     public TNodeIntegrator_PPMBallistics_Endpoint_Out (String id, VAudioProcessor host)
     {
