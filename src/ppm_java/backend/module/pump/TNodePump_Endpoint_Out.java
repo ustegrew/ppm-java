@@ -19,14 +19,15 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Output_Chunks_NoBuffer;
 
 /**
+ * Audio output port for a {@link TNodePump}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodePump_Endpoint_Out extends VAudioPort_Output_Chunks_NoBuffer
 {
     /**
-     * @param id
-     * @param host
+     * @param id            ID of this output port.
+     * @param host          The module this port is part of.
      */
     public TNodePump_Endpoint_Out (String id, TNodePump host)
     {

@@ -20,16 +20,37 @@ import java.util.concurrent.atomic.AtomicLong;
 import ppm_java.typelib.IStats;
 
 /**
+ * Runtime statistics for a {@link TNodePump}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodePump_Stats implements IStats
 {
+    /**
+     * The hosting module.
+     */
     private TNodePump               fHost;
+    
+    /**
+     * Current number of samples per cycle.
+     */
     private AtomicLong              fNumSamplesPerCycle;
+    
+    /**
+     * Current sample rate.
+     */
     private AtomicLong              fSampleRate;
+    
+    /**
+     * Time difference [ms] between this frame and last frame.
+     */
     private AtomicLong              fTimeCycle;
     
+    /**
+     * cTor.
+     * 
+     * @param host      The hosting module.
+     */
     public TNodePump_Stats (TNodePump host)
     {
         fHost                   = host;
@@ -54,16 +75,31 @@ public class TNodePump_Stats implements IStats
         return ret;
     }
     
+    /**
+     * Sets the time difference [ms] between this frame and last frame.
+     * 
+     * @param ct        Cycle time value.
+     */
     void SetCycleTime (long ct)
     {
         fTimeCycle.getAndSet (ct);
     }
     
+    /**
+     * Sets the current number of samples per cycle.
+     * 
+     * @param nsc       Number of samples.
+     */
     void SetNumSamplesPerCycle (long nsc)
     {
         fNumSamplesPerCycle.getAndSet (nsc);
     }
     
+    /**
+     * Sets the current sample rate.
+     * 
+     * @param sr        Sample rate (e.g. 44100).
+     */
     void SetSampleRate (long sr)
     {
         fSampleRate.getAndSet (sr);

@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 import ppm_java.backend.module.timer.TTimer;
+import ppm_java.util.storage.TAtomicBuffer;
 
 /**
  * Base interface for the event system. Normally, we'd provide a dedicated 
@@ -40,12 +41,41 @@ import ppm_java.backend.module.timer.TTimer;
  */
 public interface IEvented
 {
+    /**
+     * Notification: An atomic buffer had an overrun.
+     * @see TAtomicBuffer
+     */
     public static final int     gkEventBufferNotifyOverrun      = 1210;
+    
+    /**
+     * Notification: An atomic buffer had an underrun.
+     * @see TAtomicBuffer
+     */
     public static final int     gkEventBufferNotifyUnderrun     = 1200;
+    
+    /**
+     * Notification: Module has started.
+     */
     public static final int     gkEventStart                    = 1000;
+    
+    /**
+     * Notification: Module has stopped. 
+     */
     public static final int     gkEventStop                     = 1010;
+    
+    /**
+     * Request: Change a {@link TTimer}'s interval. Needs new time as in-band parameter. 
+     */
     public static final int     gkEventTimerAdjustInterval      = 1120;
+    
+    /**
+     * Notify: A {@link TTimer} changed interval.  
+     */
     public static final int     gkEventTimerNotifyInterval      = 1110;
+    
+    /**
+     * Notify: {@link TTimer}, new cycle.
+     */
     public static final int     gkEventTimerTick                = 1100;
     
     /**

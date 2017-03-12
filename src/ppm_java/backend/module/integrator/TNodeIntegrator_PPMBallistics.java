@@ -105,7 +105,7 @@ public class TNodeIntegrator_PPMBallistics
     /**
      * cTor.
      * 
-     * @param id        
+     * @param id        Unique ID as which we register this module.
      */
     private TNodeIntegrator_PPMBallistics (String id)
     {

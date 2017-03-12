@@ -128,7 +128,7 @@ public class TSetup
         }
         
         TController.Create_Module_Timer                     ("timer", TSessionProperties.gkDefaultOptTimerIntervalMs            );
-        TController.Create_AudioContext                     ("ppm"                                                              );
+        TController.Create_AudioContext                     ("ppm",                     0, 2                                    );
         TController.Create_Module_Pump                      ("datapump.l"                                                       );
         TController.Create_Module_Pump                      ("datapump.r"                                                       );
         TController.Create_Module_PeakEstimator             ("peakestimator.l"                                                  );
@@ -234,7 +234,7 @@ public class TSetup
         {
             TController.Create_Frontend_GUI_Needle ("gui");
         }
-        TController.Create_AudioContext             ("ppm"                                                      );
+        TController.Create_AudioContext             ("ppm",             0, 2                                    );
         TController.Create_Module_PPMProcessor      ("ppp.l"                                                    );
         TController.Create_Module_PPMProcessor      ("ppp.r"                                                    );
         TController.Create_Module_Timer             ("timer", TSessionProperties.gkDefaultOptTimerIntervalMs    );

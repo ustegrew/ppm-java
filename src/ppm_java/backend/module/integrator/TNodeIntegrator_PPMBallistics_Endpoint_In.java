@@ -20,10 +20,11 @@ import ppm_java.typelib.VAudioPort_Input_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
-23  * Audio input port for a {@link TNodeIntegrator_PPMBallistics}.
-24  * 
-25  * @author Peter Hoppe
-26  */public class TNodeIntegrator_PPMBallistics_Endpoint_In extends VAudioPort_Input_Samples
+ * Audio input port for a {@link TNodeIntegrator_PPMBallistics}.
+ * 
+ * @author Peter Hoppe
+ */
+public class TNodeIntegrator_PPMBallistics_Endpoint_In extends VAudioPort_Input_Samples
 {
     /**
      * cTor.

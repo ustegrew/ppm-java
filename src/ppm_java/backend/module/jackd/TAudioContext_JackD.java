@@ -45,18 +45,22 @@ public final class TAudioContext_JackD
     /**
      * Creates the JackD audio driver instance. Must only be called once.
      * 
-     * @param   idClient                Unique ID as which the JackD driver's instance can be
-     *                                  accessed in the global Registry.
+     * @param   idClient        Unique ID as which the JackD driver's instance can be
+     *                          accessed in the global Registry.
+     * @param   nMaxChanIn      Maximum number of input channels. Specify <code>-1</code>
+     *                          for: No limit.
+     * @param   nMaxChanOut     Maximum number of output channels. Specify <code>-1</code>
+     *                          for: No limit.
      * @throws  IllegalStateException   If this method has been called before.
      * @see     {@link TRegistry#GetAudioDriver()}, {@link TRegistry#GetObject(String)}
      */
-    public static void CreateInstance (String idClient)
+    public static void CreateInstance (String idClient, int nMaxChanIn, int nMaxChanOut)
     {
         if (gContext != null)
         {
             throw new IllegalStateException ("TAudioContext_JackD is already instantiated.");
         }
-        gContext = new TAudioContext_JackD (idClient);
+        gContext = new TAudioContext_JackD (idClient, nMaxChanIn, nMaxChanOut);
     }
     
     /**
@@ -81,13 +85,17 @@ public final class TAudioContext_JackD
      * cTor. Creates a new instance and registers it with the global 
      * {@link TRegistry} under the given id.
      * 
-     * @param   idClient                Unique ID as which the JackD driver's instance can be
-     *                                  accessed in the global Registry.
+     * @param   idClient        Unique ID as which the JackD driver's instance can be
+     *                          accessed in the global Registry.
+     * @param   nMaxChanIn      Maximum number of input channels. Specify <code>-1</code>
+     *                          for: No limit.
+     * @param   nMaxChanOut     Maximum number of output channels. Specify <code>-1</code>
+     *                          for: No limit.
      * @see     {@link TRegistry}
      */
-    private TAudioContext_JackD (String idClient)
+    private TAudioContext_JackD (String idClient, int nMaxChanIn, int nMaxChanOut)
     {
-        super (idClient, -1);
+        super (idClient, nMaxChanIn, nMaxChanOut);                      /* [110] */
         
         TLogger.LogMessage ("Creating JackD bridge (singleton)", this, "cTor ('" + idClient + ")");
         fStats          = new TAudioContext_JackD_Stats (this);
@@ -135,6 +143,9 @@ public final class TAudioContext_JackD
         _ProcessInputs (e);
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IControllable#Start()
+     */
     public void Start ()
     {
         _LoadDriver ();
@@ -148,6 +159,10 @@ public final class TAudioContext_JackD
         return fStats;
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IControllable#Stop()
+     */
+    @Override
     public void Stop ()
     {
         _StopDriver ();
@@ -305,4 +320,9 @@ public final class TAudioContext_JackD
         it has to do the better! 
         The client is responsible to ensure that the number of frames is
         correct. 
+        
+[110]   To clear up misconception - this program (ppm) only needs an audio driver with outputs. Why 
+        does the client have to specify inputs for the driver as well? Reason is: Because we
+        want this driver to be generic, i.e. capable to handle situations where we do need to 
+        pass audio data back to the jackd server!
 */

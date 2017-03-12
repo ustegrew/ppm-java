@@ -72,11 +72,15 @@ public final class TController
     /**
      * Creates the global audio driver.
      * 
-     * @param id    ID of the audio driver. 
+     * @param id                ID of the audio driver.
+     * @param nMaxChanIn        Maximum number of input channels. Specify <code>-1</code>
+     *                          for: No limit.
+     * @param nMaxChanOut       Maximum number of output channels. Specify <code>-1</code>
+     *                          for: No limit.
      */
-    public static void Create_AudioContext (String id)
+    public static void Create_AudioContext (String id, int nMaxChanIn, int nMaxChanOut)
     {
-        TAudioContext_JackD.CreateInstance (id);
+        TAudioContext_JackD.CreateInstance (id, nMaxChanIn, nMaxChanOut);
     }
     
     /**

@@ -21,11 +21,18 @@ import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
 
 /**
+ * Audio input port for a {@link TAudioContext_JackD}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffered
 {
+    /**
+     * cTor
+     * 
+     * @param id            ID of this input port.
+     * @param host          The module this port is part of.
+     */
     protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host)
     {
         super (id, host, ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);

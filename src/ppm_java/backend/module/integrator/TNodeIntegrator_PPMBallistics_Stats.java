@@ -50,6 +50,11 @@ public class TNodeIntegrator_PPMBallistics_Stats implements IStats
      */
     private TAtomicDouble                           fValueErr;
     
+    /**
+     * cTor.
+     * 
+     * @param host      The hosting module.
+     */
     public TNodeIntegrator_PPMBallistics_Stats (TNodeIntegrator_PPMBallistics host)
     {
         fHost                   = host;

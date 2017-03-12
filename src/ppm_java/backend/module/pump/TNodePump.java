@@ -30,9 +30,14 @@ import ppm_java.util.storage.TAtomicBuffer_Stats;
 import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
 
 /**
- * A data pump. Fetches the audio data from the audio driver, repackages it in smaller chunks if needed
- * and passes those on to further stages. Also, initiates cycle time correction to the GUI timer
- * if we have data loss.
+ * A data pump. Fetches the audio data from the audio driver, 
+ * repackages it in smaller chunks if needed and passes those 
+ * on to further stages. Also, initiates cycle time correction 
+ * to the GUI timer if we have data loss.<br/>
+ * The data pump is designed to work together with an audio driver;
+ * it acts as a priority inversion barrier between audio driver
+ * and display engine. This enables the audio driver to work 
+ * undisturbed, no matter what happens on the display driver side.
  * 
  * @author Peter Hoppe
  */
@@ -40,25 +45,80 @@ public class TNodePump
     extends     VAudioProcessor 
     implements  IEvented, IStatEnabled
 {
+    /**
+     * Creates a new instance of this module.
+     * 
+     * @param id        Unique ID as which we register this module.
+     */
     public static void CreateInstance (String id)
     {
         new TNodePump (id);
     }
     
+    /**
+     * The global audio driver instance.
+     */
     private TAudioContext_JackD         fAudioDriver;
+    
+    /**
+     * Input Endpoint. For this module, it's easier to have it cached.
+     */
     private TNodePump_Endpoint_In       fEndptIn;
+    
+    /**
+     * Output endpoint. For this module, it's easier to have it cached.
+     */
     private TNodePump_Endpoint_Out      fEndptOut;
+    
+    /**
+     * If <code>false</code>, then we still need to initialize some local properties.
+     * Most notably, we need to determine the time of the first incoming 
+     * {@link IEvented#gkEventTimerTick}. This time of the first
+     * timer event will become the initial time. From the second timer tick 
+     * onwards we always compute the time difference to the previous frame which 
+     * we need to calculate various runtime statistics.
+     */
     private boolean                     fHasBeenInitialized;
+    
+    /**
+     * Number of samples per display engine cycle.
+     */
     private int                         fNSamplesPerCycle;
+    
+    /**
+     * The sample chunk we are currently using to extract data.
+     */
     private FloatBuffer                 fPacketLast;
+    
+    /**
+     * The audio driver's sample rate.
+     */
     private int                         fSampleRate;
+    
+    /**
+     * The statistics record. Updated during runtime.
+     */
     private TNodePump_Stats             fStats;
+    
+    /**
+     * For underrun/overrun compensation: Desired cycle time of the display engine.
+     */
     private long                        fTCycleDesired;
+    
+    /**
+     * Time difference [ms] between this frame and last frame.
+     */
     private long                        fTDelta;
+    
+    /**
+     * Absolute time [ms since 01.01.1970 00:00] when the current display engine cycle started.
+     */
     private long                        fTLast;
     
     /**
-     * @param id
+     * cTor.
+     * 
+     * @param id    Unique ID as which we register this module.
      */
     private TNodePump (String id)
     {
@@ -183,7 +243,7 @@ public class TNodePump
     }
 
     /**
-     * Initializes a few objects.
+     * Initializes a few objects and sets the initial value for {@link #fTLast}.
      */
     private void _Initialize ()
     {

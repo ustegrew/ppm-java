@@ -19,17 +19,31 @@ import ppm_java.typelib.IStats;
 import ppm_java.util.storage.TAtomicDouble;
 
 /**
+ * Runtime statistics for a {@link TNodePeakEstimator}.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodePeakEstimator_Stats implements IStats
 {
+    /**
+     * The hosting module. 
+     */
     private TNodePeakEstimator  fHost;
+    
+    /**
+     * Difference between the values of this peak and last peak.
+     */
     private TAtomicDouble       fPeakDelta;
+    
+    /**
+     * Value of the last peak.
+     */
     private TAtomicDouble       fPeakLast;
     
     /**
+     * cTor.
      * 
+     * @param host      The hosting module.
      */
     public TNodePeakEstimator_Stats (TNodePeakEstimator host)
     {
@@ -53,6 +67,11 @@ public class TNodePeakEstimator_Stats implements IStats
         return ret;
     }
 
+    /**
+     * Sets a new peak value.
+     * 
+     * @param peak      The new peak value.
+     */
     void SetPeak (float peak)
     {
         double  p0;

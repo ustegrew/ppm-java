@@ -18,15 +18,32 @@ package ppm_java.backend.module.jackd;
 import ppm_java.typelib.IStats;
 import ppm_java.util.storage.TAtomicBuffer_Stats;
 
+/**
+ * Runtime statistics for a {@link TAudioContext_JackD}.
+ * 
+ * @author Peter Hoppe
+ */
 public final class TAudioContext_JackD_Stats implements IStats
 {
+    /**
+     * The hosting module.
+     */
     private TAudioContext_JackD                     fHost;
     
+    /**
+     * cTor.
+     * 
+     * @param host      The hosting module.
+     */
     public TAudioContext_JackD_Stats (TAudioContext_JackD host)
     {
         fHost = host;
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IStats#GetDumpStr()
+     */
+    @Override
     public String GetDumpStr ()
     {
         int                             i;

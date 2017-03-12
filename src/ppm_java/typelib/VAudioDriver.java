@@ -32,12 +32,14 @@ public abstract class VAudioDriver extends VAudioProcessor
      * 
      * @param id                The unique ID under which we register this object 
      *                          with the registry.
+     * @param nMaxChanIn        Maximum number of input channels. Specify <code>-1</code>
+     *                          for: No limit.
      * @param nMaxChanOut       Maximum number of output channels. Specify <code>-1</code>
      *                          for: No limit.
      */
-    public VAudioDriver (String id, int nMaxChanOut)
+    public VAudioDriver (String id, int nMaxChanIn, int nMaxChanOut)
     {
-        super (id, 0, nMaxChanOut);
+        super (id, nMaxChanIn, nMaxChanOut);
     }
     
     /* (non-Javadoc)

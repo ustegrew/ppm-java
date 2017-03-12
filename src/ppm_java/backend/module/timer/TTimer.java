@@ -169,6 +169,8 @@ public class TTimer
     }
     
     /**
+     * Returns a sanitized timer interval, if the given value was out of bounds.
+     * 
      * @param   delayMs     The suggested interval.
      * @return              The suggested interval, if it's larger than (or equal to)
      *                      {@link #gkLoopIntervalMin}. Otherwise, returns 

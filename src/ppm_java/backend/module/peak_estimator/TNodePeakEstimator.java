@@ -23,23 +23,41 @@ import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * Estimator that finds the raw peak value of 
+ * each given sample chunk and pushes its 
+ * absolute value to the module connected 
+ * to the output.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TNodePeakEstimator 
     extends         VAudioProcessor 
     implements      IStatEnabled
 {
+    /**
+     * Creates a new instance of this module.
+     * 
+     * @param id        Unique ID as which we register this module.
+     */
     public static void CreateInstance (String id)
     {
         new TNodePeakEstimator (id);
     }
     
+    /**
+     * Cached peak value.
+     */
     private float                       fPeakLast;
+    
+    /**
+     * The statistics record. Updated during runtime.
+     */
     private TNodePeakEstimator_Stats    fStats;
     
     /**
+     * cTor.
      * 
+     * @param id    Unique ID as which we register this module.
      */
     private TNodePeakEstimator (String id)
     {
@@ -92,6 +110,12 @@ public class TNodePeakEstimator
         TController.Register (this);
     }
     
+    /**
+     * Receives a sample chunk, finds the peak value and pushes its
+     * absolute value to the output port.
+     * 
+     * @param chunk     The sample chunk analyzed.
+     */
     void ReceivePacket (FloatBuffer chunk)
     {
         int                                 i;

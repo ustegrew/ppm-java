@@ -19,10 +19,18 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Output_Chunks_NeedsBuffer;
 
 /**
+ * Audio output port for a {@link TAudioContext_JackD}.
+ * 
  * @author Peter Hoppe
  */
 public class TAudioContext_Endpoint_Output extends VAudioPort_Output_Chunks_NeedsBuffer
 {
+    /**
+     * cTor.
+     * 
+     * @param id            ID of this output port.
+     * @param host          The module this port is part of.
+     */
     protected TAudioContext_Endpoint_Output (String id, TAudioContext_JackD host)
     {
         super (id, host);
