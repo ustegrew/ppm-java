@@ -18,12 +18,17 @@ package ppm_java.typelib;
 import ppm_java.util.logging.TLogger;
 
 /**
- * Base class for an input audio port.
- * 
+ * Base class for an input audio port.<br/> 
  * An input port is always associated with a hosting audio 
  * {@link VAudioProcessor processor}. It's connected with 
  * another {@link VAudioPort_Output output} port from where it 
- * receives its data.
+ * receives its data.<br/>
+ * The connection mechanism utilizes the visitor pattern, so
+ * we can connect any type of output port to any type of 
+ * input port. We need this pattern so we can retrieve 
+ * audio ports by opaque handle and then connect them.  
+ * This class provides the {@link #_Accept(VAudioPort_Output)} 
+ * method.
  * 
  * @author Peter Hoppe
  */
@@ -58,5 +63,11 @@ public abstract class VAudioPort_Input extends VAudioPort
         return fIPort;
     }
     
+    /**
+     * Accepts a {@link VAudioPort_Output Visitor}. Which class visits is determined
+     * at runtime.
+     * 
+     * @param source    The visitor.
+     */
     protected abstract void _Accept (VAudioPort_Output source);
 }

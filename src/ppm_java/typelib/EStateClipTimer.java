@@ -16,12 +16,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
+ * State of the Signal clip indicator in a frontend.
+ * 
  * @author Peter Hoppe
- *
  */
 public enum EStateClipTimer
 {
+    /**
+     * Clip indicator OFF
+     */
     kClear,
+    
+    /**
+     * Clip indicator ON, clipping level
+     */
     kClip,
+    
+    /**
+     * Clip indicator ON, warning level.
+     */
     kWarn
 }

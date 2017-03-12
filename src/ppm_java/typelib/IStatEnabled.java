@@ -16,10 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 /**
+ * Interface for an object that supports runtime statistics.
+ * 
  * @author Peter Hoppe
- *
  */
 public interface IStatEnabled
 {
+    /**
+     * @return The current runtime statistics.
+     */
     public IStats StatsGet ();
 }

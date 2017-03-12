@@ -18,14 +18,19 @@ package ppm_java.typelib;
 import ppm_java.util.logging.TLogger;
 
 /**
- * Base class for an output audio port.
- * 
+ * Base class for an output audio port. 
  * An output port is always associated with a hosting audio
  * {@link VAudioProcessor processor}. It's connected with 
  * another {@link VAudioPort_Input} to where it sends its data.
  * Every time this port sends data it will trigger a processing
  * cycle in the audio processor associated with the connected
- * input.
+ * input.<br/>
+ * The connection mechanism utilizes the visitor pattern, so
+ * we can connect any type of output port to any type of 
+ * input port. We need this pattern so we can retrieve 
+ * audio ports by opaque handle and then connect them.  
+ * This class is the visitor and provides the overloaded 
+ * <code>_Visit(...)</code> methods.
  * 
  * @author Peter Hoppe
  */
@@ -64,6 +69,12 @@ public abstract class VAudioPort_Output extends VAudioPort
         return fIPort;
     }
     
+    /**
+     * Implements the connection to an input port (Public initiating method).
+     * This initializes the working part of the visitor pattern. 
+     * 
+     * @param target    The input port we connect to.
+     */
     public void SetTarget (VAudioPort_Input target)
     {
         target._Accept (this);
@@ -77,6 +88,12 @@ public abstract class VAudioPort_Output extends VAudioPort
         return fTarget;
     }
     
+    /**
+     * Worker method to establish a connection to an input port, called by
+     * the <code>_Visit(...)</code> method of the runtime chose subtype. 
+     * 
+     * @param target    The input port we connect to.
+     */
     protected final void _SetTarget (VAudioPort_Input target)
     {
         fTarget = target;
@@ -108,7 +125,27 @@ public abstract class VAudioPort_Output extends VAudioPort
         }
     }
     
+    /**
+     * Visitor pattern: Visit method, called if the 
+     * visitor is of type {@link VAudioPort_Input_Chunks_Buffered}.
+     * 
+     * @param target        The visitor.
+     */
     protected abstract void _Visit (VAudioPort_Input_Chunks_Buffered target);
+    
+    /**
+     * Visitor pattern: Visit method, called if the 
+     * visitor is of type {@link VAudioPort_Input_Chunks_Unbuffered}.
+     * 
+     * @param target        The visitor.
+     */
     protected abstract void _Visit (VAudioPort_Input_Chunks_Unbuffered target);
+    
+    /**
+     * Visitor pattern: Visit method, called if the 
+     * visitor is of type {@link VAudioPort_Input_Samples}.
+     * 
+     * @param target        The visitor.
+     */
     protected abstract void _Visit (VAudioPort_Input_Samples target);
 }
