@@ -19,13 +19,15 @@ import ppm_java.backend.TController;
 import ppm_java.util.logging.TLogger;
 
 /**
+ * Base class for a front end.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VFrontend extends VAudioProcessor
 {
     /**
-     * @param id
+     * @param id                        ID of this frontend.
+     * @param nMaxChanIn                Maximum number of input ports.
      */
     public VFrontend (String id, int nMaxChanIn)
     {
@@ -41,6 +43,9 @@ public abstract class VFrontend extends VAudioProcessor
         TLogger.LogWarning ("This is a front end. It doesn't provide output ports.", this, "CreatePort_Out ('" + id + "')");
     }
 
+    /**
+     * Handler for: Frontend terminated.
+     */
     protected void _OnTerminate ()
     {
         String  id;

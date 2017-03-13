@@ -26,18 +26,32 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextArea;
 
 /**
+ * The debug UI. For displaying runtime statistics. 
+ * We expect plain vanilla textual information (set
+ * via {@link #SetText(String)}).
+ * 
  * @author Peter Hoppe
- *
  */
 public class TWndDebug extends JFrame
 {
+    /**
+     * The debug window singleton.
+     */
     private static TWndDebug            gWnd = new TWndDebug ();
     
+    /**
+     * Show the debug window.
+     */
     public static void Show ()
     {
         gWnd.setVisible (true);
     }
     
+    /**
+     * Set the window's text content.
+     * 
+     * @param text      The test to set - which means, the statistics dump.
+     */
     public static void SetText (String text)
     {
         gWnd.fTxtOutput.setText (text);
@@ -45,7 +59,14 @@ public class TWndDebug extends JFrame
     
     private static final long serialVersionUID = -3713894035663997050L;
     
+    /**
+     * The outer container.
+     */
     private JPanel              contentPane;
+    
+    /**
+     * Output here! 
+     */
     private JTextArea           fTxtOutput;
     
     /**

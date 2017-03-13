@@ -20,26 +20,45 @@ import java.util.concurrent.atomic.AtomicInteger;
 import ppm_java.backend.TController;
 
 /**
- * Timer for updates of the runtime stats window.  
+ * Debug update worker thread. Updates the runtime stats window. Polls 
+ * the statistics in a regular cycle ({@link #gkInterval}) and writes 
+ * them to the associated debug {@link TWndDebug UI}.
  * 
  * @author  peter
  */
 public class TTimerDebugUpdate extends Thread
 {
+    /**
+     * Flag value: Thread running.
+     */
     private static final int        gkFlagRun   =  1;
+    
+    /**
+     * Flag value: Thread stopped.
+     */
     private static final int        gkFlagStop  =  0;
+    
+    /**
+     * Cycle's interval, in ms.
+     */
     private static final int        gkInterval  = 10;
     
+    /**
+     * Flag. Set to {@link #gkFlagStop} when we want to terminate the thread.
+     */
     private AtomicInteger           fDoRun;
     
     /**
-     * 
+     * cTor.
      */
     public TTimerDebugUpdate ()
     {
         fDoRun = new AtomicInteger (gkFlagStop);
     }
     
+    /**
+     * Terminates the worker thread.
+     */
     public void Stop ()
     {
         fDoRun.getAndSet (gkFlagStop);

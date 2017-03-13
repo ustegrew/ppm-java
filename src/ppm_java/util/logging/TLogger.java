@@ -24,11 +24,16 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
+ * The global logger. Logs all messages to a file or to stdout.
+ * Access via static methods only.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TLogger
 {
+    /**
+     * Creates a global logger. That one writes to stdout.
+     */
     public static void CreateInstance ()
     {
         if (gLogger == null)
@@ -37,6 +42,11 @@ public class TLogger
         }
     }
     
+    /**
+     * Creates a global logger. That one writes to a file.
+     * 
+     * @param filePath      Log file path.
+     */
     public static void CreateInstance (String filePath)
     {
         if (gLogger == null)
@@ -45,68 +55,119 @@ public class TLogger
         }
     }
 
-    private static enum ELevel
-    {
-        kMessage,
-        kWarn,
-        kError
-    };
-
-    private static enum ELogTarget
-    {
-        kStdOut,
-        kFile
-    }
-    
+    /**
+     * The logger singleton.
+     */
     private static TLogger          gLogger = null;
     
+    /**
+     * Logs a fatal error.
+     * 
+     * @param msg           The error message.
+     * @param source        Object of which class the log was coming from.
+     * @param method        In which method did the error occur. 
+     */
     public static void LogError (String msg, Object source, String method)
     {
-        gLogger._Log (msg, ELevel.kError, source, method);
+        gLogger._Log (msg, ELogLevel.kError, source, method);
     }
     
+    /**
+     * Logs an info message.
+     * 
+     * @param msg           The message.
+     */
     public static void LogMessage (String msg)
     {
-        gLogger._Log (msg, ELevel.kMessage, null, null);
+        gLogger._Log (msg, ELogLevel.kMessage, null, null);
     }
     
+    /**
+     * Logs an info message.
+     * 
+     * @param msg           The message.
+     * @param source        Object of which class the log was coming from.
+     */
     public static void LogMessage (String msg, Object source)
     {
-        gLogger._Log (msg, ELevel.kMessage, source, null);
+        gLogger._Log (msg, ELogLevel.kMessage, source, null);
     }
     
+    /**
+     * Logs an info message.
+     * 
+     * @param msg           The message.
+     * @param source        Object of which class the log was coming from.
+     * @param method        In which method did the error occur. 
+     */
     public static void LogMessage (String msg, Object source, String method)
     {
-        gLogger._Log (msg, ELevel.kMessage, source, method);
+        gLogger._Log (msg, ELogLevel.kMessage, source, method);
     }
     
+    /**
+     * Logs a warning message.
+     * 
+     * @param msg           The message.
+     */
     public static void LogWarning (String msg)
     {
-        gLogger._Log (msg, ELevel.kWarn, null, null);
+        gLogger._Log (msg, ELogLevel.kWarn, null, null);
     }
     
+    /**
+     * Logs a warning message.
+     * 
+     * @param msg           The message.
+     * @param source        Object of which class the log was coming from.
+     */
     public static void LogWarning (String msg, Object source)
     {
-        gLogger._Log (msg, ELevel.kWarn, source, null);
+        gLogger._Log (msg, ELogLevel.kWarn, source, null);
     }
     
+    /**
+     * Logs a warning message.
+     * 
+     * @param msg           The message.
+     * @param source        Object of which class the log was coming from.
+     * @param method        In which method did the error occur. 
+     */
     public static void LogWarning (String msg, Object source, String method)
     {
-        gLogger._Log (msg, ELevel.kWarn, source, method);
+        gLogger._Log (msg, ELogLevel.kWarn, source, method);
     }
 
+    /**
+     * In the background we use the java logging API.
+     */
     private Logger          fLogger;
 
+    /**
+     * cTor. Log messages will end up on stdout.
+     */
     private TLogger ()
     {
         _Init (ELogTarget.kStdOut, null);
     }
     
+    /**
+     * cTor. Log messages will be written to a log file. 
+     * 
+     * @param filePath      The log file's path.
+     */
     private TLogger (String filePath)
     {
         _Init (ELogTarget.kFile, filePath);
     }
     
+    /**
+     * Does any necessary setup work.
+     * 
+     * @param target        The target to send log messages to.
+     * @param filePath      The log file to write to, if target is
+     *                      {@link ELogTarget#kFile}. Otherwise ignored.
+     */
     private void _Init (ELogTarget target, String filePath)
     {
         Logger                          rootLogger;
@@ -163,7 +224,7 @@ public class TLogger
      * @param source    Name of the class from which the log entry originates.
      * @param method    Name of the method from which the log entry originates.
      */
-    private void _Log (String msg, ELevel lv, Object source, String method)
+    private void _Log (String msg, ELogLevel lv, Object source, String method)
     {
         String      src;
         String      m;

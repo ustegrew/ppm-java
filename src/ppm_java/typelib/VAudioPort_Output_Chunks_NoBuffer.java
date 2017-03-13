@@ -18,7 +18,7 @@ package ppm_java.typelib;
 import java.nio.FloatBuffer;
 
 /**
- * An output that connects to an unbuffered input. 
+ * Base class for an output that connects to an unbuffered input. 
  * Should be used as output for audio processors running in 
  * the same thread space.
  * 
@@ -26,11 +26,22 @@ import java.nio.FloatBuffer;
  */
 public abstract class VAudioPort_Output_Chunks_NoBuffer extends VAudioPort_Output
 {
+    /**
+     * cTor.
+     * 
+     * @param id        ID of this output port.
+     * @param host      The module this port is part of.
+     */
     protected VAudioPort_Output_Chunks_NoBuffer (String id, VAudioProcessor host)
     {
         super (id, host);
     }
 
+    /**
+     * Pushes a sample chunk out to the connected {@link VAudioPort_Input input}.
+     * 
+     * @param chunk         The sample data pushed.
+     */
     public void PushPacket (FloatBuffer chunk)
     {
         VAudioPort_Input_Chunks_Unbuffered target;
@@ -48,16 +59,28 @@ public abstract class VAudioPort_Output_Chunks_NoBuffer extends VAudioPort_Outpu
         return "VAudioPort_Output_Chunks_NoBuffer";
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Chunks_Buffered)
+     */
+    @Override
     protected final void _Visit (VAudioPort_Input_Chunks_Buffered target)
     {
         _SetTarget_Log (target, true);
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Chunks_Unbuffered)
+     */
+    @Override
     protected final void _Visit (VAudioPort_Input_Chunks_Unbuffered target)
     {
         _SetTarget (target);
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Samples)
+     */
+    @Override
     protected final void _Visit (VAudioPort_Input_Samples target)
     {
         _SetTarget_Log (target, true);

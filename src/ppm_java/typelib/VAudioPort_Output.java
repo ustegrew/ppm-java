@@ -25,6 +25,7 @@ import ppm_java.util.logging.TLogger;
  * Every time this port sends data it will trigger a processing
  * cycle in the audio processor associated with the connected
  * input.<br/>
+ * 
  * To ensure type safety the connection mechanism uses 
  * the visitor pattern for the connection to an input port.   
  * This class is the visitor base class and provides the 
@@ -34,12 +35,6 @@ import ppm_java.util.logging.TLogger;
  */
 public abstract class VAudioPort_Output extends VAudioPort
 {
-    /**
-     * The index as which this output port can be accessed in the hosting
-     * audio {@link VAudioProcessor processor}.
-     */
-    private int                     fIPort;
-    
     /**
      * The input connected to this output.
      */
@@ -54,17 +49,7 @@ public abstract class VAudioPort_Output extends VAudioPort
     {
         super (id, host);
         
-        fIPort = host.GetNumPortsOut ();
         TLogger.LogMessage ("Processor: '" + host.GetID () + "': Creating output port '" + id + "'", this, "cTor");
-    }
-    
-    /**
-     * @return  The index under which this port is stored with the
-     *          hosting audio processor. The index is zero based.
-     */
-    public int GetPortNum ()
-    {
-        return fIPort;
     }
     
     /**
@@ -98,6 +83,13 @@ public abstract class VAudioPort_Output extends VAudioPort
         _SetTarget_Log (target, false);
     }
 
+    /**
+     * Logs a message when a connection to a {@link VAudioPort_Input} is made. 
+     * 
+     * @param target    The audio port we connect to.
+     * @param isErr     if <code>false</code>, indicate a valid connection,  
+     *                  if <code>true</code>, indicate a faulty connection.
+     */
     protected final void _SetTarget_Log (VAudioPort_Input target, boolean isErr)
     {
         String      msg;

@@ -18,10 +18,9 @@ package ppm_java.typelib;
 import java.nio.FloatBuffer;
 
 /**
- * An output that connects to a buffered input. 
- * Should be used as output for audio processors 
- * which run in a different thread space than the 
- * processors receiving data.
+ * Base class for an output that connects to a buffered input. 
+ * Should be used as output for audio processors which run 
+ * in a different thread space than the processors receiving data.
  * 
  * @author Peter Hoppe
  */
@@ -39,7 +38,7 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     }
 
     /**
-     * Pushes a sample chunk out to the connected input port..
+     * Pushes a sample chunk out to the connected {@link VAudioPort_Input input}.
      * 
      * @param chunk         The sample data pushed.
      */
@@ -63,6 +62,7 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Chunks_Buffered)
      */
+    @Override
     protected final void _Visit (VAudioPort_Input_Chunks_Buffered target)
     {
         _SetTarget (target);
@@ -71,6 +71,7 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Chunks_Unbuffered)
      */
+    @Override
     protected final void _Visit (VAudioPort_Input_Chunks_Unbuffered target)
     {
         _SetTarget_Log (target, true);
@@ -79,6 +80,7 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
     /* (non-Javadoc)
      * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Samples)
      */
+    @Override
     protected final void _Visit (VAudioPort_Input_Samples target)
     {
         _SetTarget_Log (target, true);

@@ -35,7 +35,7 @@ public abstract class VAudioPort_Output_Samples extends VAudioPort_Output
     }
 
     /**
-     * Pushes a sample value to the connected {@link VAudioPort_Input input}.
+     * Pushes a sample value out to the connected {@link VAudioPort_Input input}.
      * 
      * @param sample        The sample value to send.
      */

@@ -39,6 +39,7 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
     private TAtomicBuffer           fBuffer;
     
     /**
+     * cTor.
      * 
      * @param id                        ID of this output port.
      * @param host                      The module this port is part of.

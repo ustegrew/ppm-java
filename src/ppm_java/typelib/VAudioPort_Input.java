@@ -18,11 +18,13 @@ package ppm_java.typelib;
 import ppm_java.util.logging.TLogger;
 
 /**
- * Base class for an input audio port.<br/> 
+ * Base class for an input audio port.<br/>
+ *  
  * An input port is always associated with a hosting audio 
  * {@link VAudioProcessor processor}. It's connected with 
  * another {@link VAudioPort_Output output} port from where it 
  * receives its data.<br/>
+ * 
  * To ensure type safety the connection mechanism uses 
  * the visitor pattern for the connection to an output port.   
  * This class provides the prototype for the 
