@@ -119,7 +119,9 @@ public class TAtomicBuffer_Stats implements IStats
         String ret;
         
         _Lock ();
+        
         ret = "cnt=" + fNumContentions + ", o/runs=" + fNumOverruns + ", u/runs=" + fNumUnderruns;
+        
         _Unlock ();
         
         return ret;
@@ -139,10 +141,12 @@ public class TAtomicBuffer_Stats implements IStats
         ret = new TRecord ();
         
         _Lock ();
+        
         ret.fNumContentions     = fNumContentions;
         ret.fNumOverruns        = fNumOverruns;
         ret.fNumUnderruns       = fNumUnderruns;
         ret.fDiffOverUnderruns  = fNumOverruns - fNumUnderruns;
+        
         _Unlock ();
         
         return ret;

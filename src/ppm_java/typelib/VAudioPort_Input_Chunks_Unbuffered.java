@@ -18,18 +18,34 @@ package ppm_java.typelib;
 import java.nio.FloatBuffer;
 
 /**
+ * Base class for an input port that receives sample chunks. This is an unbuffered
+ * port, i.e. sample chunks are passed straight through to the hosting module.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort_Input_Chunks_Unbuffered extends VAudioPort_Input
 {
+    /**
+     * cTor.
+     * 
+     * @param id        ID of this output port.
+     * @param host      The module this port is part of.
+     */
     protected VAudioPort_Input_Chunks_Unbuffered (String id, VAudioProcessor host)
     {
         super (id, host);
     }
 
+    /**
+     * Receives a sample chunk from the connected input port.
+     * 
+     * @param chunk     The sample data received.
+     */
     public abstract void ReceivePacket (FloatBuffer chunk);
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#_Accept(VAudioPort_Output)
+     */
     @Override
     protected void _Accept (VAudioPort_Output source)
     {

@@ -16,8 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.module.pump;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import ppm_java.typelib.IStats;
+import ppm_java.util.storage.TAtomicBuffer_Stats;
 
 /**
  * Runtime statistics for a {@link TNodePump}.
@@ -26,6 +26,11 @@ import ppm_java.typelib.IStats;
  */
 public class TNodePump_Stats implements IStats
 {
+    /**
+     * Input endpoint statistics.
+     */
+    private TAtomicBuffer_Stats     fEndpointIn_Stats;
+    
     /**
      * The hosting module.
      */
@@ -40,7 +45,6 @@ public class TNodePump_Stats implements IStats
      * Current sample rate.
      */
     private AtomicLong              fSampleRate;
-    
     /**
      * Time difference [ms] between this frame and last frame.
      */
@@ -54,9 +58,9 @@ public class TNodePump_Stats implements IStats
     public TNodePump_Stats (TNodePump host)
     {
         fHost                   = host;
-        fTimeCycle              = new AtomicLong (0);
-        fSampleRate             = new AtomicLong (0);
-        fNumSamplesPerCycle     = new AtomicLong (0);
+        fTimeCycle              = new AtomicLong    (0);
+        fSampleRate             = new AtomicLong    (0);
+        fNumSamplesPerCycle     = new AtomicLong    (0);
     }
     
     /* (non-Javadoc)
@@ -65,13 +69,18 @@ public class TNodePump_Stats implements IStats
     @Override
     public String GetDumpStr ()
     {
+        String epInStats;
         String ret;
         
-        ret = "TNodePump_Stats [" + fHost.GetID () + "]:\n"                             +
-              "    cycleTime [ms]       = " + fTimeCycle.getAndAdd (0)          + "\n" +
-              "    sampleRate [smp/sec] = " + fSampleRate.getAndAdd (0)         + "\n" +
-              "    samplesPerCycle      = " + fNumSamplesPerCycle.getAndAdd (0) + "\n";
-              
+        epInStats   = fEndpointIn_Stats.GetDumpStr ();
+        ret         = "TNodePump_Stats [" + fHost.GetID () + "]:\n"                             +
+                      "    cycleTime [ms]       = " + fTimeCycle.getAndAdd (0)          + "\n" +
+                      "    sampleRate [smp/sec] = " + fSampleRate.getAndAdd (0)         + "\n" +
+                      "    samplesPerCycle      = " + fNumSamplesPerCycle.getAndAdd (0) + "\n" +
+                      "Input endpoint statistics:\n" +
+                      epInStats +
+                      "\n";
+
         return ret;
     }
     
@@ -83,6 +92,16 @@ public class TNodePump_Stats implements IStats
     void SetCycleTime (long ct)
     {
         fTimeCycle.getAndSet (ct);
+    }
+    
+    /**
+     * Sets the input endpoint statistics record.
+     * 
+     * @param endpointInStats
+     */
+    void SetEndpointInStats (TAtomicBuffer_Stats endpointInStats)
+    {
+        fEndpointIn_Stats = endpointInStats;
     }
     
     /**

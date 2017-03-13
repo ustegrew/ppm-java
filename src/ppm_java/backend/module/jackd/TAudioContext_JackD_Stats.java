@@ -81,7 +81,7 @@ public final class TAudioContext_JackD_Stats implements IStats
             ret += "    Inputs: None\n";
         }
         
-        /* Add one line of statistics per output port. */
+        /* Add one line of statistics per output port. [100] */
         n = fHost.GetNumPortsOut ();
         if (n >= 1)
         {
@@ -89,11 +89,8 @@ public final class TAudioContext_JackD_Stats implements IStats
             for (i = 0; i < n; i++)
             {
                 op          = (TAudioContext_Endpoint_Output) fHost.GetPortOut (i);
-                s           = op.TargetStatsGet ();
                 id          = op.GetID ();
-                ret        += "        o/p [" + id              +
-                              "]: "           + s.GetDumpStr () + 
-                              "\n";
+                ret        += "        o/p [" + id + "]\n";
             }
         }
         else
@@ -104,3 +101,9 @@ public final class TAudioContext_JackD_Stats implements IStats
         return ret;
     }
 }
+
+/*
+[100]: In a previous version we provided the runtime statistics of the input ports which were
+       connected to these output ports. This is a daft idea, now that data is provided
+       by the modules hosting those input ports.
+*/

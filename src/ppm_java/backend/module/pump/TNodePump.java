@@ -247,11 +247,16 @@ public class TNodePump
      */
     private void _Initialize ()
     {
-        fAudioDriver = TController.GetAudioDriver ();
-        fEndptIn     = (TNodePump_Endpoint_In)  GetPortIn (0);
-        fEndptOut    = (TNodePump_Endpoint_Out) GetPortOut (0);
-        fTLast       = System.currentTimeMillis ();
-        fPacketLast  = null;
+        TAtomicBuffer_Stats     endpointInStats;
+        
+        fAudioDriver        = TController.GetAudioDriver ();
+        fEndptIn            = (TNodePump_Endpoint_In)  GetPortIn (0);
+        fEndptOut           = (TNodePump_Endpoint_Out) GetPortOut (0);
+        fTLast              = System.currentTimeMillis ();
+        fPacketLast         = null;
+        
+        endpointInStats     = fEndptIn.StatsGet ();
+        fStats.SetEndpointInStats (endpointInStats);
     }
 
     /**
@@ -260,10 +265,10 @@ public class TNodePump
      */
     private void _RecomputeRuntimeStats ()
     {
-        long        tNow;
-        long        tDelta;
-        double      xSampleRate;
-        double      nSamplesPerCycle;
+        long                    tNow;
+        long                    tDelta;
+        double                  xSampleRate;
+        double                  nSamplesPerCycle;
         
         tNow        = System.currentTimeMillis ();
         tDelta      = tNow - fTLast;
@@ -282,6 +287,7 @@ public class TNodePump
         fStats.SetCycleTime             (fTDelta);
         fStats.SetNumSamplesPerCycle    (fNSamplesPerCycle);
         fStats.SetSampleRate            (fSampleRate);
+        
     }
 
     /**

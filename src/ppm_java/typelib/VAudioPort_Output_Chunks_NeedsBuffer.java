@@ -17,8 +17,6 @@ package ppm_java.typelib;
 
 import java.nio.FloatBuffer;
 
-import ppm_java.util.storage.TAtomicBuffer_Stats;
-
 /**
  * An output that connects to a buffered input. 
  * Should be used as output for audio processors 
@@ -26,40 +24,31 @@ import ppm_java.util.storage.TAtomicBuffer_Stats;
  * processors receiving data.
  * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Output
 {
+    /**
+     * cTor.
+     * 
+     * @param id        ID of this output port.
+     * @param host      The module this port is part of.
+     */
     protected VAudioPort_Output_Chunks_NeedsBuffer (String id, VAudioProcessor host)
     {
         super (id, host);
     }
 
+    /**
+     * Pushes a sample chunk out to the connected input port..
+     * 
+     * @param chunk         The sample data pushed.
+     */
     public void PushPacket (FloatBuffer chunk)
     {
         VAudioPort_Input_Chunks_Buffered target;
         
         target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
         target.ReceivePacket (chunk);
-    }
-    
-    public void TargetStatsClear ()
-    {
-        VAudioPort_Input_Chunks_Buffered    target;
-        
-        target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
-        target.StatsClear ();
-    }
-    
-    public TAtomicBuffer_Stats TargetStatsGet ()
-    {
-        VAudioPort_Input_Chunks_Buffered    target;
-        TAtomicBuffer_Stats                ret;
-        
-        target = (VAudioPort_Input_Chunks_Buffered) _GetTarget ();
-        ret    = target.StatsGet ();
-        
-        return ret;
     }
     
     /* (non-Javadoc)
@@ -71,16 +60,25 @@ public abstract class VAudioPort_Output_Chunks_NeedsBuffer extends VAudioPort_Ou
         return "VAudioPort_Output_Chunks_NeedsBuffer";
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Chunks_Buffered)
+     */
     protected final void _Visit (VAudioPort_Input_Chunks_Buffered target)
     {
         _SetTarget (target);
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Chunks_Unbuffered)
+     */
     protected final void _Visit (VAudioPort_Input_Chunks_Unbuffered target)
     {
         _SetTarget_Log (target, true);
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Output#_Visit(ppm_java.typelib.VAudioPort_Input_Samples)
+     */
     protected final void _Visit (VAudioPort_Input_Samples target)
     {
         _SetTarget_Log (target, true);

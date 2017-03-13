@@ -33,11 +33,6 @@ public class TConnection extends VBrowseable
      * 
      * @param idFromPort    Unique ID, source port.
      * @param idToPort      Unique ID, target port.
-     * 
-     * TODO: Migrate to visitor pattern!
-     *       Due to opaque handle plus generic cast we ride into deep 
-     *       water here as we loose the type safety which ensures that 
-     *       same type inputs and outputs are connected!   
      */
     public static void CreateInstance (String idFromPort, String idToPort)
     {

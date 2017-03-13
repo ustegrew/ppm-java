@@ -25,12 +25,10 @@ import ppm_java.util.logging.TLogger;
  * Every time this port sends data it will trigger a processing
  * cycle in the audio processor associated with the connected
  * input.<br/>
- * The connection mechanism utilizes the visitor pattern, so
- * we can connect any type of output port to any type of 
- * input port. We need this pattern so we can retrieve 
- * audio ports by opaque handle and then connect them.  
- * This class is the visitor and provides the overloaded 
- * <code>_Visit(...)</code> methods.
+ * To ensure type safety the connection mechanism uses 
+ * the visitor pattern for the connection to an input port.   
+ * This class is the visitor base class and provides the 
+ * prototypes for the <code>_Visit(...)</code> methods.
  * 
  * @author Peter Hoppe
  */
@@ -70,8 +68,8 @@ public abstract class VAudioPort_Output extends VAudioPort
     }
     
     /**
-     * Implements the connection to an input port (Public initiating method).
-     * This initializes the working part of the visitor pattern. 
+     * Connects this port to an input port. This is the entry 
+     * method.   
      * 
      * @param target    The input port we connect to.
      */

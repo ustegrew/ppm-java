@@ -23,13 +23,30 @@ import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
 import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
 
 /**
+ * Base class for an input port that receives sample chunks. This is a 
+ * {@linkplain TAtomicBuffer buffered} port, i.e. sample chunks are 
+ * received and stored in a {@linkplain TAtomicBuffer buffer}. 
+ * The hosting module is responsible for fetching the buffered data 
+ * on time.
+ * 
  * @author Peter Hoppe
- *
  */
 public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
 {
+    /**
+     * The buffer.
+     */
     private TAtomicBuffer           fBuffer;
     
+    /**
+     * 
+     * @param id                        ID of this output port.
+     * @param host                      The module this port is part of.
+     * @param copyPolicy                The desired copy policy.
+     * @param ifInvalidPolicy           The desired invalid data policy.
+     * 
+     * @see TAtomicBuffer
+     */
     protected VAudioPort_Input_Chunks_Buffered 
     (
         String              id, 
@@ -42,6 +59,11 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         fBuffer = new TAtomicBuffer (copyPolicy, ifInvalidPolicy);
     }
     
+    /**
+     * Fetch the buffered data. This is the access method for the hosting module. 
+     * 
+     * @return      The buffered data.
+     */
     public FloatBuffer FetchPacket ()
     {
         FloatBuffer     ret;
@@ -51,16 +73,30 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         return ret;
     }
 
+    /**
+     * Pushes one sample chunk onto the {@linkplain TAtomicBuffer buffer}. 
+     * The hosting module must {@linkplain #FetchPacket() fetch}
+     * the data before the next sample chunk is pushed.<br/>
+     * This is the access method for the module connected to the input.  
+     * 
+     * @param chunk     The sample data pushed.
+     */
     public void ReceivePacket (FloatBuffer chunk)
     {
         fBuffer.Set (chunk);
     }
     
+    /**
+     * Clears the statistics of the {@linkplain TAtomicBuffer buffer}.
+     */
     public void StatsClear ()
     {
         fBuffer.StatsClear ();
     }
 
+    /**
+     * @return  The runtime statistics of the  {@linkplain TAtomicBuffer buffer}.
+     */
     public TAtomicBuffer_Stats StatsGet ()
     {
         TAtomicBuffer_Stats ret;
@@ -70,6 +106,9 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
         return ret;
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VAudioPort_Input#_Accept(VAudioPort_Output)
+     */
     @Override
     protected void _Accept (VAudioPort_Output source)
     {
