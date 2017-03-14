@@ -19,7 +19,7 @@ import ppm_java.typelib.VAudioDriver;
 import ppm_java.typelib.VBrowseable;
 import ppm_java.typelib.VFrontend;
 import ppm_java.util.logging.TLogger;
-import ppm_java.util.storage.TArrayMap;
+import ppm_java.util.storage.arrayMap.TArrayMap;
 
 /**
  * A registry for {@link VBrowseable browseable} Objects. 

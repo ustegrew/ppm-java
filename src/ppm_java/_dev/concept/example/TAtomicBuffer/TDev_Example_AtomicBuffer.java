@@ -17,8 +17,8 @@ package ppm_java._dev.concept.example.TAtomicBuffer;
 
 import java.nio.FloatBuffer;
 
-import ppm_java.util.storage.TAtomicBuffer;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer;
 
 /**
  * A simplistic example on how to use the TAtomicBuffer class.
@@ -117,7 +117,7 @@ public class TDev_Example_AtomicBuffer
         
         /* Consumer is the low priority thread, so we copy data when it gets it.
          * Producer will never block. */
-        ab          = new TAtomicBuffer (ECopyPolicy.kCopyOnGet);
+        ab          = new TAtomicBuffer (EAtomicBuffer_CopyPolicy.kCopyOnGet);
         producer    = new Thread (new THighPriority_Producer (ab));
         consumer    = new Thread (new TLowPriority_Consumer  (ab));
         

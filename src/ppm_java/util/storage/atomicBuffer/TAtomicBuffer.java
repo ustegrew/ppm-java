@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.util.storage;
+package ppm_java.util.storage.atomicBuffer;
 
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -171,105 +171,74 @@ import ppm_java.typelib.IStatEnabled;
 public class TAtomicBuffer implements IStatEnabled
 {
     /**
-     * The Copy policy. To be supplied as argument to the constructor.
-     * <dl>
-     *     <dt>{@link #kCopyOnGet}</dt>
-     *     <dd>
-     *          Data will be deep copied when the consumer thread retrieves it. 
-     *          This means that the data won't be copied upon setting it 
-     *          ({@link TAtomicBuffer#Set(FloatBuffer)}) which
-     *          means that setting data costs the least time. Use this policy 
-     *          when the producer thread has a higher priority than the consumer thread. 
-     *     </dd>
-     *     <dt>{@link #kCopyOnSet}</dt>
-     *     <dd>
-     *          (<b>default</b>). Data will be deep copied when the producer thread sets it. 
-     *          This means that the data won't be copied upon getting it 
-     *          ({@link TAtomicBuffer#Get()) which means that getting the data 
-     *          costs the least time. Use this policy when the consumer thread has 
-     *          a higher priority than the producer thread.
-     *     </dd>
-     *     <dt>{@link #kNoCopy}</dt>
-     *     <dd>
-     *          Data won't be copied, but we pass on the original data frame objects.
-     *          This policy is risky and should only ever be used if either the producer
-     *          or the consumer guarantee their own data copy. This policy is necessary
-     *          in some situations to prevent unnecessary multiple copying of data frames
-     *          (e.g. when data is passed from one module to another).
-     *     </dd>
-     * </dl> 
+     * Flag value: A thread acquired the lock.
      */
-    public static enum ECopyPolicy
-    {
-        kCopyOnGet,
-        kCopyOnSet,
-        kNoCopy
-    }
-    
-    /**
-     * The Invalid data policy. Determines what will be returned when the consumer calls
-     * {@link TAtomicBuffer#Get()} and we have no data to offer - either because nothing
-     * has been {@link TAtomicBuffer#Set(FloatBuffer) set} since the last call to 
-     * {@link TAtomicBuffer#Get()}, or because just in this moment the producer is 
-     * {@link TAtomicBuffer#Set(FloatBuffer) setting} a new sample chunk so we have a
-     * contention. To be supplied as argument to the constructor.
-     * <dl>
-     *      <dt>{@link #kReturnEmpty}</dt>
-     *      <dd>
-     *          (<b>default</b>). Return an empty sample chunk.
-     *      </dd>
-     *      <dt>{@link #kReturnNull}</dt>
-     *      <dd>
-     *          Return <code>null</code>. This may be interesting for 
-     *          a consumer which wants to call {@link TAtomicBuffer#Get()}
-     *          inside an endless loop as long as it returns <code>null</code>.
-     *      </dd>
-     * </dl>
-     */
-    public static enum EIfInvalidPolicy
-    {
-        kReturnEmpty,
-        kReturnNull
-    }
-    
-    private static final int                gkFree                  = 0;
     private static final int                gkLocked                = 1;
     
+    /**
+     * Flag value: Buffer can be accessed.
+     */
+    private static final int                gkUnlocked              = 0;
+    
+    /**
+     * The underlying data container.
+     */
     private FloatBuffer                     fBuffer;
-    private ECopyPolicy                     fCopyPolicy;
+    
+    /**
+     * The {@link EAtomicBuffer_CopyPolicy}.
+     */
+    private EAtomicBuffer_CopyPolicy        fCopyPolicy;
+    
+    /**
+     * The lock.
+     */
     private AtomicInteger                   fFlag;
+    
+    /**
+     * Flag indicating whether the data in {@link #fBuffer} has been collected.
+     * To detect stale data (underrun/overrun detection)
+     */
     private boolean                         fHasBeenCollected;
-    private EIfInvalidPolicy                fIfInvalidPolicy;
+    
+    /**
+     * The {@link EAtomicBuffer_IfInvalidPolicy}.
+     */
+    private EAtomicBuffer_IfInvalidPolicy   fIfInvalidPolicy;
+    
+    /**
+     * The runtime statistics.
+     */
     private TAtomicBuffer_Stats             fStats;
     
     /**
      * Creates a new atomic buffer with default policies:
      * <ul>
-     *     <li>{@link ECopyPolicy#kCopyOnSet}</li>
-     *     <li>{@link EIfInvalidPolicy#kReturnEmpty}</li>
+     *     <li>{@link EAtomicBuffer_CopyPolicy#kCopyOnSet}</li>
+     *     <li>{@link EAtomicBuffer_IfInvalidPolicy#kReturnEmpty}</li>
      * </ul> 
      */
     public TAtomicBuffer ()
     {
-        _Init (ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);
+        _Init (EAtomicBuffer_CopyPolicy.kCopyOnSet, EAtomicBuffer_IfInvalidPolicy.kReturnEmpty);
     }
     
     /**
-     * Creates a new atomic buffer with a custom {@link ECopyPolicy} and 
-     * default {@link EIfInvalidPolicy#kReturnEmpty}. 
+     * Creates a new atomic buffer with a custom {@link EAtomicBuffer_CopyPolicy} and 
+     * default {@link EAtomicBuffer_IfInvalidPolicy#kReturnEmpty}. 
      *
      * @param copyPolicy        The desired copy policy. Determines which thread
      *                          is treated as high priority thread, and which one as 
      *                          low priority thread. 
      */
-    public TAtomicBuffer (ECopyPolicy copyPolicy)
+    public TAtomicBuffer (EAtomicBuffer_CopyPolicy copyPolicy)
     {
-        _Init (copyPolicy, EIfInvalidPolicy.kReturnEmpty);
+        _Init (copyPolicy, EAtomicBuffer_IfInvalidPolicy.kReturnEmpty);
     }
     
     /**
-     * Creates a new atomic buffer with a custom {@link ECopyPolicy} and 
-     * default {@link EIfInvalidPolicy#kReturnEmpty}. 
+     * Creates a new atomic buffer with a custom {@link EAtomicBuffer_CopyPolicy} and 
+     * default {@link EAtomicBuffer_IfInvalidPolicy#kReturnEmpty}. 
      *
      * @param copyPolicy        The desired copy policy. Determines which thread
      *                          is treated as high priority thread, and which one as 
@@ -278,7 +247,7 @@ public class TAtomicBuffer implements IStatEnabled
      *                          returned to the consumer thread when there's no valid
      *                          data. 
      */
-    public TAtomicBuffer (ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
+    public TAtomicBuffer (EAtomicBuffer_CopyPolicy copyPolicy, EAtomicBuffer_IfInvalidPolicy ifInvalidPolicy)
     {
         _Init (copyPolicy, ifInvalidPolicy);
     }
@@ -301,13 +270,13 @@ public class TAtomicBuffer implements IStatEnabled
         boolean         isLocked;
         FloatBuffer     ret;
 
-        if (fCopyPolicy == ECopyPolicy.kCopyOnGet)
+        if (fCopyPolicy == EAtomicBuffer_CopyPolicy.kCopyOnGet)
         {   /* Consumer has low priority, i.e. can wait until the lock is free. */
             _Lock ();
             ret = _DataGet (true);
             _Unlock ();
         }
-        else if (fCopyPolicy == ECopyPolicy.kCopyOnSet)
+        else if (fCopyPolicy == EAtomicBuffer_CopyPolicy.kCopyOnSet)
         {   /* Consumer has high priority, i.e. will give up trying if it can't acquire the lock */
             isLocked = _TryLock ();                                     /* [110] */
             if (isLocked)
@@ -320,7 +289,7 @@ public class TAtomicBuffer implements IStatEnabled
                    contention counter and return empty chunk 
                    or null. */
                 fStats.IncrementContentions ();
-                if (fIfInvalidPolicy == EIfInvalidPolicy.kReturnEmpty)
+                if (fIfInvalidPolicy == EAtomicBuffer_IfInvalidPolicy.kReturnEmpty)
                 {
                     ret = FloatBuffer.allocate (0);
                 }
@@ -348,7 +317,7 @@ public class TAtomicBuffer implements IStatEnabled
                 contention counter and return empty chunk 
                 or null. */
                 fStats.IncrementContentions ();
-                if (fIfInvalidPolicy == EIfInvalidPolicy.kReturnEmpty)
+                if (fIfInvalidPolicy == EAtomicBuffer_IfInvalidPolicy.kReturnEmpty)
                 {
                     ret = FloatBuffer.allocate (0);
                 }
@@ -379,7 +348,7 @@ public class TAtomicBuffer implements IStatEnabled
         boolean ret;
         
         flag = fFlag.getAndAdd (0);
-        ret  = (flag == gkFree); 
+        ret  = (flag == gkUnlocked); 
         
         return ret;
     }
@@ -394,13 +363,13 @@ public class TAtomicBuffer implements IStatEnabled
     {
         boolean isLocked;
         
-        if (fCopyPolicy == ECopyPolicy.kCopyOnSet)
+        if (fCopyPolicy == EAtomicBuffer_CopyPolicy.kCopyOnSet)
         {   /* Producer has low priority, i.e. can wait until the lock is free. */
             _Lock ();                                                   /* [120] */
             _DataSet (fb, true);
             _Unlock ();
         }
-        else if (fCopyPolicy == ECopyPolicy.kCopyOnGet)
+        else if (fCopyPolicy == EAtomicBuffer_CopyPolicy.kCopyOnGet)
         {   /* Producer has high priority, i.e. will give up trying if it can't acquire the lock */
             isLocked = _TryLock ();                                     /* [110] */
             if (isLocked)
@@ -493,7 +462,7 @@ public class TAtomicBuffer implements IStatEnabled
         {   /* Ouch! We are sitting on stale data! Increment underrun 
                counter and return empty chunk or null. */
             fStats.IncrementUnderruns ();
-            if (fIfInvalidPolicy == EIfInvalidPolicy.kReturnEmpty)
+            if (fIfInvalidPolicy == EAtomicBuffer_IfInvalidPolicy.kReturnEmpty)
             {
                 ret = FloatBuffer.allocate (0);    
             }
@@ -572,10 +541,10 @@ public class TAtomicBuffer implements IStatEnabled
      * @param copyPolicy        The copy policy.
      * @param ifInvalidPolicy   The "what do I return if no good data" policy. 
      */
-    private void _Init (ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
+    private void _Init (EAtomicBuffer_CopyPolicy copyPolicy, EAtomicBuffer_IfInvalidPolicy ifInvalidPolicy)
     {
         fStats              = new TAtomicBuffer_Stats ();
-        fFlag               = new AtomicInteger (gkFree);
+        fFlag               = new AtomicInteger (gkUnlocked);
         fBuffer             = FloatBuffer.allocate (0);
         fCopyPolicy         = copyPolicy;
         fIfInvalidPolicy    = ifInvalidPolicy;
@@ -592,7 +561,7 @@ public class TAtomicBuffer implements IStatEnabled
         
         do
         {
-            isLocked = fFlag.compareAndSet (gkFree, gkLocked);
+            isLocked = fFlag.compareAndSet (gkUnlocked, gkLocked);
         } while (! isLocked);                                           /* [120] */
     }
     
@@ -605,7 +574,7 @@ public class TAtomicBuffer implements IStatEnabled
     {
         boolean ret;
         
-        ret = fFlag.compareAndSet (gkFree, gkLocked);
+        ret = fFlag.compareAndSet (gkUnlocked, gkLocked);
         
         return ret;
     }
@@ -620,7 +589,7 @@ public class TAtomicBuffer implements IStatEnabled
         
         do
         {
-            isUnlocked = fFlag.compareAndSet (gkLocked, gkFree);
+            isUnlocked = fFlag.compareAndSet (gkLocked, gkUnlocked);
         }
         while (! isUnlocked);                                           /* [120] */
     }

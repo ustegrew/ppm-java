@@ -17,7 +17,7 @@ package ppm_java.backend.module.pump;
 
 import java.util.concurrent.atomic.AtomicLong;
 import ppm_java.typelib.IStats;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_Stats;
 
 /**
  * Runtime statistics for a {@link TNodePump}.

@@ -18,11 +18,11 @@ package ppm_java._dev.concept.trial.TAtomicBuffer;
 import java.nio.FloatBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import ppm_java.util.storage.TAtomicBuffer;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
-import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_DumpRecord;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_Stats;
 
 /**
  * Test result:
@@ -1309,7 +1309,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
                     "TAtomicBuffer (ECopyPolicy.kCopyOnGet) - nProducers = " + nProducers + "; nConsumers = " + nConsumers,
                     nProducers,
                     nConsumers,
-                    ECopyPolicy.kCopyOnGet
+                    EAtomicBuffer_CopyPolicy.kCopyOnGet
                 );
             }
         }
@@ -1327,13 +1327,13 @@ public class TDev_Trial_AtomicBuffer_Contention_01
                     "TAtomicBuffer (ECopyPolicy.kCopyOnSet) - nProducers = " + nProducers + "; nConsumers = " + nConsumers,
                     nProducers,
                     nConsumers,
-                    ECopyPolicy.kCopyOnSet
+                    EAtomicBuffer_CopyPolicy.kCopyOnSet
                 );
             }
         }
     }
     
-    private static void _RunTest (String comment, int nProducers, int nConsumers, ECopyPolicy cPol)
+    private static void _RunTest (String comment, int nProducers, int nConsumers, EAtomicBuffer_CopyPolicy cPol)
     {
         int                     i;
         Thread[]                prWorkers;
@@ -1343,7 +1343,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
         int                     nRunningConsumers;
         boolean                 doWait;
         TAtomicBuffer_Stats    stats;
-        TRecord                 stRec;
+        TAtomicBuffer_DumpRecord                 stRec;
 
         System.out.println ();
         System.out.println ("--------------------------------------------------------------------------------------");
@@ -1351,7 +1351,7 @@ public class TDev_Trial_AtomicBuffer_Contention_01
         System.out.println ("--------------------------------------------------------------------------------------");
         prWorkers   = new Thread [nProducers];
         cnWorkers   = new Thread [nConsumers];
-        ab          = new TAtomicBuffer (cPol, EIfInvalidPolicy.kReturnEmpty);
+        ab          = new TAtomicBuffer (cPol, EAtomicBuffer_IfInvalidPolicy.kReturnEmpty);
         stats       = ab.StatsGet ();
         for (i = 0; i < nProducers; i++)
         {

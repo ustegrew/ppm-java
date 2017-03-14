@@ -17,8 +17,8 @@ package ppm_java.backend.module._deprecated_ppm;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Buffered;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
 
 /**
  * Audio input port for a {@link TNodePPMProcessor}.
@@ -37,12 +37,12 @@ public class TNodePPMProcessor_Endpoint_In extends VAudioPort_Input_Chunks_Buffe
      * @param id            ID of this input port.
      * @param host          The module this port is part of.
      * @param copyPolicy    If the other peer is running in a high priority thread, set this to
-     *                      {@link ECopyPolicy#kCopyOnGet}. This means that the incoming data
+     *                      {@link EAtomicBuffer_CopyPolicy#kCopyOnGet}. This means that the incoming data
      *                      is being copied when the hosting PPM processor collects it. 
      */
-    protected TNodePPMProcessor_Endpoint_In (String id, TNodePPMProcessor host, ECopyPolicy copyPolicy)
+    protected TNodePPMProcessor_Endpoint_In (String id, TNodePPMProcessor host, EAtomicBuffer_CopyPolicy copyPolicy)
     {
-        super (id, host, copyPolicy, EIfInvalidPolicy.kReturnNull);
+        super (id, host, copyPolicy, EAtomicBuffer_IfInvalidPolicy.kReturnNull);
     }
 
     /* (non-Javadoc)

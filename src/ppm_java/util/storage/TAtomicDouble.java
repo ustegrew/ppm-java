@@ -18,23 +18,45 @@ package ppm_java.util.storage;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * An thread safe double value. 
+ * 
  * @author Peter Hoppe
  *
  */
 public class TAtomicDouble
 {
+    /**
+     * Flag value: A thread acquired the lock.
+     */
     private static final int        gkLocked        = 1;
+    
+    /**
+     * Flag value: Value can be accessed.
+     */
     private static final int        gkUnlocked      = 0;
     
+    /**
+     * The lock.
+     */
     private AtomicInteger   fLock;
+    
+    /**
+     * The value. 
+     */
     private double          fValue;
     
+    /**
+     * cTor.
+     */
     public TAtomicDouble ()
     {
         fLock  = new AtomicInteger (gkUnlocked);
         fValue = 0;
     }
     
+    /**
+     * @return The value.
+     */
     public double Get ()
     {
         double ret;
@@ -46,6 +68,11 @@ public class TAtomicDouble
         return ret;
     }
     
+    /**
+     * Sets the value.
+     * 
+     * @param value     The value.
+     */
     public void Set (double value)
     {
         _Lock ();
@@ -53,6 +80,10 @@ public class TAtomicDouble
         _Unlock ();
     }
     
+    /**
+     * Definitely acquire the lock on the critical section (spin lock, as it's 
+     * merry-go-round until lock has been acquired).  
+     */
     private void _Lock ()
     {
         boolean isLocked;
@@ -64,6 +95,10 @@ public class TAtomicDouble
         }
     }
     
+    /**
+     * Definitely release the lock on the critical section (spin lock, as it's 
+     * merry-go-round until lock has been released).  
+     */
     private void _Unlock ()
     {
         boolean isUnlocked;

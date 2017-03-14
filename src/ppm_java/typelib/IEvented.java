@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.typelib;
 
 import ppm_java.backend.module.timer.TTimer;
-import ppm_java.util.storage.TAtomicBuffer;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer;
 
 /**
  * Base interface for the event system. Normally, we'd provide a dedicated 

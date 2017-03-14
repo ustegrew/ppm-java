@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.util.storage;
+package ppm_java.util.storage.arrayMap;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,12 +24,29 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TAtomicArrayMap<T>
 {
+    /**
+     * Flag value: A thread acquired the lock.
+     */
     private static final int            gkLocked    = 1;
+    
+    /**
+     * Flag value: Store can be accessed.
+     */
     private static final int            gkUnlocked  = 0;
     
+    /**
+     * The underlying (thread-unsafe) store.
+     */
     private TArrayMap<T>                fData;
+    
+    /**
+     * Thread-safe lock.
+     */
     private AtomicInteger               fLock;
     
+    /**
+     * cTor.
+     */
     public TAtomicArrayMap ()
     {
         fLock       = new AtomicInteger (gkUnlocked);
@@ -37,9 +54,11 @@ public class TAtomicArrayMap<T>
     }
     
     /**
-     * @param i
-     * @return
-     * @see ppm_java.util.storage.TArrayMap#Get(int)
+     * Returns the <code>i</code><sup>th</sup> element.
+     * 
+     * @param i     Zero based index of the requested element.
+     * @return      Requested element.
+     * @throws      IndexOutOfBoundsException       If <code>i</code> is out of bounds.
      */
     public T Get (int i)
     {
@@ -53,9 +72,11 @@ public class TAtomicArrayMap<T>
     }
 
     /**
-     * @param key
-     * @return
-     * @see ppm_java.util.storage.TArrayMap#Get(java.lang.String)
+     * Returns the element associated with the given <code>key</code>. 
+     * 
+     * @param key   The key associated with the requested element.
+     * @return      Requested element.
+     * @throws      IllegalArgumentException        If there's no element with the given <code>key</code>.
      */
     public T Get (String key)
     {
@@ -69,8 +90,7 @@ public class TAtomicArrayMap<T>
     }
 
     /**
-     * @return
-     * @see ppm_java.util.storage.TArrayMap#GetNumElements()
+     * @return      Number of elements stored.
      */
     public int GetNumElements ()
     {
@@ -84,9 +104,10 @@ public class TAtomicArrayMap<T>
     }
 
     /**
-     * @param key
-     * @return
-     * @see ppm_java.util.storage.TArrayMap#HasElement(java.lang.String)
+     * Returns <code>true</code> if there is an element associated with the given <code>key</code>.
+     * 
+     * @param key       The key queried.
+     * @return          <code>true</code> if <code>key</code> is known, <code>false</code> otherwise.
      */
     public boolean HasElement (String key)
     {
@@ -100,8 +121,12 @@ public class TAtomicArrayMap<T>
     }
 
     /**
-     * @param i
-     * @see ppm_java.util.storage.TArrayMap#Remove(int)
+     * Removes the <code>i</code><sup>th</sup> element. Note that of all 
+     * operations, removing costs the most time. Too many removes might 
+     * impact performance.
+     * 
+     * @param i     Zero based index of the element to be removed.
+     * @throws      IndexOutOfBoundsException       If <code>i</code> is out of bounds.
      */
     public void Remove (int i)
     {
@@ -111,8 +136,12 @@ public class TAtomicArrayMap<T>
     }
 
     /**
-     * @param key
-     * @see ppm_java.util.storage.TArrayMap#Remove(java.lang.String)
+     * Removes the element associated with the given <code>key</code>.
+     * Note that of all operations, removing costs the most time. Too many 
+     * removes might impact performance.
+     * 
+     * @param key   The key associated with the element to be removed.
+     * @throws      IllegalArgumentException        If there's no element with the given <code>key</code>.
      */
     public void Remove (String key)
     {
@@ -122,9 +151,14 @@ public class TAtomicArrayMap<T>
     }
 
     /**
-     * @param key
-     * @param value
-     * @see ppm_java.util.storage.TArrayMap#Set(java.lang.String, java.lang.Object)
+     * Adds an object. Object will be associated with the given <code>key</code>.
+     * The key must be unique. Index will be one higher than the last object 
+     * stored (or zero, if no object exists in storage yet). 
+     * 
+     * @param key       The key associated with the element to be stored.
+     * @param value     The object to be stored.
+     * @throws          IllegalArgumentException    If <code>key</code> is already known.
+     * @throws          IllegalStateException       If the store is full. See {@link #TArrayMap(int)}.
      */
     public void Set (String key, T value)
     {

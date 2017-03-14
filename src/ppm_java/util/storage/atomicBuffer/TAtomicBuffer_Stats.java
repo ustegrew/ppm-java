@@ -13,7 +13,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.util.storage;
+package ppm_java.util.storage.atomicBuffer;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,26 +26,6 @@ import ppm_java.typelib.IStats;
  */
 public class TAtomicBuffer_Stats implements IStats
 {
-    /**
-     * The record class. 
-     * 
-     * @author peter
-     */
-    public static class TRecord
-    {
-        public int      fNumContentions;
-        public int      fNumOverruns;
-        public int      fNumUnderruns;
-        public int      fDiffOverUnderruns;
-    }
-    
-    private static enum EField
-    {
-        kContentions,
-        kOverruns,
-        kUnderruns
-    }
-    
     /**
      * Flag value for: Critical sections locked.
      */
@@ -74,7 +54,7 @@ public class TAtomicBuffer_Stats implements IStats
      * 
      * @see TAtomicBuffer
      */
-    private int fNumContentions;
+    int fNumContentions;
 
     /**
      * The number of overruns. Overruns happen if the producer 
@@ -84,7 +64,7 @@ public class TAtomicBuffer_Stats implements IStats
      * 
      * @see TAtomicBuffer
      */
-    private int fNumOverruns;
+    int fNumOverruns;
     
     /**
      * Returns the number of underruns. Underruns happen if the consumer 
@@ -97,6 +77,9 @@ public class TAtomicBuffer_Stats implements IStats
      */
     private int                         fNumUnderruns;
     
+    /**
+     * cTor.
+     */
     public TAtomicBuffer_Stats ()
     {
         fLock = new AtomicInteger (gkUnlocked);
@@ -128,17 +111,17 @@ public class TAtomicBuffer_Stats implements IStats
     }
     
     /**
-     * Returns a dump of all the fields as a string. 
-     * This method is thread safe, i.e. the returned data is guaranteed to 
-     * be consistent.
+     * Returns a dump of all the fields as one object. 
+     * This method is thread safe, i.e. the returned data 
+     * is guaranteed to be consistent.
      * 
-     * @return  Dump of all fields as a string.
+     * @return  Dump of all fields.
      */
-    public TRecord GetRecord ()
+    public TAtomicBuffer_DumpRecord GetRecord ()
     {
-        TRecord ret;
+        TAtomicBuffer_DumpRecord ret;
         
-        ret = new TRecord ();
+        ret = new TAtomicBuffer_DumpRecord ();
         
         _Lock ();
         
@@ -157,7 +140,7 @@ public class TAtomicBuffer_Stats implements IStats
      */
     void IncrementContentions ()
     {
-        _Increment (EField.kContentions);
+        _Increment (EIncField.kContentions);
     }
     
     /**
@@ -165,7 +148,7 @@ public class TAtomicBuffer_Stats implements IStats
      */
     void IncrementOverruns ()
     {
-        _Increment (EField.kOverruns);
+        _Increment (EIncField.kOverruns);
     }
     
     /**
@@ -173,7 +156,7 @@ public class TAtomicBuffer_Stats implements IStats
      */
     void IncrementUnderruns ()
     {
-        _Increment (EField.kUnderruns);
+        _Increment (EIncField.kUnderruns);
     }
     
     /**
@@ -195,19 +178,19 @@ public class TAtomicBuffer_Stats implements IStats
      * 
      * @param field     Signifier of the field to be incremented.
      */
-    private void _Increment (EField field)
+    private void _Increment (EIncField field)
     {
         _Lock ();
         
-        if (field == EField.kContentions)
+        if (field == EIncField.kContentions)
         {
             fNumContentions++;
         }
-        else if (field == EField.kOverruns)
+        else if (field == EIncField.kOverruns)
         {
             fNumOverruns++;
         }
-        else if (field == EField.kUnderruns)
+        else if (field == EIncField.kUnderruns)
         {
             fNumUnderruns++;
         }

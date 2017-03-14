@@ -15,7 +15,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 package ppm_java.typelib;
 
-import ppm_java.util.storage.TArrayMap;
+import ppm_java.util.storage.arrayMap.TArrayMap;
 
 /**
  * Base class for all modules processing audio samples.

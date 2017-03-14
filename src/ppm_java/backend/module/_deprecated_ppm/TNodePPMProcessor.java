@@ -25,9 +25,9 @@ import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Buffered;
 import ppm_java.typelib.VAudioProcessor;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
-import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_DumpRecord;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_Stats;
 
 /**
  * PPM meter class. Updates all associated front ends with one 
@@ -176,7 +176,7 @@ public class TNodePPMProcessor
     {
         TNodePPMProcessor_Endpoint_In p;
         
-        p = new TNodePPMProcessor_Endpoint_In (id, this, ECopyPolicy.kCopyOnGet);
+        p = new TNodePPMProcessor_Endpoint_In (id, this, EAtomicBuffer_CopyPolicy.kCopyOnGet);
         AddPortIn (p);
     }
 
@@ -267,7 +267,7 @@ public class TNodePPMProcessor
     {
         VAudioPort_Input_Chunks_Buffered   in;
         TAtomicBuffer_Stats            stats;
-        TRecord                         stRec;
+        TAtomicBuffer_DumpRecord                         stRec;
         
         in      = (VAudioPort_Input_Chunks_Buffered) GetPortIn (0); 
         stats   = in.StatsGet ();

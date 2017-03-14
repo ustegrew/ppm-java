@@ -24,10 +24,10 @@ import ppm_java.typelib.IEvented;
 import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.IStats;
 import ppm_java.typelib.VAudioProcessor;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
-import ppm_java.util.storage.TAtomicBuffer_Stats.TRecord;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_DumpRecord;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_Stats;
 
 /**
  * A data pump. Fetches the audio data from the audio driver, 
@@ -143,7 +143,7 @@ public class TNodePump
     {
         TNodePump_Endpoint_In       p;
         
-        p = new TNodePump_Endpoint_In (id, this, ECopyPolicy.kCopyOnGet, EIfInvalidPolicy.kReturnNull);
+        p = new TNodePump_Endpoint_In (id, this, EAtomicBuffer_CopyPolicy.kCopyOnGet, EAtomicBuffer_IfInvalidPolicy.kReturnNull);
         AddPortIn (p);
     }
 
@@ -308,7 +308,7 @@ public class TNodePump
     {
         String                          id;
         TAtomicBuffer_Stats             st;
-        TRecord                         stRec;
+        TAtomicBuffer_DumpRecord                         stRec;
         
         id      = GetID ();
         st      = fEndptIn.StatsGet ();

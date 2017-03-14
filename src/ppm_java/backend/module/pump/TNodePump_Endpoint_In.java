@@ -17,9 +17,9 @@ package ppm_java.backend.module.pump;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Buffered;
-import ppm_java.util.storage.TAtomicBuffer;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer;
 
 /**
  * Audio input port for a {@link TNodePump}.
@@ -37,7 +37,7 @@ public class TNodePump_Endpoint_In extends VAudioPort_Input_Chunks_Buffered
      * @param ifInvalidPolicy       The desired invalid data policy.
      * @see                         TAtomicBuffer
      */
-    protected TNodePump_Endpoint_In (String id, TNodePump host, ECopyPolicy copyPolicy, EIfInvalidPolicy ifInvalidPolicy)
+    protected TNodePump_Endpoint_In (String id, TNodePump host, EAtomicBuffer_CopyPolicy copyPolicy, EAtomicBuffer_IfInvalidPolicy ifInvalidPolicy)
     {
         super (id, host, copyPolicy, ifInvalidPolicy);
     }

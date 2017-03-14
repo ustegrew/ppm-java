@@ -17,8 +17,8 @@ package ppm_java.backend.module.jackd;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Chunks_Buffered;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
 
 /**
  * Audio input port for a {@link TAudioContext_JackD}.
@@ -35,7 +35,7 @@ public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffer
      */
     protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host)
     {
-        super (id, host, ECopyPolicy.kCopyOnSet, EIfInvalidPolicy.kReturnEmpty);
+        super (id, host, EAtomicBuffer_CopyPolicy.kCopyOnSet, EAtomicBuffer_IfInvalidPolicy.kReturnEmpty);
     }
 
     /* (non-Javadoc)

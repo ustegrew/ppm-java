@@ -13,15 +13,34 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.util.storage;
+package ppm_java.util.storage.atomicBuffer;
 
 /**
+ * A dumping class. Used to dump all statistics into
+ * one object in a thread safe way. 
+ * 
  * @author Peter Hoppe
- *
+ * @see    TAtomicBuffer_Stats#GetRecord()
  */
-class TNode<T>
+public class TAtomicBuffer_DumpRecord
 {
-    public String           fKey;
-    public int              fIndex;
-    public T                fValue;
+    /**
+     * @see TAtomicBuffer_Stats#fNumContentions
+     */
+    public int      fNumContentions;
+    
+    /**
+     * @see TAtomicBuffer_Stats#fNumOverruns
+     */
+    public int      fNumOverruns;
+    
+    /**
+     * @see TAtomicBuffer_Stats#fNumOverruns
+     */
+    public int      fNumUnderruns;
+    
+    /**
+     * The difference between overruns and underruns.
+     */
+    public int      fDiffOverUnderruns;
 }

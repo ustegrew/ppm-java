@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.backend.module.jackd;
 
 import ppm_java.typelib.IStats;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_Stats;
 
 /**
  * Runtime statistics for a {@link TAudioContext_JackD}.

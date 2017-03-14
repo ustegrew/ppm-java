@@ -17,10 +17,10 @@ package ppm_java.typelib;
 
 import java.nio.FloatBuffer;
 
-import ppm_java.util.storage.TAtomicBuffer;
-import ppm_java.util.storage.TAtomicBuffer_Stats;
-import ppm_java.util.storage.TAtomicBuffer.ECopyPolicy;
-import ppm_java.util.storage.TAtomicBuffer.EIfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_CopyPolicy;
+import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer;
+import ppm_java.util.storage.atomicBuffer.TAtomicBuffer_Stats;
 
 /**
  * Base class for an input port that receives sample chunks. This is a 
@@ -52,8 +52,8 @@ public abstract class VAudioPort_Input_Chunks_Buffered extends VAudioPort_Input
     (
         String              id, 
         VAudioProcessor     host, 
-        ECopyPolicy         copyPolicy,
-        EIfInvalidPolicy    ifInvalidPolicy
+        EAtomicBuffer_CopyPolicy         copyPolicy,
+        EAtomicBuffer_IfInvalidPolicy    ifInvalidPolicy
     )
     {
         super (id, host);

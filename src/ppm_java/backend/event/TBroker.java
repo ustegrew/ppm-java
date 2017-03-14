@@ -17,7 +17,7 @@ package ppm_java.backend.event;
 
 import ppm_java.typelib.IEvented;
 import ppm_java.typelib.VBrowseable;
-import ppm_java.util.storage.TAtomicArrayMap;
+import ppm_java.util.storage.arrayMap.TAtomicArrayMap;
 
 /**
  * Receives events and sends them to subscribed clients.
