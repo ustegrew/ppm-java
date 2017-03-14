@@ -19,7 +19,8 @@ import ppm_java.util.timer.TTickTimer;
 
 /**
  * The meter UI for a single gauge. This class doesn't do any rendering, but it creates the
- * meter bar string. The containing UI can retrieve that {@link #GetLevelBar()} and render it.
+ * meter bar string. The containing UI can retrieve the string ({@link #GetLevelBar()}) and 
+ * render it.
  * 
  * @author Peter Hoppe
  */

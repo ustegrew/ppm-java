@@ -20,36 +20,38 @@ import ppm_java.typelib.IControllable;
 import ppm_java.typelib.VFrontend;
 
 /**
- * A simple text-only frontend. Writes all peak values to stdout in csv format, 
- * one peak value per line.
- * Line format: <code>[chan_num],[peak_value]</code>
- * Where <code>[chan_num]</code> denotes the channel and <code>[peak_value]</code>
- * denotes the value of the peak level. Channel numbers map as 0 (zero) for 
- * the left channel and 1 (one) for the right channel. 
+ * A simple text-only frontend. Writes all peak values to stdout in JSON format, 
+ * one peak value per record.
  * 
  * @author Peter Hoppe
  */
 public class TConsole_TextOut extends VFrontend implements IControllable
 {
+    /**
+     * Creates a new instance of this frontend.
+     * 
+     * @param id            Unique ID as which we register this frontend.
+     */
     public static final void CreateInstance (String id)
     {
         new TConsole_TextOut (id);
     }
 
-    private static enum EFieldType
-    {
-        kInfo,
-        kSample
-    }
+    /**
+     * Signifier, info record. 
+     */
+    private static final String             gkRecordTypeInfo        = "info";
     
-    private static final String             gkFieldTypeInfo         = "info";
-    private static final String             gkFieldTypeSample       = "sample";
+    /**
+     * Signifier, sample record.
+     */
+    private static final String             gkRecordTypeSample      = "sample";
     
     
     /**
-     * @param id
-     * @param nMaxChanIn
-     * @param nMaxChanOut
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this frontend.
      */
     private TConsole_TextOut (String id)
     {
@@ -74,7 +76,7 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     @Override
     public void Start ()
     {
-        _PushRecord (EFieldType.kInfo, "event_meter_start", 0, 0);
+        _PushRecord (ERecordType.kInfo, "event_meter_start", 0, 0);
     }
 
     /* (non-Javadoc)
@@ -83,7 +85,7 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     @Override
     public void Stop ()
     {
-        _PushRecord (EFieldType.kInfo, "event_meter_stop", 0, 0);
+        _PushRecord (ERecordType.kInfo, "event_meter_stop", 0, 0);
     }
 
     /* (non-Javadoc)
@@ -95,30 +97,44 @@ public class TConsole_TextOut extends VFrontend implements IControllable
         TController.Register (this);
     }
 
+    /**
+     * Receives a sample value and prints it to stdout as JSON record.
+     * 
+     * @param sample        The sample value.
+     * @param iPort         Which port the sample value is for.
+     */
     void Receive (float sample, int iPort)
     {
-        _PushRecord (EFieldType.kSample, null, sample, iPort);
+        _PushRecord (ERecordType.kSample, null, sample, iPort);
     }
     
-    private void _PushRecord (EFieldType fieldType, String info, float sample, int iPort)
+    /**
+     * Creates a JSON record from the given parameters.
+     * 
+     * @param fieldType     Type of record.
+     * @param info          If it's an info record, this is the info payload.
+     * @param sample        If it's a sample record, this is the sample value.
+     * @param iPort         If it's a sample record, the port the sample is for (L or R).
+     */
+    private void _PushRecord (ERecordType fieldType, String info, float sample, int iPort)
     {
         String record;
         
-        if (fieldType == EFieldType.kInfo)
+        if (fieldType == ERecordType.kInfo)
         {
             record = 
             "{" +
-                "'type':'"  + gkFieldTypeInfo       + "',"  +
-                "'value':'" + info                  + "'"   +
+                "'type':'"  + gkRecordTypeInfo       + "',"  +
+                "'value':'" + info                   + "'"   +
             "}";
         }
-        else if (fieldType == EFieldType.kSample)
+        else if (fieldType == ERecordType.kSample)
         {
             record = 
             "{" +
-                "'type':'"  + gkFieldTypeSample     + "',"  +
-                "'value':'" + sample                + "',"  +
-                "'port':'"  + iPort                 + "'"   +
+                "'type':'"  + gkRecordTypeSample     + "',"  +
+                "'value':'" + sample                 + "',"  +
+                "'port':'"  + iPort                  + "'"   +
             "}";
         }
         else

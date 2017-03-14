@@ -20,14 +20,15 @@ import ppm_java.typelib.VAudioPort_Input_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * Audio input port for a {@link TConsole_TextOut}.
+ * 
  * @author Peter Hoppe
  */
 public class TConsole_TextOut_Endpoint extends VAudioPort_Input_Samples
 {
     /**
-     * @param id
-     * @param host
-     * @param iPort
+     * @param id            ID of this input port.
+     * @param host          The module this port is part of.
      */
     public TConsole_TextOut_Endpoint (String id, VAudioProcessor host)
     {
