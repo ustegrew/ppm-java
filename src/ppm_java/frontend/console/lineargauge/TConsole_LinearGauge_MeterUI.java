@@ -18,31 +18,91 @@ package ppm_java.frontend.console.lineargauge;
 import ppm_java.util.timer.TTickTimer;
 
 /**
+ * The meter UI for a single gauge. This class doesn't do any rendering, but it creates the
+ * meter bar string. The containing UI can retrieve that {@link #GetLevelBar()} and render it.
+ * 
  * @author Peter Hoppe
- *
  */
 public class TConsole_LinearGauge_MeterUI
 {
+    /**
+     * Ansi control sequence for: Red font.
+     */
     private static final String                 gkAnsiRed           = "\u001B[31m";
+    
+    /**
+     * Ansi control sequence for: Font back to normal.
+     */
     private static final String                 gkAnsiReset         = "\u001B[0m";
+    
+    /**
+     * Ansi control sequence for: Yellow font.
+     */
     private static final String                 gkAnsiYellow        = "\u001B[33m";
+    
+    /**
+     * Signal clipping level.
+     */
     private static final float                  gkLvlClip           = -1.0f;
+    
+    /**
+     * Signal warning level.
+     */
     private static final float                  gkLvlWarn           = -4.0f;
+    
+    /**
+     * Base character for the meter bar.
+     */
     private static final String                 gkMeterBarChar      = "#";
+    
+    /**
+     * Number of sections on the gauge. For a PPM this is always seven.
+     */
     private static final int                    gkNumSections       = TConsole_LinearGauge.gkNumSections;
+    
+    /**
+     * Time the clip/warn indication stays.
+     */
     private static final long                   gkTimeClipExpire    = 1000;
     
+    /**
+     * Length of the meter bar, in characters.
+     */
     private int                 fBarLen;
+    
+    /**
+     * Monostable, resets the clip indication after a time period.
+     */
     private TTickTimer          fClipTimer;
+    
+    /**
+     * Cached color code for level bar (Bar color changes on warn or clip level).
+     */
     private String              fColorCode;
+    
+    /**
+     * Color code for resetting font to normal. If there's no clipping or warning,
+     * this will be empty. We always draw a meter and then reset the font, so 
+     * another meter bar can be drawn with normal color (e.g. one bar drawn at 
+     * clip level, and the other bar at normal level.  
+     */
     private String              fColorCodeReset;
+    
+    /**
+     * Pre cached empty meter bar.
+     */
     private String              fEmptyBar;
+    
+    /**
+     * The current level bar.
+     */
     private String              fLevelBar;
     
     
     /**
-     * @param barLen 
+     * cTor.
      * 
+     * @param barLen        Length of gauge on screen (in columns)
      */
     public TConsole_LinearGauge_MeterUI (int barLen)
     {
@@ -56,7 +116,8 @@ public class TConsole_LinearGauge_MeterUI
 
 
     /**
-     * @return
+     * @return  The created level bar string. The containing UI must query
+     *          this and render it.
      */
     public String GetLevelBar ()
     {
@@ -64,7 +125,9 @@ public class TConsole_LinearGauge_MeterUI
     }
 
     /**
-     * @param level
+     * Receives a new level value and creates the meter bar.
+     * 
+     * @param level     The new level value.
      */
     public void Receive (float level)
     {
@@ -72,6 +135,9 @@ public class TConsole_LinearGauge_MeterUI
         _SetBar  (level);
     }
     
+    /**
+     * Creates a pre cached empty meter bar.
+     */
     private void _PrecomputeFixedElements ()
     {
         int         i;
@@ -83,6 +149,11 @@ public class TConsole_LinearGauge_MeterUI
         }
     }
     
+    /**
+     * Computes the level bar string for the given level value.
+     * 
+     * @param level     The level value.
+     */
     private void _SetBar (float level)
     {
         double          lDisp;
@@ -121,6 +192,13 @@ public class TConsole_LinearGauge_MeterUI
         }
     }
     
+    /**
+     * Sets the level warn and clip indication for the given level value.
+     * Clip will be cleared if the {@link #fClipTimer} has expired and the 
+     * given level value is below clip/warn level.
+     * 
+     * @param level     The level value.
+     */
     private void _SetClip (float level)
     {
         boolean hasExpired;

@@ -20,18 +20,19 @@ import ppm_java.typelib.VAudioPort_Input_Samples;
 import ppm_java.typelib.VAudioProcessor;
 
 /**
+ * Audio input port for a {@link TConsole_LinearGauge}.
+ * 
  * @author Peter Hoppe
- *
  */
-public class TConsole_LinearGauge_Endpoint extends VAudioPort_Input_Samples
+public class TConsole_LinearGauge_Endpoint_In extends VAudioPort_Input_Samples
 {
-
     /**
-     * @param id
-     * @param host
-     * @param iPort
+     * cTor.
+     * 
+     * @param id            ID of this input port.
+     * @param host          The module this port is part of.
      */
-    public TConsole_LinearGauge_Endpoint (String id, VAudioProcessor host)
+    public TConsole_LinearGauge_Endpoint_In (String id, VAudioProcessor host)
     {
         super (id, host);
     }

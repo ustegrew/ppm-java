@@ -16,12 +16,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.util.timer;
 
 /**
+ * Internal state of the {@link TTickTimer}
+ * 
  * @author Peter Hoppe
- *
  */
 public enum ETimerState
 {
+    /**
+     * Null state: Timer ready and waiting for {@link TTickTimer#Start()} signal. 
+     */
     kNull,
+    
+    /**
+     * Timer is running.
+     */
     kRunning,
+    
+    /**
+     * Timer interval has expired. 
+     */
     kExpired
 }
