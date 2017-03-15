@@ -1,0 +1,8 @@
+<map id="OnEvent" name="OnEvent">
+<area shape="rect" id="node2" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#a9170c532c1d0021b723f0285c672a6cd" title="The central computation piece of the PPM level meter. " alt="" coords="128,103,243,129"/>
+<area shape="rect" id="node3" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#acb24179b9cce6b4e388b2c7589b0a681" title="Auto compensation for Overruns/Underruns on the atomic buffer associated with the input..." alt="" coords="317,27,493,53"/>
+<area shape="rect" id="node5" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#a5bfd065f6711c094469beafa8b649b71" title="Returns the ith input port. " alt="" coords="568,70,797,111"/>
+<area shape="rect" id="node6" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#a84c7682836fd64a1ebe1c4691ea86cfa" title="Finds the raw peak value of (a part of) the given sample chunk and returns its absolute value..." alt="" coords="363,128,447,155"/>
+<area shape="rect" id="node7" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#a2a3eff032668d4235f02e6cad3f43a66" title="Returns the ith output port. " alt="" coords="291,179,520,221"/>
+<area shape="rect" id="node4" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html#a04cbe3f0b5057d0eb582200dea602297" title="ppm_java.typelib.VBrowseable.\lGetID" alt="" coords="580,5,785,46"/>
+</map>

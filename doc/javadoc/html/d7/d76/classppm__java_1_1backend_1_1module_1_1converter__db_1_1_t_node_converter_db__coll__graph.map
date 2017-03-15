@@ -1,0 +1,9 @@
+<map id="TNodeConverterDb" name="TNodeConverterDb">
+<area shape="rect" id="node8" href="$d0/db3/classppm__java_1_1backend_1_1module_1_1converter__db_1_1_t_node_converter_db___stats.html" title="Runtime statistics of a TNodeConverterDb. " alt="" coords="158,867,351,989"/>
+<area shape="rect" id="node2" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html" title="Base class for all modules processing audio samples. " alt="" coords="295,320,437,544"/>
+<area shape="rect" id="node3" href="$d1/db3/classppm__java_1_1typelib_1_1_v_audio_object.html" title="Base class for all browseable audio objects. " alt="" coords="120,171,243,248"/>
+<area shape="rect" id="node4" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html" title="Base class for all browseable objects. " alt="" coords="122,5,240,112"/>
+<area shape="rect" id="node7" href="$dc/dc0/interfaceppm__java_1_1typelib_1_1_i_stat_enabled.html" title="Interface for an object that supports runtime statistics. " alt="" coords="462,393,559,471"/>
+<area shape="rect" id="node9" href="$d7/d5a/interfaceppm__java_1_1typelib_1_1_i_stats.html" title="Interface for a statistics record. " alt="" coords="5,660,120,737"/>
+<area shape="rect" id="node10" href="$d2/df7/classppm__java_1_1util_1_1storage_1_1_t_atomic_double.html" title="An thread safe double value. " alt="" coords="145,616,276,781"/>
+</map>

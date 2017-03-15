@@ -1,0 +1,5 @@
+<map id="IncrementUnderruns" name="IncrementUnderruns">
+<area shape="rect" id="node2" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html#a4a1d84e8a1c15b8327e23925bf1f2a12" title="Increments the requested field. " alt="" coords="195,31,282,57"/>
+<area shape="rect" id="node3" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html#a60fe7aa6d1a53dab132be5ecc82d668e" title="Locks the critical sections. " alt="" coords="338,5,395,32"/>
+<area shape="rect" id="node4" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html#a4e9f36f97f1d8af33e8f50dce5153568" title="Unlocks the critical sections. " alt="" coords="331,56,402,83"/>
+</map>

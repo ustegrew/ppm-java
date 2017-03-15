@@ -1,0 +1,6 @@
+<map id="GetPortNum" name="GetPortNum">
+<area shape="rect" id="node2" href="$d9/d1a/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___endpoint___in.html#a070991ed1ae6ed10f2f2026d9816f90a" title="ppm_java.frontend.gui.lineargauge.\lTGUILinearGauge_Endpoint_In.ReceiveSample" alt="" coords="149,5,448,46"/>
+<area shape="rect" id="node3" href="$d7/d0d/classppm__java_1_1frontend_1_1gui_1_1needle_1_1_t_g_u_i_needle___endpoint___in.html#a070991ed1ae6ed10f2f2026d9816f90a" title="ppm_java.frontend.gui.needle.\lTGUINeedle_Endpoint_In.ReceiveSample" alt="" coords="165,70,432,111"/>
+<area shape="rect" id="node4" href="$d5/d31/classppm__java_1_1frontend_1_1console_1_1lineargauge_1_1_t_console___linear_gauge___endpoint___in.html#a070991ed1ae6ed10f2f2026d9816f90a" title="ppm_java.frontend.console.lineargauge.\lTConsole_LinearGauge_Endpoint\l_In.ReceiveSample" alt="" coords="173,135,425,191"/>
+<area shape="rect" id="node5" href="$d9/d7c/classppm__java_1_1frontend_1_1console_1_1text_1_1_t_console___text_out___endpoint___in.html#a070991ed1ae6ed10f2f2026d9816f90a" title="ppm_java.frontend.console.text.\lTConsole_TextOut_Endpoint\l_In.ReceiveSample" alt="" coords="195,215,403,271"/>
+</map>

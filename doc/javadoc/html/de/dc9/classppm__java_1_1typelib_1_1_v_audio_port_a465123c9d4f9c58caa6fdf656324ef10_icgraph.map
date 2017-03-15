@@ -1,0 +1,10 @@
+<map id="_GetType" name="_GetType">
+<area shape="rect" id="node2" href="$df/d02/classppm__java_1_1typelib_1_1_v_audio_port___output.html#aa5671c0a2de6cd655108cd9a7d530529" title="Logs a message when a connection to a VAudioPort_Input is made. " alt="" coords="134,169,325,210"/>
+<area shape="rect" id="node3" href="$df/d02/classppm__java_1_1typelib_1_1_v_audio_port___output.html#aecd2d710eb754f7813a595e8039c2682" title="Worker method to establish a connection to an input port, called by the _Visit(...) method of the runtime chose subtype. " alt="" coords="397,70,587,111"/>
+<area shape="rect" id="node7" href="$d7/d64/classppm__java_1_1typelib_1_1_v_audio_port___output___chunks___needs_buffer.html#a4db9e465a6c131476381a203c7d34928" title="ppm_java.typelib.VAudioPort\l_Output_Chunks_NeedsBuffer._Visit" alt="" coords="373,135,611,177"/>
+<area shape="rect" id="node8" href="$d8/db2/classppm__java_1_1typelib_1_1_v_audio_port___output___chunks___no_buffer.html#a4a959b8bb15d4344725e8c38986b5797" title="ppm_java.typelib.VAudioPort\l_Output_Chunks_NoBuffer._Visit" alt="" coords="384,201,600,242"/>
+<area shape="rect" id="node9" href="$df/d90/classppm__java_1_1typelib_1_1_v_audio_port___output___samples.html#a4a959b8bb15d4344725e8c38986b5797" title="ppm_java.typelib.VAudioPort\l_Output_Samples._Visit" alt="" coords="397,266,587,307"/>
+<area shape="rect" id="node4" href="$d7/d64/classppm__java_1_1typelib_1_1_v_audio_port___output___chunks___needs_buffer.html#a4a959b8bb15d4344725e8c38986b5797" title="ppm_java.typelib.VAudioPort\l_Output_Chunks_NeedsBuffer._Visit" alt="" coords="659,5,896,46"/>
+<area shape="rect" id="node5" href="$d8/db2/classppm__java_1_1typelib_1_1_v_audio_port___output___chunks___no_buffer.html#a4db9e465a6c131476381a203c7d34928" title="ppm_java.typelib.VAudioPort\l_Output_Chunks_NoBuffer._Visit" alt="" coords="669,70,885,111"/>
+<area shape="rect" id="node6" href="$df/d90/classppm__java_1_1typelib_1_1_v_audio_port___output___samples.html#acaf514520a989e47382fbf808afc71a6" title="ppm_java.typelib.VAudioPort\l_Output_Samples._Visit" alt="" coords="682,135,873,177"/>
+</map>

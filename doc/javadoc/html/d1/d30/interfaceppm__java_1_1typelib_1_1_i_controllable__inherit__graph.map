@@ -1,0 +1,10 @@
+<map id="IControllable" name="IControllable">
+<area shape="rect" id="node2" href="$d2/da1/classppm__java_1_1__dev_1_1concept_1_1example_1_1event_1_1_t_sink.html" title="{TSink\n||+ TSink()\l+ OnEvent()\l+ Start()\l+ Stop()\l+ OnEvent()\l+ OnEvent()\l+ OnEvent()\l# _Register()\l}" alt="" coords="5,286,101,466"/>
+<area shape="rect" id="node3" href="$da/d60/classppm__java_1_1__dev_1_1concept_1_1example_1_1event_1_1_t_source.html" title="{TSource\n||+ TSource()\l+ Start()\l+ Stop()\l+ OnEvent()\l+ OnEvent()\l+ OnEvent()\l+ OnEvent()\l# _Register()\l}" alt="" coords="126,286,223,466"/>
+<area shape="rect" id="node4" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html" title="Audio driver for the JackD server. " alt="" coords="248,220,419,532"/>
+<area shape="rect" id="node5" href="$d6/da9/classppm__java_1_1backend_1_1module_1_1timer_1_1_t_timer.html" title="Emits a constant stream of IEvented#gkEventTimerTick events, on event per given interval. " alt="" coords="443,249,583,503"/>
+<area shape="rect" id="node6" href="$db/d79/classppm__java_1_1frontend_1_1console_1_1lineargauge_1_1_t_console___linear_gauge.html" title="A linear gauge on the console. " alt="" coords="608,147,787,605"/>
+<area shape="rect" id="node7" href="$dc/de5/classppm__java_1_1frontend_1_1console_1_1text_1_1_t_console___text_out.html" title="A simple text&#45;only frontend. " alt="" coords="811,249,969,503"/>
+<area shape="rect" id="node8" href="$d2/dd7/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___surrogate.html" title="The UI controller. " alt="" coords="994,242,1200,510"/>
+<area shape="rect" id="node9" href="$d5/d13/classppm__java_1_1frontend_1_1gui_1_1needle_1_1_t_g_u_i_needle___surrogate.html" title="The UI controller. " alt="" coords="1225,249,1399,503"/>
+</map>
