@@ -14,7 +14,6 @@ package ppm_java.frontend.gui.lineargauge;
 
 import eu.hansolo.steelseries.gauges.LinearBargraph;
 import eu.hansolo.steelseries.tools.LedColor;
-import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate.EClipType;
 
 /**
  * The PPM UI. 
@@ -27,19 +26,69 @@ import ppm_java.frontend.gui.lineargauge.TGUILinearGauge_Surrogate.EClipType;
  */
 class TGUILinearGauge_WndPPM extends javax.swing.JFrame
 {
+    /**
+     * ID, left channel.
+     */
     private static final int                gkIChanL            = 0;
+    
+    /**
+     * ID, right channel. 
+     */
     private static final int                gkIChanR            = 1;
+    
+    /**
+     * LED color, clipping level.
+     */
     private static final LedColor           kColorClip          = LedColor.RED_LED;
+    
+    /**
+     * LED color, normal level.
+     */
     private static final LedColor           kColorNormal        = LedColor.RED_LED;
+    
+    /**
+     * LED color, warning level.
+     */
     private static final LedColor           kColorWarn          = LedColor.YELLOW_LED;
+    
+    /**
+     * Serialization ID, requested by the Swing framework.
+     */
     private static final long               serialVersionUID    = -2335417501850617358L;
     
+    /**
+     * The UI controller hosting this UI.
+     */
     private TGUILinearGauge_Surrogate       fConnector;
+    
+    /**
+     * Bar graph, left channel.
+     */
     private LinearBargraph                  fMeterL;
+    
+    /**
+     * Bar graph, right channel.
+     */
     private LinearBargraph                  fMeterR;
+    
+    /**
+     * Bar graph container, left channel.
+     */
     private javax.swing.JPanel              fPnlMeterL;
+    
+    /**
+     * Bar graph container, right channel.
+     */
     private javax.swing.JPanel              fPnlMeterR;
+    
+    /**
+     * Clip timer, left channel.
+     */
     private TGUILinearGauge_TimerClipping   fTimerL;
+    
+    /**
+     * Clip timer, right channel.
+     */
     private TGUILinearGauge_TimerClipping   fTimerR;
 
     public TGUILinearGauge_WndPPM (TGUILinearGauge_Surrogate surrogate)
@@ -52,7 +101,13 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         fTimerR.start ();
     }
 
-    public void ClippingSet (EClipType cType, int iChannel)
+    /**
+     * Set clip/warn level on given channel. 
+     * 
+     * @param cType         Clip type.
+     * @param iChannel      Channel ID (<code>0</code>: Left channel, <code>1</code>: Right channel).
+     */
+    public void ClippingSet (EGUILinearGauge_ClipType cType, int iChannel)
     {
         if (iChannel == gkIChanL)
         {
@@ -67,8 +122,8 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
     /**
      * Sets the level information on the UI.
      * 
-     * @param lvl
-     * @param iChannel
+     * @param lvl           Level value (PPM units).
+     * @param iChannel      Channel ID (<code>0</code>: Left channel, <code>1</code>: Right channel).
      */
     public void SetLevel (double lvl, int iChannel)
     {
@@ -89,13 +144,22 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         targetGUI.setValue (lvl);
     }
     
+    /**
+     * Handler, when this UI terminates.
+     */
     public void Terminate ()
     {
         fTimerL.Terminate ();
         fTimerR.Terminate ();
     }
     
-    void _SetClipping (EClipType cType, int iChannel)
+    /**
+     * Render clipping/warning level on LED of given channel.
+     * 
+     * @param cType         Clip type.
+     * @param iChannel      Channel ID (<code>0</code>: Left channel, <code>1</code>: Right channel).
+     */
+    void _SetClipping (EGUILinearGauge_ClipType cType, int iChannel)
     {
         LinearBargraph      meter;
         LedColor            color;
@@ -140,11 +204,19 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
         }
     }
     
+    /**
+     * Handler, when UI window is closing. 
+     * 
+     * @param evt
+     */
     private void _OnWindowClose(java.awt.event.WindowEvent evt)
     {
         fConnector.OnTerminate ();
     }
     
+    /**
+     * Initializes the UI components.
+     */
     private void initComponents()
     {
         java.awt.GridBagConstraints gridBagConstraints;

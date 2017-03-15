@@ -17,12 +17,19 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
 
 /**
+ * Audio input port for a {@link TGUILinearGauge_Surrogate}
+ * 
  * @author Peter Hoppe
- *
  */
-public class TGUILinearGauge_Endpoint extends VAudioPort_Input_Samples
+public class TGUILinearGauge_Endpoint_In extends VAudioPort_Input_Samples
 {
-    public TGUILinearGauge_Endpoint (String id, TGUILinearGauge_Surrogate host)
+    /**
+     * cTor.
+     * 
+     * @param id            ID of this input port.
+     * @param host          The module this port is part of.
+     */
+    public TGUILinearGauge_Endpoint_In (String id, TGUILinearGauge_Surrogate host)
     {
         super (id, host);
     }

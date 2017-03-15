@@ -110,9 +110,9 @@ public final class TAudioContext_JackD
     @Override
     public void CreatePort_Out (String id)
     {
-        TAudioContext_Endpoint_Output       p;
+        TAudioContext_Endpoint_Out       p;
         
-        p = new TAudioContext_Endpoint_Output (id, this);
+        p = new TAudioContext_Endpoint_Out (id, this);
         AddPortOut (p);
     }
     
@@ -240,7 +240,7 @@ public final class TAudioContext_JackD
      */
     private void _ProcessInputs (JJackAudioEvent e)
     {
-        TAudioContext_Endpoint_Input    portIn;
+        TAudioContext_Endpoint_In    portIn;
         int                             nPorts;
         int                             i;
         int                             nSampIn;
@@ -253,7 +253,7 @@ public final class TAudioContext_JackD
         {
             for (i = 0; i < nPorts; i++)
             {
-                portIn      = (TAudioContext_Endpoint_Input) GetPortIn (i);
+                portIn      = (TAudioContext_Endpoint_In) GetPortIn (i);
                 bIn         = portIn.FetchPacket ();
                 bOut        = e.getOutput (i);
                 nSampIn     = bIn.capacity ();
@@ -278,7 +278,7 @@ public final class TAudioContext_JackD
      */
     private void _ProcessOutputs (JJackAudioEvent e)
     {
-        TAudioContext_Endpoint_Output   portOut;
+        TAudioContext_Endpoint_Out   portOut;
         int                             nPorts;
         int                             i;
         FloatBuffer                     b;
@@ -288,7 +288,7 @@ public final class TAudioContext_JackD
         {
             for (i = 0; i < nPorts; i++)
             {
-                portOut = (TAudioContext_Endpoint_Output) GetPortOut (i);
+                portOut = (TAudioContext_Endpoint_Out) GetPortOut (i);
                 b       = e.getInput (i);
                 portOut.PushPacket (b);
             }

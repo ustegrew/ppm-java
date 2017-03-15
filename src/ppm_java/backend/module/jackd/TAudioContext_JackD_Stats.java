@@ -49,9 +49,9 @@ public final class TAudioContext_JackD_Stats implements IStats
         int                             i;
         int                             n;
         String                          id;
-        TAudioContext_Endpoint_Input    ip;
-        TAudioContext_Endpoint_Output   op;
-        TAtomicBuffer_Stats            s;
+        TAudioContext_Endpoint_In       ip;
+        TAudioContext_Endpoint_Out      op;
+        TAtomicBuffer_Stats             s;
         String                          ret;
         
         /* First dump line */
@@ -68,7 +68,7 @@ public final class TAudioContext_JackD_Stats implements IStats
             ret += "    Inputs:\n";
             for (i = 0; i < n; i++)
             {
-                ip          = (TAudioContext_Endpoint_Input) fHost.GetPortIn (i);
+                ip          = (TAudioContext_Endpoint_In) fHost.GetPortIn (i);
                 s           = ip.StatsGet ();
                 id          = ip.GetID ();
                 ret        += "        i/p [" + id              +
@@ -88,7 +88,7 @@ public final class TAudioContext_JackD_Stats implements IStats
             ret += "    Outputs:\n";
             for (i = 0; i < n; i++)
             {
-                op          = (TAudioContext_Endpoint_Output) fHost.GetPortOut (i);
+                op          = (TAudioContext_Endpoint_Out) fHost.GetPortOut (i);
                 id          = op.GetID ();
                 ret        += "        o/p [" + id + "]\n";
             }

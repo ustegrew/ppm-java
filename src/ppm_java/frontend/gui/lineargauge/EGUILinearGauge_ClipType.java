@@ -13,35 +13,27 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------- */
 
-package ppm_java.backend.module.jackd;
-
-import ppm_java.backend.TController;
-import ppm_java.typelib.VAudioPort_Output_Chunks_NeedsBuffer;
+package ppm_java.frontend.gui.lineargauge;
 
 /**
- * Audio output port for a {@link TAudioContext_JackD}.
+ * The possible types of signal clipping.
  * 
  * @author Peter Hoppe
  */
-public class TAudioContext_Endpoint_Out extends VAudioPort_Output_Chunks_NeedsBuffer
+enum EGUILinearGauge_ClipType
 {
     /**
-     * cTor.
-     * 
-     * @param id            ID of this output port.
-     * @param host          The module this port is part of.
+     * No clipping. 
      */
-    protected TAudioContext_Endpoint_Out (String id, TAudioContext_JackD host)
-    {
-        super (id, host);
-    }
-
-    /* (non-Javadoc)
-     * @see ppm_java.typelib.VBrowseable#_Register()
+    kClear,
+    
+    /**
+     * Signal has clipped.
      */
-    @Override
-    protected void _Register ()
-    {
-        TController.Register (this);
-    }
+    kError,
+    
+    /**
+     * Signal is close to clipping.
+     */
+    kWarn
 }

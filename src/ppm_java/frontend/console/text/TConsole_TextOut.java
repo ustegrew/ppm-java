@@ -17,16 +17,66 @@ package ppm_java.frontend.console.text;
 
 import ppm_java.backend.TController;
 import ppm_java.typelib.IControllable;
+import ppm_java.typelib.IEvented;
 import ppm_java.typelib.VFrontend;
 
 /**
- * A simple text-only frontend. Writes all peak values to stdout in JSON format, 
- * one peak value per record.
+ * A simple text-only frontend. Writes a stream of records in JSON format
+ * to STDOUT. Caters for a special use case where we want to stream the metering 
+ * information over a network connection to another host. As the JSON records 
+ * are written to STDOUT it's possible to pipe them to another program, 
+ * e.g. a web socket provider. This frontend produces two types of records:
+ * <dl>
+ *     <dt>Sample record</dt>
+ *     <dd>
+ *         A record containing a value (sample). Contains the sample value
+ *         and which channel it's for. Record scheme:
+ * <pre>
+ * {
+ *     "type":     "sample",       // Record type ID
+ *     "value":    float-value,    // The sample value
+ *     "port":     int-value       // For which port (0: Left channel, 1: Right channel)
+ * }
+ * </pre>
+ *     </dd>
+ *     <dt>Info record</dt>
+ *     <dd>
+ *         A record containing in-band information (e.g. "Metering stops"). Record scheme:
+ * <pre>
+ * {
+ *     "type":     "info",         // Record type ID
+ *     "value":    string          // The info message
+ * }
+ * </pre>
+ *         To create info records we use ppm-java's event system. If you use this frontend, make 
+ *         sure that you connect the frontend instance to an event emitter that sends the 
+ *         control messages.<br/>
+ *         <b>Note that the info record API isn't fully developed yet.</b>
+ *     </dd>
+ * </dl>
  * 
  * @author Peter Hoppe
+ * 
+ * TODO This frontend needs further development, as we haven't yet fully developed the info
+ *      record API. So far, only "Start" and "Stop" are implemented. More items are needed,
+ *      e.g. "is the audio in mono or stereo?"
+
  */
-public class TConsole_TextOut extends VFrontend implements IControllable
+public class TConsole_TextOut 
+    extends     VFrontend 
+    implements  IControllable,
+                IEvented
 {
+    /**
+     * Signifier, info record. 
+     */
+    private static final String             gkRecordTypeInfo        = "info";
+
+    /**
+     * Signifier, sample record.
+     */
+    private static final String             gkRecordTypeSample      = "sample";
+    
     /**
      * Creates a new instance of this frontend.
      * 
@@ -36,16 +86,6 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     {
         new TConsole_TextOut (id);
     }
-
-    /**
-     * Signifier, info record. 
-     */
-    private static final String             gkRecordTypeInfo        = "info";
-    
-    /**
-     * Signifier, sample record.
-     */
-    private static final String             gkRecordTypeSample      = "sample";
     
     
     /**
@@ -64,12 +104,52 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     @Override
     public void CreatePort_In (String id)
     {
-        TConsole_TextOut_Endpoint   p;
+        TConsole_TextOut_Endpoint_In   p;
         
-        p       = new TConsole_TextOut_Endpoint (id, this);
+        p       = new TConsole_TextOut_Endpoint_In (id, this);
         AddPortIn (p);
     }
 
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IEvented#OnEvent(int)
+     */
+    @Override
+    public void OnEvent (int e)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IEvented#OnEvent(int, int)
+     */
+    @Override
+    public void OnEvent (int e, int arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IEvented#OnEvent(int, long)
+     */
+    @Override
+    public void OnEvent (int e, long arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IEvented#OnEvent(int, java.lang.String)
+     */
+    @Override
+    public void OnEvent (int e, String arg0)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
     /* (non-Javadoc)
      * @see ppm_java.typelib.IControllable#Start()
      */
@@ -107,7 +187,7 @@ public class TConsole_TextOut extends VFrontend implements IControllable
     {
         _PushRecord (ERecordType.kSample, null, sample, iPort);
     }
-    
+
     /**
      * Creates a JSON record from the given parameters.
      * 

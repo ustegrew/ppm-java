@@ -18,6 +18,7 @@ import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.VFrontend;
 
 /**
+ * The UI controller. provides client centered access to the UI.
  *
  * @author Peter Hoppe
  */
@@ -25,17 +26,26 @@ public class TGUILinearGauge_Surrogate
     extends     VFrontend 
     implements  IControllable, IStatEnabled
 {
-    public static enum EClipType
-    {
-        kClear,
-        kError,
-        kWarn
-    }
-    
+    /**
+     * The singleton.
+     */
     private static TGUILinearGauge_Surrogate        gGUI        = null;
+    
+    /**
+     * Clipping level.
+     */
     private static final float                      gkLvlClip   = -1.0f;
+    
+    /**
+     * Warning level.
+     */
     private static final float                      gkLvlWarn   = -4.0f;
     
+    /**
+     * Creates a new instance of the frontend.
+     * 
+     * @param id        Unique ID as which we register this frontend.
+     */
     public static void CreateInstance (String id)
     {
         if (gGUI != null)
@@ -45,9 +55,21 @@ public class TGUILinearGauge_Surrogate
         gGUI = new TGUILinearGauge_Surrogate (id);
     }
     
+    /**
+     * The GUI instance.
+     */
     private TGUILinearGauge_WndPPM             fGUI;
+    
+    /**
+     * The runtime statistics.
+     */
     private TGUILinearGauge_Surrogate_Stats fStat;
     
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this frontend.
+     */
     private TGUILinearGauge_Surrogate (String id)
     {
         super (id, 2);
@@ -63,9 +85,9 @@ public class TGUILinearGauge_Surrogate
     @Override
     public void CreatePort_In (String id)
     {
-        TGUILinearGauge_Endpoint       p;
+        TGUILinearGauge_Endpoint_In       p;
         
-        p = new TGUILinearGauge_Endpoint (id, this);
+        p = new TGUILinearGauge_Endpoint_In (id, this);
         fStat.AddChannel ();
         AddPortIn (p);
     }
@@ -99,34 +121,45 @@ public class TGUILinearGauge_Surrogate
         fGUI.Terminate ();
     }
     
+    /**
+     * Event handler: User clicked on the clipping indicator. 
+     * This clears both clipping indicators.
+     */
     void OnSigClip_Click ()
     {
-        fGUI.ClippingSet (EClipType.kClear, -1);
+        fGUI.ClippingSet (EGUILinearGauge_ClipType.kClear, -1);
     }
 
+    /**
+     * Notification - UI terminated.
+     */
     void OnTerminate ()
     {
         TController.OnTerminate (GetID ());
     }
 
     /**
-     * @param data
+     * For the given channel, sets the signal level.
+     * 
+     * @param level         The level, in dB.
+     * @param iChannel      Zero based index of the channel.
      */
     void SetLevel (float level, int iChannel)
     {
         float   lDisp;
 
+        /* We update stats cycle time when channel #0 is being updated. */
         if (iChannel == 0)
             fStat.OnCycleTick ();
         
         /* Set clipping indicators. */
         if (level >= gkLvlClip)
         {
-            fGUI.ClippingSet (EClipType.kError, iChannel);
+            fGUI.ClippingSet (EGUILinearGauge_ClipType.kError, iChannel);
         }
         else if (level >= gkLvlWarn)
         {
-            fGUI.ClippingSet (EClipType.kWarn, iChannel);
+            fGUI.ClippingSet (EGUILinearGauge_ClipType.kWarn, iChannel);
         }
         
         /* Compute progress bar value */

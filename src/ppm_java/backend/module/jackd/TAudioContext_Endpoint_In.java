@@ -25,7 +25,7 @@ import ppm_java.util.storage.atomicBuffer.EAtomicBuffer_IfInvalidPolicy;
  * 
  * @author Peter Hoppe
  */
-public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffered
+public class TAudioContext_Endpoint_In extends VAudioPort_Input_Chunks_Buffered
 {
     /**
      * cTor
@@ -33,7 +33,7 @@ public class TAudioContext_Endpoint_Input extends VAudioPort_Input_Chunks_Buffer
      * @param id            ID of this input port.
      * @param host          The module this port is part of.
      */
-    protected TAudioContext_Endpoint_Input (String id, TAudioContext_JackD host)
+    protected TAudioContext_Endpoint_In (String id, TAudioContext_JackD host)
     {
         super (id, host, EAtomicBuffer_CopyPolicy.kCopyOnSet, EAtomicBuffer_IfInvalidPolicy.kReturnEmpty);
     }

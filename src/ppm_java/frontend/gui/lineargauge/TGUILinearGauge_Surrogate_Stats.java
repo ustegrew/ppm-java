@@ -20,13 +20,38 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import ppm_java.typelib.IStats;
 
+/**
+ * Combined runtime statistics for all channels.
+ * 
+ * @author Peter Hoppe
+ */
 public final class TGUILinearGauge_Surrogate_Stats implements IStats
 {
+    /**
+     * The hosting frontend.
+     */
     private TGUILinearGauge_Surrogate                               fHost;
-    private long                                        fT0;
-    private AtomicLong                                  fTimeCycle;
+    
+    /**
+     * Absolute time [ms] at startup. In ms since 1970-01-01_00:00:000.
+     */
+    private long                                                    fT0;
+    
+    /**
+     * GUI timer cycle: Time it took between the current and the last cycle.  
+     */
+    private AtomicLong                                              fTimeCycle;
+    
+    /**
+     * The list of statistics records, one per channel. 
+     */
     private ArrayList<TGUILinearGauge_Surrogate_Stats_Record>       fStatChannels;
     
+    /**
+     * cTor.
+     * 
+     * @param host      The hosting frontend.
+     */
     public TGUILinearGauge_Surrogate_Stats (TGUILinearGauge_Surrogate host)
     {
         fHost               = host;
@@ -35,6 +60,10 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         fStatChannels       = new ArrayList<> ();
     }
     
+    /**
+     * Adds another channel, i.e. prepares the {@link TGUILinearGauge_Surrogate_Stats_Record}
+     * and adds it to the {@link #fStatChannels list}.
+     */
     public void AddChannel ()
     {
         TGUILinearGauge_Surrogate_Stats_Record  r;
@@ -43,6 +72,9 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         fStatChannels.add (r);
     }
 
+    /**
+     * Called from the UI controller, with each cycle.
+     */
     public void OnCycleTick ()
     {
         long    dT;
@@ -54,7 +86,14 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         fTimeCycle.getAndSet (dT);
     }
     
-    public void SetCalcSection (int iChannel, int s)
+    /**
+     * For the given channel, sets the meter section 
+     * corresponding to the input value. 
+     * 
+     * @param iChannel          Zero based index of the channel.
+     * @param s                 The meter section.
+     */
+    void SetCalcSection (int iChannel, int s)
     {
         TGUILinearGauge_Surrogate_Stats_Record  r;
         
@@ -62,7 +101,13 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         r.SetCalcSection (s);
     }
     
-    public void SetDBValue (int iChannel, double dBv)
+    /**
+     * For the given channel, sets the input value.
+     * 
+     * @param iChannel          Zero based index of the channel.
+     * @param dBv               The current input value, in dB.
+     */
+    void SetDBValue (int iChannel, double dBv)
     {
         TGUILinearGauge_Surrogate_Stats_Record  r;
         
@@ -70,7 +115,13 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         r.SetDBValue (dBv);
     }
     
-    public void SetDisplayValue (int iChannel, double dv)
+    /**
+     * For the given channel, sets the display value.
+     * 
+     * @param iChannel          Zero based index of the channel.
+     * @param dv                The display value, in PPM units.
+     */
+    void SetDisplayValue (int iChannel, double dv)
     {
         TGUILinearGauge_Surrogate_Stats_Record  r;
         

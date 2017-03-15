@@ -19,12 +19,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ppm_java.util.storage.TAtomicDouble;
 
+/**
+ * Container for runtime statistics of a {@link TGUILinearGauge_Surrogate}, for one channel. 
+ * 
+ * @author Peter Hoppe
+ */
 class TGUILinearGauge_Surrogate_Stats_Record
 {
+    /**
+     * The current meter section corresponding to the input value.
+     */
     private AtomicInteger            fCalcSection;
+    
+    /**
+     * The current input value, in dB.
+     */
     private TAtomicDouble            fLastDBValue;
+    
+    /**
+     * The current display value, in PPM units.
+     */
     private TAtomicDouble            fLastDisplayValue;
     
+    /**
+     * cTor.
+     */
     public TGUILinearGauge_Surrogate_Stats_Record ()
     {
         fCalcSection        = new AtomicInteger (0);
@@ -32,21 +51,39 @@ class TGUILinearGauge_Surrogate_Stats_Record
         fLastDisplayValue   = new TAtomicDouble ();
     }
     
-    public void SetCalcSection (int s)
+    /**
+     * Sets the current meter section corresponding to the input value.
+     * 
+     * @param s     The meter section value.
+     */
+    void SetCalcSection (int s)
     {
         fCalcSection.getAndSet (s);
     }
     
-    public void SetDBValue (double dBv)
+    /**
+     * Sets the current input value.
+     * 
+     * @param dBv   The current input value, in dB. 
+     */
+    void SetDBValue (double dBv)
     {
         fLastDBValue.Set (dBv);
     }
     
-    public void SetDisplayValue (double dv)
+    /**
+     * Sets the current display value.
+     * 
+     * @param dv    The current display value, in PPM units
+     */
+    void SetDisplayValue (double dv)
     {
         fLastDisplayValue.Set (dv);
     }
     
+    /**
+     * @return  The current runtime statistics as text dump.
+     */
     public String GetDumpStr ()
     {
         String ret;

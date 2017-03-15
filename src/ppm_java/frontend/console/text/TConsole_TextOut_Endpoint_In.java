@@ -24,13 +24,15 @@ import ppm_java.typelib.VAudioProcessor;
  * 
  * @author Peter Hoppe
  */
-public class TConsole_TextOut_Endpoint extends VAudioPort_Input_Samples
+public class TConsole_TextOut_Endpoint_In extends VAudioPort_Input_Samples
 {
     /**
+     * cTor.
+     * 
      * @param id            ID of this input port.
      * @param host          The module this port is part of.
      */
-    public TConsole_TextOut_Endpoint (String id, VAudioProcessor host)
+    public TConsole_TextOut_Endpoint_In (String id, VAudioProcessor host)
     {
         super (id, host);
     }
