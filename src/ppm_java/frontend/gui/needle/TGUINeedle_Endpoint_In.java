@@ -19,12 +19,19 @@ import ppm_java.backend.TController;
 import ppm_java.typelib.VAudioPort_Input_Samples;
 
 /**
+ * Audio input port for a {@link TGUINeedle_Surrogate}.
+ * 
  * @author Peter Hoppe
- *
  */
-public class TGUINeedle_Endpoint extends VAudioPort_Input_Samples
+public class TGUINeedle_Endpoint_In extends VAudioPort_Input_Samples
 {
-    public TGUINeedle_Endpoint (String id, TGUINeedle_Surrogate host)
+    /**
+     * cTor.
+     * 
+     * @param id            ID of this input port.
+     * @param host          The module this port is part of.
+     */
+    public TGUINeedle_Endpoint_In (String id, TGUINeedle_Surrogate host)
     {
         super (id, host);
     }

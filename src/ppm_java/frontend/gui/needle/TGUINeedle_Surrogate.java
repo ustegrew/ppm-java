@@ -20,6 +20,7 @@ import ppm_java.typelib.IStatEnabled;
 import ppm_java.typelib.VFrontend;
 
 /**
+ * The UI controller. provides client centered access to the UI.
  *
  * @author Peter Hoppe
  */
@@ -27,17 +28,26 @@ public class TGUINeedle_Surrogate
     extends     VFrontend 
     implements  IControllable, IStatEnabled
 {
-    public static enum EClipType
-    {
-        kClear,
-        kError,
-        kWarn
-    }
+    /**
+     * The singleton.
+     */
+    private static TGUINeedle_Surrogate         gGUI        = null;
     
-    private static TGUINeedle_Surrogate        gGUI        = null;
-    private static final float          gkLvlClip   = -1.0f;
-    private static final float          gkLvlWarn   = -4.0f;
+    /**
+     * Clipping level.
+     */
+    private static final float                  gkLvlClip   = -1.0f;
     
+    /**
+     * Warning level.
+     */
+    private static final float                  gkLvlWarn   = -4.0f;
+    
+    /**
+     * Creates a new instance of the frontend.
+     * 
+     * @param id        Unique ID as which we register this frontend.
+     */
     public static void CreateInstance (String id)
     {
         if (gGUI != null)
@@ -47,9 +57,21 @@ public class TGUINeedle_Surrogate
         gGUI = new TGUINeedle_Surrogate (id);
     }
     
-    private TGUINeedle_WndPPM             fGUI;
-    private TGUINeedle_Surrogate_Stats fStat;
+    /**
+     * The GUI instance.
+     */
+    private TGUINeedle_WndPPM               fGUI;
     
+    /**
+     * The runtime statistics.
+     */
+    private TGUINeedle_Surrogate_Stats      fStat;
+    
+    /**
+     * cTor.
+     * 
+     * @param id            Unique ID as which we register this frontend.
+     */
     private TGUINeedle_Surrogate (String id)
     {
         super (id, 2);
@@ -65,9 +87,9 @@ public class TGUINeedle_Surrogate
     @Override
     public void CreatePort_In (String id)
     {
-        TGUINeedle_Endpoint     p;
+        TGUINeedle_Endpoint_In     p;
         
-        p = new TGUINeedle_Endpoint (id, this);
+        p = new TGUINeedle_Endpoint_In (id, this);
         fStat.AddChannel ();
         AddPortIn (p);
     }
@@ -101,29 +123,45 @@ public class TGUINeedle_Surrogate
         fGUI.Terminate ();
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
+    }
+
+    /**
+     * Notification - UI terminated.
+     */
     void OnTerminate ()
     {
         TController.OnTerminate (GetID ());
     }
 
     /**
-     * @param data
+     * For the given channel, sets the signal level.
+     * 
+     * @param level         The level, in dB.
+     * @param iChannel      Zero based index of the channel.
      */
     void SetLevel (float level, int iChannel)
     {
         double lDisp;
 
+        /* We update stats cycle time when channel #0 is being updated. */
         if (iChannel == 0)
             fStat.OnCycleTick ();
         
         /* Set clipping indicators. */
         if (level >= gkLvlClip)
         {
-            fGUI.SetClipping (EClipType.kError, iChannel);
+            fGUI.SetClipping (EGUINeedle_Surrogate_ClipType.kError, iChannel);
         }
         else if (level >= gkLvlWarn)
         {
-            fGUI.SetClipping (EClipType.kWarn, iChannel);
+            fGUI.SetClipping (EGUINeedle_Surrogate_ClipType.kWarn, iChannel);
         }
         
         /* Compute progress bar value */
@@ -154,15 +192,6 @@ public class TGUINeedle_Surrogate
         fStat.SetDisplayValue   (iChannel, lDisp);
 
         fGUI.SetLevel           (lDisp, iChannel);
-    }
-
-    /* (non-Javadoc)
-     * @see ppm_java.typelib.VBrowseable#_Register()
-     */
-    @Override
-    protected void _Register ()
-    {
-        TController.Register (this);
     }
 }
 

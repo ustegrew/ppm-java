@@ -15,7 +15,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.frontend.gui.needle;
 
 import eu.hansolo.steelseries.tools.LedColor;
-import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate.EClipType;
 import ppm_java.util.debug.TWndDebug;
 
 /**
@@ -39,18 +38,60 @@ import ppm_java.util.debug.TWndDebug;
  */
 class TGUINeedle_WndPPM extends javax.swing.JFrame
 {
-    private static final int                gkIChanL            = 0;
-    private static final int                gkIChanR            = 1;
+    /**
+     * LED color, clipping level.
+     */
     private static final LedColor           gkColorClip         = LedColor.RED_LED;
+    
+    /**
+     * LED color, normal level.
+     */
     private static final LedColor           gkColorNormal       = LedColor.RED_LED;
+    
+    /**
+     * LED color, warning level.
+     */
     private static final LedColor           gkColorWarn         = LedColor.YELLOW_LED;
+    
+    /**
+     * ID, left channel.
+     */
+    private static final int                gkIChanL            = 0;
+    
+    /**
+     * ID, right channel. 
+     */
+    private static final int                gkIChanR            = 1;
+    
+    /**
+     * Serialization ID, used by the Swing framework.
+     */
     private static final long               serialVersionUID    = -9218057974191248946L;
 
-    private TGUINeedle_Surrogate                                               fConnector;
+    /**
+     * The UI controller hosting this UI.
+     */
+    private TGUINeedle_Surrogate                                        fConnector;
+    
+    /**
+     * Radial gauge, left channel.
+     */
     private eu.hansolo.steelseries.gauges.Radial1Vertical               fMeterL;
+    
+    /**
+     * Radial gauge, right channel.
+     */
     private eu.hansolo.steelseries.gauges.Radial1Vertical               fMeterR;
-    private TGUINeedle_TimerClipping                                           fTimerL;
-    private TGUINeedle_TimerClipping                                           fTimerR;
+    
+    /**
+     * Clip timer, left channel.
+     */
+    private TGUINeedle_TimerClipping                                    fTimerL;
+    
+    /**
+     * Clip timer, right channel.
+     */
+    private TGUINeedle_TimerClipping                                    fTimerR;
 
     /**
      * Creates new form TGUINeedle_WndPPM
@@ -71,7 +112,7 @@ class TGUINeedle_WndPPM extends javax.swing.JFrame
      * @param cType         The state to set.
      * @param iChannel      The channel (L or R) associated with the LED we'd like to set.
      */
-    public void SetClipping (EClipType cType, int iChannel)
+    public void SetClipping (EGUINeedle_Surrogate_ClipType cType, int iChannel)
     {
         if (iChannel == gkIChanL)
         {
@@ -129,7 +170,7 @@ class TGUINeedle_WndPPM extends javax.swing.JFrame
      * @param   iChannel
      * @see     TGUILinearGauge_TimerClipping
      */
-    void _SetClipping (EClipType cType, int iChannel)
+    void _SetClipping (EGUINeedle_Surrogate_ClipType cType, int iChannel)
     {
         eu.hansolo.steelseries.gauges.Radial1Vertical       gauge;
         LedColor                                            color;
@@ -150,17 +191,17 @@ class TGUINeedle_WndPPM extends javax.swing.JFrame
         
         if (gauge != null)
         {
-            if (cType == EClipType.kClear)
+            if (cType == EGUINeedle_Surrogate_ClipType.kClear)
             {
                 color   = gkColorNormal;
                 isOn    = false;
             }
-            else if (cType == EClipType.kWarn)
+            else if (cType == EGUINeedle_Surrogate_ClipType.kWarn)
             {
                 color   = gkColorWarn;
                 isOn    = true;
             }
-            else if (cType == EClipType.kError)
+            else if (cType == EGUINeedle_Surrogate_ClipType.kError)
             {
                 color   = gkColorClip;
                 isOn    = true;
@@ -176,11 +217,19 @@ class TGUINeedle_WndPPM extends javax.swing.JFrame
         }
     }
     
+    /**
+     * Handler, when UI window is closing.
+     * 
+     * @param evt       The window event that accomanies this request.
+     */
     private void _OnWindowClosing (java.awt.event.WindowEvent evt)
     {
         fConnector.OnTerminate ();
     }
     
+    /**
+     * Initializes the UI components.
+     */
     private void initComponents()
     {
         java.awt.GridBagConstraints gridBagConstraints;

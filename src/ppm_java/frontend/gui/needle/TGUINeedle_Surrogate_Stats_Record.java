@@ -19,12 +19,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ppm_java.util.storage.TAtomicDouble;
 
+/**
+ * Container for runtime statistics of a {@link TGUINeedle_Surrogate}, for one channel. 
+ * 
+ * @author Peter Hoppe
+ */
 final class TGUINeedle_Surrogate_Stats_Record
 {
+    /**
+     * The current meter section corresponding to the input value. 
+     */
     private AtomicInteger            fCalcSection;
+    
+    /**
+     * The current input value, in dB.
+     */
     private TAtomicDouble            fLastDBValue;
+    
+    /**
+     * The current display value, in PPM units.
+     */
     private TAtomicDouble            fLastDisplayValue;
     
+    /**
+     * cTor.
+     */
     public TGUINeedle_Surrogate_Stats_Record ()
     {
         fCalcSection        = new AtomicInteger (0);
@@ -32,21 +51,9 @@ final class TGUINeedle_Surrogate_Stats_Record
         fLastDisplayValue   = new TAtomicDouble ();
     }
     
-    public void SetCalcSection (int s)
-    {
-        fCalcSection.getAndSet (s);
-    }
-    
-    public void SetDBValue (double dBv)
-    {
-        fLastDBValue.Set (dBv);
-    }
-    
-    public void SetDisplayValue (double dv)
-    {
-        fLastDisplayValue.Set (dv);
-    }
-    
+    /**
+     * @return  The current runtime statistics as text dump.
+     */
     public String GetDumpStr ()
     {
         String ret;
@@ -56,5 +63,35 @@ final class TGUINeedle_Surrogate_Stats_Record
               "            meter section        = " + fCalcSection.get ()       + "\n";
         
         return ret;
+    }
+    
+    /**
+     * Sets the current meter section corresponding to the input value.
+     * 
+     * @param s         The meter section value.
+     */
+    void SetCalcSection (int s)
+    {
+        fCalcSection.getAndSet (s);
+    }
+    
+    /**
+     * Sets the current input value.
+     * 
+     * @param dBv       The current input value, in dB. 
+     */
+    void SetDBValue (double dBv)
+    {
+        fLastDBValue.Set (dBv);
+    }
+    
+    /**
+     * Sets the current display value.
+     * 
+     * @param dv        The current display value, in PPM units.
+     */
+    void SetDisplayValue (double dv)
+    {
+        fLastDisplayValue.Set (dv);
     }
 }

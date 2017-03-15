@@ -20,62 +20,44 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import ppm_java.typelib.IStats;
 
+/**
+ * Combined runtime statistics for all channels.
+ * 
+ * @author Peter Hoppe
+ */
 public final class TGUINeedle_Surrogate_Stats implements IStats
 {
-    private TGUINeedle_Surrogate                               fHost;
-    private long                                        fT0;
-    private AtomicLong                                  fTimeCycle;
-    private ArrayList<TGUINeedle_Surrogate_Stats_Record>       fStatChannels;
+    /**
+     * The hosting frontend.
+     */
+    private TGUINeedle_Surrogate                                fHost;
     
+    /**
+     * The list of statistics records, one per channel.
+     */
+    private ArrayList<TGUINeedle_Surrogate_Stats_Record>        fStatChannels;
+    
+    /**
+     * Absolute time [ms] at startup. In ms since 1970-01-01_00:00:000.
+     */
+    private long                                                fT0;
+    
+    /**
+     * GUI timer cycle: Time it took between the current and the last cycle.
+     */
+    private AtomicLong                                          fTimeCycle;
+    
+    /**
+     * cTor.
+     * 
+     * @param host      The hosting frontend.
+     */
     public TGUINeedle_Surrogate_Stats (TGUINeedle_Surrogate host)
     {
         fHost               = host;
         fTimeCycle          = new AtomicLong (0);
         fT0                 = System.currentTimeMillis ();
         fStatChannels       = new ArrayList<> ();
-    }
-    
-    public void AddChannel ()
-    {
-        TGUINeedle_Surrogate_Stats_Record  r;
-        
-        r = new TGUINeedle_Surrogate_Stats_Record ();
-        fStatChannels.add (r);
-    }
-
-    public void OnCycleTick ()
-    {
-        long    dT;
-        long    tNow;
-        
-        tNow            = System.currentTimeMillis ();
-        dT              = tNow - fT0;
-        fT0             = tNow;
-        fTimeCycle.getAndSet (dT);
-    }
-    
-    public void SetCalcSection (int iChannel, int s)
-    {
-        TGUINeedle_Surrogate_Stats_Record  r;
-        
-        r = fStatChannels.get (iChannel);
-        r.SetCalcSection (s);
-    }
-    
-    public void SetDBValue (int iChannel, double dBv)
-    {
-        TGUINeedle_Surrogate_Stats_Record  r;
-        
-        r = fStatChannels.get (iChannel);
-        r.SetDBValue (dBv);
-    }
-    
-    public void SetDisplayValue (int iChannel, double dv)
-    {
-        TGUINeedle_Surrogate_Stats_Record  r;
-        
-        r = fStatChannels.get (iChannel);
-        r.SetDisplayValue (dv);
     }
     
     /* (non-Javadoc)
@@ -108,5 +90,74 @@ public final class TGUINeedle_Surrogate_Stats implements IStats
         }
         
         return ret;
+    }
+
+    /**
+     * Adds another channel, i.e. prepares a {@link TGUINeedle_Surrogate_Stats_Record}
+     * and adds it to the {@link #fStatChannels list}.
+     */
+    void AddChannel ()
+    {
+        TGUINeedle_Surrogate_Stats_Record  r;
+        
+        r = new TGUINeedle_Surrogate_Stats_Record ();
+        fStatChannels.add (r);
+    }
+    
+    /**
+     * Called from the UI controller, with each cycle.
+     */
+    void OnCycleTick ()
+    {
+        long    dT;
+        long    tNow;
+        
+        tNow            = System.currentTimeMillis ();
+        dT              = tNow - fT0;
+        fT0             = tNow;
+        fTimeCycle.getAndSet (dT);
+    }
+    
+    /**
+     * For the given channel, sets the meter section 
+     * corresponding to the input value. 
+     * 
+     * @param iChannel      Zero based index of the channel.
+     * @param s             The meter section.
+     */
+    void SetCalcSection (int iChannel, int s)
+    {
+        TGUINeedle_Surrogate_Stats_Record  r;
+        
+        r = fStatChannels.get (iChannel);
+        r.SetCalcSection (s);
+    }
+    
+    /**
+     * For the given channel, sets the input value.
+     * 
+     * @param iChannel      Zero based index of the channel.
+     * @param dBv           The current input value, in dB.
+     */
+    void SetDBValue (int iChannel, double dBv)
+    {
+        TGUINeedle_Surrogate_Stats_Record  r;
+        
+        r = fStatChannels.get (iChannel);
+        r.SetDBValue (dBv);
+    }
+    
+    /**
+     * For the given channel, sets the display value.
+     * 
+     * @param iChannel      Zero based index of the channel.
+     * @param dv            The display value, in PPM units.
+     */
+    void SetDisplayValue (int iChannel, double dv)
+    {
+        TGUINeedle_Surrogate_Stats_Record  r;
+        
+        r = fStatChannels.get (iChannel);
+        r.SetDisplayValue (dv);
     }
 }

@@ -16,8 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package ppm_java.frontend.gui.needle;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate.EClipType;
+import ppm_java.frontend.console.lineargauge.TConsole_LinearGauge;
+import ppm_java.util.timer.TTickTimer;
 
 /**
  * A monostable timer for a clipping LED on our PPM GUI. 
@@ -32,21 +32,69 @@ import ppm_java.frontend.gui.needle.TGUINeedle_Surrogate.EClipType;
  * simple state machine which receives the requests and 
  * does the corresponding transistions.
  * 
+ * This is an older development, the {@link TConsole_LinearGauge} 
+ * uses the next development - a {@link TTickTimer} - for the clip 
+ * setting. That one doesn't use its own thread and therefore would 
+ * be better to use here. Since this one works, and it's a prototype
+ * application we keep this solution. 
+ * 
  * @author Peter Hoppe
  */
 class TGUINeedle_TimerClipping extends Thread 
 {
-    private static final int        gkStateClear        = 0;
-    private static final int        gkStateWarn         = 1;
-    private static final int        gkStateErr          = 2;
-    private static final int        gkStateTerm         = 10;
+    /**
+     * Interval time [ms] for internal loop.
+     */
     private static final long       gkIntervalLoop      = 250;
+    
+    /**
+     * Wait time [ms] until a clip/warn condition auto clears.
+     */
     private static final long       gkIntervalWait      = 999;
     
-    private AtomicInteger           fRequest;
-    private int                     fState;
-    private TGUINeedle_WndPPM                 fHost;
+    /**
+     * Flag value: Internal state: Clip clear.
+     */
+    private static final int        gkStateClear        = 0;
+    
+    /**
+     * Flag value: Internal state: Clipping level. 
+     */
+    private static final int        gkStateErr          = 2;
+    
+    /**
+     * Flag value: Internal state: Thread terminated. 
+     */
+    private static final int        gkStateTerm         = 10;
+    
+    /**
+     * Flag value: Internal state: Warning level. 
+     */
+    private static final int        gkStateWarn         = 1;
+    
+    /**
+     * The channel with which this clip timer is associated.
+     */
     private int                     fChannel;
+    
+    /**
+     * The hosting module.
+     */
+    private TGUINeedle_WndPPM       fHost;
+    
+    /**
+     * Request flag.
+     */
+    private AtomicInteger           fRequest;
+    
+    /**
+     * Internal state.
+     */
+    private int                     fState;
+    
+    /**
+     * Absolute time [ms, since 1970-01-01 00:00] the current cycle started.
+     */
     private long                    fTLast;
     
     /**
@@ -63,16 +111,28 @@ class TGUINeedle_TimerClipping extends Thread
         fChannel    = iChannel;
     }
     
+    @Override
+    public void run ()
+    {
+        fTLast = System.currentTimeMillis ();
+        while (fState != gkStateTerm)
+        {
+            _DoTransition ();
+            try {Thread.sleep (gkIntervalLoop);} catch (InterruptedException e) {}
+        }
+        
+    }
+    
     /**
      * Requests setting of the clipping LED to given level.
      */
-    public void SetClip (EClipType cType)
+    public void SetClip (EGUINeedle_Surrogate_ClipType cType)
     {
-        if (cType == EClipType.kWarn)
+        if (cType == EGUINeedle_Surrogate_ClipType.kWarn)
         {
             fRequest.getAndSet (gkStateWarn);
         }
-        else if (cType == EClipType.kError)
+        else if (cType == EGUINeedle_Surrogate_ClipType.kError)
         {
             fRequest.getAndSet (gkStateErr);
         }
@@ -85,18 +145,6 @@ class TGUINeedle_TimerClipping extends Thread
     public void Terminate ()
     {
         fRequest.getAndSet (gkStateTerm);
-    }
-    
-    @Override
-    public void run ()
-    {
-        fTLast = System.currentTimeMillis ();
-        while (fState != gkStateTerm)
-        {
-            _DoTransition ();
-            try {Thread.sleep (gkIntervalLoop);} catch (InterruptedException e) {}
-        }
-        
     }
     
     /**
@@ -196,21 +244,25 @@ class TGUINeedle_TimerClipping extends Thread
     {
         if (fState == gkStateClear)
         {
-            fHost._SetClipping (EClipType.kClear, fChannel);
+            fHost._SetClipping (EGUINeedle_Surrogate_ClipType.kClear, fChannel);
         }
         else if (fState == gkStateWarn)
         {
-            fHost._SetClipping (EClipType.kWarn, fChannel);
+            fHost._SetClipping (EGUINeedle_Surrogate_ClipType.kWarn, fChannel);
         }
         else if (fState == gkStateErr)
         {
-            fHost._SetClipping (EClipType.kError, fChannel);
+            fHost._SetClipping (EGUINeedle_Surrogate_ClipType.kError, fChannel);
         }
         else
         {
         }
     }
     
+    /**
+     * Reset the clip/warn condition if {@link #gkIntervalWait wait interval}
+     * has passed.
+     */
     private void _TryReset ()
     {
         long            t;

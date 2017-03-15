@@ -33,6 +33,11 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
     private TGUILinearGauge_Surrogate                               fHost;
     
     /**
+     * The list of statistics records, one per channel. 
+     */
+    private ArrayList<TGUILinearGauge_Surrogate_Stats_Record>       fStatChannels;
+    
+    /**
      * Absolute time [ms] at startup. In ms since 1970-01-01_00:00:000.
      */
     private long                                                    fT0;
@@ -41,11 +46,6 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
      * GUI timer cycle: Time it took between the current and the last cycle.  
      */
     private AtomicLong                                              fTimeCycle;
-    
-    /**
-     * The list of statistics records, one per channel. 
-     */
-    private ArrayList<TGUILinearGauge_Surrogate_Stats_Record>       fStatChannels;
     
     /**
      * cTor.
@@ -60,22 +60,54 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         fStatChannels       = new ArrayList<> ();
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.IStats#GetDumpStr()
+     */
+    @Override
+    public String GetDumpStr ()
+    {
+        int                                 i;
+        int                                 n;
+        TGUILinearGauge_Surrogate_Stats_Record          r;
+        String                              ret;
+
+        ret = "GUI [" + fHost.GetID () + "]:\n" +  
+                "    cycleTime [ms]               = " + fTimeCycle.getAndAdd (0)  + "\n";
+
+        n = fStatChannels.size ();
+        if (n >= 1)
+        {
+            ret += "    Channels:\n";
+            for (i = 0; i < n; i++)
+            {
+                r       = fStatChannels.get (i);
+                ret    += "        Channel [" + i + "]:\n" + r.GetDumpStr ();
+            }
+        }
+        else
+        {
+            ret += "    Channels: None\n";
+        }
+        
+        return ret;
+    }
+
     /**
-     * Adds another channel, i.e. prepares the {@link TGUILinearGauge_Surrogate_Stats_Record}
+     * Adds another channel, i.e. prepares a {@link TGUILinearGauge_Surrogate_Stats_Record}
      * and adds it to the {@link #fStatChannels list}.
      */
-    public void AddChannel ()
+    void AddChannel ()
     {
         TGUILinearGauge_Surrogate_Stats_Record  r;
         
         r = new TGUILinearGauge_Surrogate_Stats_Record ();
         fStatChannels.add (r);
     }
-
+    
     /**
      * Called from the UI controller, with each cycle.
      */
-    public void OnCycleTick ()
+    void OnCycleTick ()
     {
         long    dT;
         long    tNow;
@@ -127,37 +159,5 @@ public final class TGUILinearGauge_Surrogate_Stats implements IStats
         
         r = fStatChannels.get (iChannel);
         r.SetDisplayValue (dv);
-    }
-    
-    /* (non-Javadoc)
-     * @see ppm_java.typelib.IStats#GetDumpStr()
-     */
-    @Override
-    public String GetDumpStr ()
-    {
-        int                                 i;
-        int                                 n;
-        TGUILinearGauge_Surrogate_Stats_Record          r;
-        String                              ret;
-
-        ret = "GUI [" + fHost.GetID () + "]:\n" +  
-                "    cycleTime [ms]               = " + fTimeCycle.getAndAdd (0)  + "\n";
-
-        n = fStatChannels.size ();
-        if (n >= 1)
-        {
-            ret += "    Channels:\n";
-            for (i = 0; i < n; i++)
-            {
-                r       = fStatChannels.get (i);
-                ret    += "        Channel [" + i + "]:\n" + r.GetDumpStr ();
-            }
-        }
-        else
-        {
-            ret += "    Channels: None\n";
-        }
-        
-        return ret;
     }
 }

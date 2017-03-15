@@ -45,14 +45,19 @@ import ppm_java.util.timer.TTickTimer;
 class TGUILinearGauge_TimerClipping extends Thread 
 {
     /**
+     * Interval time [ms] for internal loop.
+     */
+    private static final long       gkIntervalLoop      = 250;
+    
+    /**
+     * Wait time [ms] until a clip/warn condition auto clears.
+     */
+    private static final long       gkIntervalWait      = 900;
+    
+    /**
      * Flag value: Internal state: Clip clear. 
      */
     private static final int        gkStateClear        = 0;
-    
-    /**
-     * Flag value: Internal state: Warning level. 
-     */
-    private static final int        gkStateWarn         = 1;
     
     /**
      * Flag value: Internal state: Clipping level. 
@@ -65,14 +70,19 @@ class TGUILinearGauge_TimerClipping extends Thread
     private static final int        gkStateTerm         = 10;
     
     /**
-     * Interval time [ms] for internal loop.
+     * Flag value: Internal state: Warning level. 
      */
-    private static final long       gkIntervalLoop      = 250;
+    private static final int        gkStateWarn         = 1;
     
     /**
-     * Wait time [ms] until a clip/warn condition auto clears.
+     * The channel with which this clip timer is associated.
      */
-    private static final long       gkIntervalWait      = 900;
+    private int                     fChannel;
+    
+    /**
+     * The hosting module.
+     */
+    private TGUILinearGauge_WndPPM  fHost;
     
     /**
      * Request flag.
@@ -83,16 +93,6 @@ class TGUILinearGauge_TimerClipping extends Thread
      * Internal state.
      */
     private int                     fState;
-    
-    /**
-     * The hosting module.
-     */
-    private TGUILinearGauge_WndPPM  fHost;
-    
-    /**
-     * The channel with which this clip timer is associated.
-     */
-    private int                     fChannel;
     
     /**
      * Absolute time [ms, since 1970-01-01 00:00] the current cycle started.
@@ -111,6 +111,18 @@ class TGUILinearGauge_TimerClipping extends Thread
         fState      = gkStateClear;
         fHost       = host;
         fChannel    = iChannel;
+    }
+    
+    @Override
+    public void run ()
+    {
+        fTLast = System.currentTimeMillis ();
+        while (fState != gkStateTerm)
+        {
+            _DoTransition ();
+            try {Thread.sleep (gkIntervalLoop);} catch (InterruptedException e) {}
+        }
+        
     }
     
     /**
@@ -135,18 +147,6 @@ class TGUILinearGauge_TimerClipping extends Thread
     public void Terminate ()
     {
         fRequest.getAndSet (gkStateTerm);
-    }
-    
-    @Override
-    public void run ()
-    {
-        fTLast = System.currentTimeMillis ();
-        while (fState != gkStateTerm)
-        {
-            _DoTransition ();
-            try {Thread.sleep (gkIntervalLoop);} catch (InterruptedException e) {}
-        }
-        
     }
     
     /**

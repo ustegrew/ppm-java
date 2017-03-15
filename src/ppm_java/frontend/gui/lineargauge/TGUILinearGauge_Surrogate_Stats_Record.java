@@ -52,6 +52,20 @@ class TGUILinearGauge_Surrogate_Stats_Record
     }
     
     /**
+     * @return  The current runtime statistics as text dump.
+     */
+    public String GetDumpStr ()
+    {
+        String ret;
+        
+        ret = "            peak [dB]            = " + fLastDBValue.Get ()       + "\n" +
+              "            displayValue         = " + fLastDisplayValue.Get ()  + "\n" +
+              "            meter section        = " + fCalcSection.get ()       + "\n";
+        
+        return ret;
+    }
+    
+    /**
      * Sets the current meter section corresponding to the input value.
      * 
      * @param s     The meter section value.
@@ -74,24 +88,10 @@ class TGUILinearGauge_Surrogate_Stats_Record
     /**
      * Sets the current display value.
      * 
-     * @param dv    The current display value, in PPM units
+     * @param dv    The current display value, in PPM units.
      */
     void SetDisplayValue (double dv)
     {
         fLastDisplayValue.Set (dv);
-    }
-    
-    /**
-     * @return  The current runtime statistics as text dump.
-     */
-    public String GetDumpStr ()
-    {
-        String ret;
-        
-        ret = "            peak [dB]            = " + fLastDBValue.Get ()       + "\n" +
-              "            displayValue         = " + fLastDisplayValue.Get ()  + "\n" +
-              "            meter section        = " + fCalcSection.get ()       + "\n";
-        
-        return ret;
     }
 }

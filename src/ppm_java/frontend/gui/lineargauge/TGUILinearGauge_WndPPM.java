@@ -52,7 +52,7 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
     private static final LedColor           kColorWarn          = LedColor.YELLOW_LED;
     
     /**
-     * Serialization ID, requested by the Swing framework.
+     * Serialization ID, used by the Swing framework.
      */
     private static final long               serialVersionUID    = -2335417501850617358L;
     
@@ -207,7 +207,7 @@ class TGUILinearGauge_WndPPM extends javax.swing.JFrame
     /**
      * Handler, when UI window is closing. 
      * 
-     * @param evt
+     * @param evt       The window event that accomanies this request.
      */
     private void _OnWindowClose(java.awt.event.WindowEvent evt)
     {

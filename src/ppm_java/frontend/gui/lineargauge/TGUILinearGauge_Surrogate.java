@@ -121,6 +121,15 @@ public class TGUILinearGauge_Surrogate
         fGUI.Terminate ();
     }
     
+    /* (non-Javadoc)
+     * @see ppm_java.typelib.VBrowseable#_Register()
+     */
+    @Override
+    protected void _Register ()
+    {
+        TController.Register (this);
+    }
+
     /**
      * Event handler: User clicked on the clipping indicator. 
      * This clears both clipping indicators.
@@ -190,15 +199,6 @@ public class TGUILinearGauge_Surrogate
         fStat.SetDisplayValue   (iChannel, lDisp);
 
         fGUI.SetLevel           (lDisp, iChannel);
-    }
-
-    /* (non-Javadoc)
-     * @see ppm_java.typelib.VBrowseable#_Register()
-     */
-    @Override
-    protected void _Register ()
-    {
-        TController.Register (this);
     }
 }
 
