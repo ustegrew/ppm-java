@@ -1,0 +1,14 @@
+gMakeMyConn:MakeMyConnection       [a]
+gController:TController            [a]
+gConnection:TConnection            [a]
+fromPort:VAudioPort_Output         [a]
+toPort:VAudioPort_Input            [a]
+
+
+gMakeMyConn:=gController.Create_Connection_Data ("db_1_out", "db_2_in")
+gController:=gConnection.CreateInstance ("db_1_out", "db_2_in")
+
+gConnection:fromPort=gController.GetObject ("db_1_out")
+gConnection:toPort=gController.GetObject ("db_2_in")
+
+fromPort:=SetTarget
