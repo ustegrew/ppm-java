@@ -1,5 +1,0 @@
-<map id="run" name="run">
-<area shape="rect" id="node2" href="$d4/dcb/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___timer_clipping.html#a94ad2dfa4735f3b6549366828db0bb92" title="Automaton core method. " alt="" coords="94,31,197,57"/>
-<area shape="rect" id="node3" href="$d4/dcb/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___timer_clipping.html#a76707c44f20cff55020b732328f08945" title="Tells the hosting GUI to set the associated clipping LED. " alt="" coords="249,5,324,32"/>
-<area shape="rect" id="node4" href="$d4/dcb/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___timer_clipping.html#af3f4cc2e56d26e61c9a90be2493d1e30" title="Reset the clip/warn condition if wait interval has passed. " alt="" coords="245,56,328,83"/>
-</map>

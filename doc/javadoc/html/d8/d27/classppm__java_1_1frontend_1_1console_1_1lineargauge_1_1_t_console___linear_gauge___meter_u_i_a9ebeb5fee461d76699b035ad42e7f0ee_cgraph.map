@@ -1,4 +1,0 @@
-<map id="Receive" name="Receive">
-<area shape="rect" id="node2" href="$d8/d27/classppm__java_1_1frontend_1_1console_1_1lineargauge_1_1_t_console___linear_gauge___meter_u_i.html#aff66a32fac622795d7fe38de7c657ff7" title="Computes the level bar string for the given level value. " alt="" coords="127,5,196,32"/>
-<area shape="rect" id="node3" href="$d8/d27/classppm__java_1_1frontend_1_1console_1_1lineargauge_1_1_t_console___linear_gauge___meter_u_i.html#a1b8513d05c611a6044203da9a16ada2e" title="Sets the level warn and clip indication for the given level value. " alt="" coords="125,56,197,83"/>
-</map>

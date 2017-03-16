@@ -1,4 +1,0 @@
-<map id="Set" name="Set">
-<area shape="rect" id="node2" href="$d2/df7/classppm__java_1_1util_1_1storage_1_1_t_atomic_double.html#a60fe7aa6d1a53dab132be5ecc82d668e" title="Definitely acquire the lock on the critical section (spin lock, as it&#39;s merry&#45;go&#45;round until lock has..." alt="" coords="103,5,161,32"/>
-<area shape="rect" id="node3" href="$d2/df7/classppm__java_1_1util_1_1storage_1_1_t_atomic_double.html#a4e9f36f97f1d8af33e8f50dce5153568" title="Definitely release the lock on the critical section (spin lock, as it&#39;s merry&#45;go&#45;round until lock has..." alt="" coords="97,56,167,83"/>
-</map>

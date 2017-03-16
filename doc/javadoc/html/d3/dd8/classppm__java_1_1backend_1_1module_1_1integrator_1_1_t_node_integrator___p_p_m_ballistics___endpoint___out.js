@@ -1,5 +1,0 @@
-var classppm__java_1_1backend_1_1module_1_1integrator_1_1_t_node_integrator___p_p_m_ballistics___endpoint___out =
-[
-    [ "TNodeIntegrator_PPMBallistics_Endpoint_Out", "d3/dd8/classppm__java_1_1backend_1_1module_1_1integrator_1_1_t_node_integrator___p_p_m_ballistics___endpoint___out.html#a083c99b722098b3d758db95646024c8f", null ],
-    [ "_Register", "d3/dd8/classppm__java_1_1backend_1_1module_1_1integrator_1_1_t_node_integrator___p_p_m_ballistics___endpoint___out.html#affe6c6c3f0b921760f200ef46bea1f0c", null ]
-];

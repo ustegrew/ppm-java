@@ -1,5 +1,0 @@
-<map id="TWorker" name="TWorker">
-<area shape="rect" id="node2" href="$dc/dc0/interfaceppm__java_1_1typelib_1_1_i_stat_enabled.html" title="Interface for an object that supports runtime statistics. " alt="" coords="5,171,101,248"/>
-<area shape="rect" id="node3" href="$d6/d84/classppm__java_1_1__dev_1_1concept_1_1example_1_1stats_1_1_t_stats_of_worker.html" title="{TStatsOfWorker\n|&#45; fCounter\l&#45; fLastRandom\l&#45; fAverage\l|+ TStatsOfWorker()\l+ SetRandom()\l+ GetAverage()\l+ GetDumpStr()\l}" alt="" coords="126,134,263,285"/>
-<area shape="rect" id="node4" href="$d7/d5a/interfaceppm__java_1_1typelib_1_1_i_stats.html" title="Interface for a statistics record. " alt="" coords="137,5,252,83"/>
-</map>

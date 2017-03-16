@@ -1,6 +1,0 @@
-<map id="VAudioDriver" name="VAudioDriver">
-<area shape="rect" id="node5" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html" title="Audio driver for the JackD server. " alt="" coords="5,715,176,1027"/>
-<area shape="rect" id="node2" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html" title="Base class for all modules processing audio samples. " alt="" coords="19,286,161,525"/>
-<area shape="rect" id="node3" href="$d1/db3/classppm__java_1_1typelib_1_1_v_audio_object.html" title="Base class for all browseable audio objects. " alt="" coords="29,160,152,237"/>
-<area shape="rect" id="node4" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html" title="Base class for all browseable objects. " alt="" coords="31,5,149,112"/>
-</map>

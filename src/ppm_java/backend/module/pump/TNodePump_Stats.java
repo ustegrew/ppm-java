@@ -78,7 +78,7 @@ public class TNodePump_Stats implements IStats
                       "    sampleRate [smp/sec] = " + fSampleRate.getAndAdd (0)         + "\n" +
                       "    samplesPerCycle      = " + fNumSamplesPerCycle.getAndAdd (0) + "\n" +
                       "Input endpoint statistics:\n" +
-                      epInStats +
+                      "    " + epInStats +
                       "\n";
 
         return ret;

@@ -1,6 +1,0 @@
-var classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1read_write_1_1_t_dev___trial___read_write___float_buffer__01 =
-[
-    [ "_DumpDetails", "d5/d99/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1read_write_1_1_t_dev___trial___read_write___float_buffer__01.html#aba3fc845ffbc022b8cb52e4ba2a3b429", null ],
-    [ "_Test_01", "d5/d99/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1read_write_1_1_t_dev___trial___read_write___float_buffer__01.html#a37f8ed99c77503fa0a690f335c904acf", null ],
-    [ "main", "d5/d99/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1read_write_1_1_t_dev___trial___read_write___float_buffer__01.html#a8b260eecbaabcef8473fd87ada040682", null ]
-];

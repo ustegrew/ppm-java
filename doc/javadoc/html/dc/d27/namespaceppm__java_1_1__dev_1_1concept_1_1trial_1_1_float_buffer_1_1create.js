@@ -1,4 +1,0 @@
-var namespaceppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create =
-[
-    [ "TDev_Trial_Performance_FloatBufferCreate_01", "d8/d06/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create_1_1_t_dev___trial___perfo4e2383e519796a23caed33858c34c1ae.html", "d8/d06/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create_1_1_t_dev___trial___perfo4e2383e519796a23caed33858c34c1ae" ]
-];

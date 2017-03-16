@@ -1,5 +1,0 @@
-<map id="_Increment" name="_Increment">
-<area shape="rect" id="node2" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html#a39d57e251a00462b0a8cbcab50f50114" title="Increments the contention counter. " alt="" coords="142,5,293,32"/>
-<area shape="rect" id="node3" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html#a462fb36e9359fa766daa48d9889313ae" title="Increments the overrun counter. " alt="" coords="151,56,284,83"/>
-<area shape="rect" id="node4" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html#a68893108bb5b91dced707e014565a9e5" title="Increments the underrun counter. " alt="" coords="147,107,287,133"/>
-</map>

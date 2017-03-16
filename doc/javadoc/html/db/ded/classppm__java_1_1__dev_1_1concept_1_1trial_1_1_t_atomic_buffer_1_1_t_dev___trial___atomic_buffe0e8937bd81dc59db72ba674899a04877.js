@@ -1,7 +1,0 @@
-var classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffe0e8937bd81dc59db72ba674899a04877 =
-[
-    [ "TProducer", "db/ded/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffe0e8937bd81dc59db72ba674899a04877.html#a238769c50ebb67d6aeb115fdcf491841", null ],
-    [ "run", "db/ded/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffe0e8937bd81dc59db72ba674899a04877.html#a13a43e6d814de94978c515cb084873b1", null ],
-    [ "fAtBuffer", "db/ded/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffe0e8937bd81dc59db72ba674899a04877.html#a1431fdcc7f817086fcc007ecb088993a", null ],
-    [ "fDelay", "db/ded/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffe0e8937bd81dc59db72ba674899a04877.html#a06f10ece1037468fb0e4cf8e1cda4528", null ]
-];

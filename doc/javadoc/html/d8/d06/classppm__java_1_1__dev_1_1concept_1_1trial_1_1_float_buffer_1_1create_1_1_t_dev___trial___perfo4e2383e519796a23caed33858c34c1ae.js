@@ -1,6 +1,0 @@
-var classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create_1_1_t_dev___trial___perfo4e2383e519796a23caed33858c34c1ae =
-[
-    [ "main", "d8/d06/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create_1_1_t_dev___trial___perfo4e2383e519796a23caed33858c34c1ae.html#a8b260eecbaabcef8473fd87ada040682", null ],
-    [ "gkNMaxBlocks", "d8/d06/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create_1_1_t_dev___trial___perfo4e2383e519796a23caed33858c34c1ae.html#abb0a83118d8b656ef27503f19b3a007c", null ],
-    [ "gkNMaxTests", "d8/d06/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_float_buffer_1_1create_1_1_t_dev___trial___perfo4e2383e519796a23caed33858c34c1ae.html#a1a8d6e07fda4c4db5de928bd4dbdc4e8", null ]
-];

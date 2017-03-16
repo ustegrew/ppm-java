@@ -1,5 +1,0 @@
-<map id="_GetTarget" name="_GetTarget">
-<area shape="rect" id="node2" href="$d7/d64/classppm__java_1_1typelib_1_1_v_audio_port___output___chunks___needs_buffer.html#a63d84dc5cc994b7e6c0582bf1955142f" title="Pushes a sample chunk out to the connected input. " alt="" coords="152,5,387,61"/>
-<area shape="rect" id="node3" href="$d8/db2/classppm__java_1_1typelib_1_1_v_audio_port___output___chunks___no_buffer.html#a63d84dc5cc994b7e6c0582bf1955142f" title="Pushes a sample chunk out to the connected input. " alt="" coords="142,85,397,126"/>
-<area shape="rect" id="node4" href="$df/d90/classppm__java_1_1typelib_1_1_v_audio_port___output___samples.html#adc78e8aef5aef774b7a7591b3778f981" title="Pushes a sample value out to the connected input. " alt="" coords="167,150,371,191"/>
-</map>

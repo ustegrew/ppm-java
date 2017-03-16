@@ -1,6 +1,0 @@
-<map id="Start" name="Start">
-<area shape="rect" id="node2" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#a241daff2103a886e197a4ccb424264fa" title="Loads and initializes the JackD driver. " alt="" coords="105,77,197,104"/>
-<area shape="rect" id="node3" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html#a04cbe3f0b5057d0eb582200dea602297" title="ppm_java.typelib.VBrowseable.\lGetID" alt="" coords="257,5,463,46"/>
-<area shape="rect" id="node4" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#a74df81bf9ed4fa17020e9ac54f349066" title="ppm_java.typelib.VAudioProcessor.\lGetNumPortsIn" alt="" coords="245,70,475,111"/>
-<area shape="rect" id="node5" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#ab030471d2e0ce8c7ba7b074d56dcb7c2" title="ppm_java.typelib.VAudioProcessor.\lGetNumPortsOut" alt="" coords="245,135,475,177"/>
-</map>

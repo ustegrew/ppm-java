@@ -1,4 +1,0 @@
-<map id="TThreadConsumer" name="TThreadConsumer">
-<area shape="rect" id="node3" href="$da/de0/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1waitfree__testsafe_1_1_t_dev___ea73eb7b6a07ac823090c9e9526ccd819.html" title="{TDev_Example_multithread\l_waitfree_safe\n|&#45; fValue\l&#45; gkLocked\l&#45; gkUnlocked\l|+ TDev_Example_multithread\l_waitfree_safe()\l+ start()\l+ Pop()\l+ Push()\l+ main()\l}" alt="" coords="48,291,243,485"/>
-<area shape="rect" id="node5" href="$de/d27/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1waitfree__testsafe_1_1_t_thread_producer.html" title="{TThreadProducer\n||+ TThreadProducer()\l+ run()\l}" alt="" coords="170,550,312,642"/>
-</map>

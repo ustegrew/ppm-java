@@ -1,6 +1,0 @@
-var namespaceppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe =
-[
-    [ "TDev_Example_multithread_safe", "df/de4/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe_1_1_t_dev___example__multithread__safe.html", "df/de4/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe_1_1_t_dev___example__multithread__safe" ],
-    [ "TThreadConsumer", "db/dcc/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe_1_1_t_thread_consumer.html", "db/dcc/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe_1_1_t_thread_consumer" ],
-    [ "TThreadProducer", "d7/d80/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe_1_1_t_thread_producer.html", "d7/d80/classppm__java_1_1__dev_1_1concept_1_1example_1_1multithread_1_1safe_1_1_t_thread_producer" ]
-];

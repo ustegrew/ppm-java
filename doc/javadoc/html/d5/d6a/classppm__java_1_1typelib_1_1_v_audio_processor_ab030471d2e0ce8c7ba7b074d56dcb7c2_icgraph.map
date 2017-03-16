@@ -1,6 +1,0 @@
-<map id="GetNumPortsOut" name="GetNumPortsOut">
-<area shape="rect" id="node2" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#a241daff2103a886e197a4ccb424264fa" title="Loads and initializes the JackD driver. " alt="" coords="191,5,419,46"/>
-<area shape="rect" id="node4" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#a4856e0278c53e540fa90916754598360" title="Processes data ready to be retrieved from the Jack driver i.e. " alt="" coords="176,70,435,111"/>
-<area shape="rect" id="node3" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#a07aaf1227e4d645f15e0a964f54ef291" title="Starts the module. " alt="" coords="483,5,699,46"/>
-<area shape="rect" id="node5" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#af4cc5a6da7617be29646351c30a34e69" title="ppm_java.backend.module.jackd.\lTAudioContext_JackD.process" alt="" coords="483,70,699,111"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="TConsole_LinearGauge" name="TConsole_LinearGauge">
-<area shape="rect" id="node2" href="$da/d04/classppm__java_1_1typelib_1_1_v_frontend.html" title="Base class for a front end. " alt="" coords="9,573,143,680"/>
-<area shape="rect" id="node3" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html" title="Base class for all modules processing audio samples. " alt="" coords="5,286,147,525"/>
-<area shape="rect" id="node4" href="$d1/db3/classppm__java_1_1typelib_1_1_v_audio_object.html" title="Base class for all browseable audio objects. " alt="" coords="15,160,137,237"/>
-<area shape="rect" id="node5" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html" title="Base class for all browseable objects. " alt="" coords="17,5,135,112"/>
-<area shape="rect" id="node6" href="$db/d44/interfaceppm__java_1_1typelib_1_1_i_controllable.html" title="A module or construct which can receive some low level control commands (start/stop etc..." alt="" coords="167,581,261,673"/>
-</map>

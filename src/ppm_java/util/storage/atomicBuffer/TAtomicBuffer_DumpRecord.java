@@ -25,6 +25,11 @@ package ppm_java.util.storage.atomicBuffer;
 public class TAtomicBuffer_DumpRecord
 {
     /**
+     * The difference between overruns and underruns.
+     */
+    public int      fDiffOverUnderruns;
+    
+    /**
      * @see TAtomicBuffer_Stats#fNumContentions
      */
     public int      fNumContentions;
@@ -38,9 +43,25 @@ public class TAtomicBuffer_DumpRecord
      * @see TAtomicBuffer_Stats#fNumOverruns
      */
     public int      fNumUnderruns;
+
+    /**
+     * The difference between the totals of overruns and underruns.
+     */
+    public long     fTot_DiffOverUnderruns;
     
     /**
-     * The difference between overruns and underruns.
+     * @see TAtomicBuffer_Stats#fTot_NumContentions
      */
-    public int      fDiffOverUnderruns;
+    public long     fTot_NumContentions;
+    
+    /**
+     * @see TAtomicBuffer_Stats#fTot_NumOverruns
+     */
+    public long     fTot_NumOverruns;
+    
+    /**
+     * @see TAtomicBuffer_Stats#fTot_NumUnderruns
+     */
+    public long     fTot_NumUnderruns;
+    
 }

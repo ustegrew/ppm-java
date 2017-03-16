@@ -1,5 +1,0 @@
-<map id="CreateInstance" name="CreateInstance">
-<area shape="rect" id="node2" href="$d6/da9/classppm__java_1_1backend_1_1module_1_1timer_1_1_t_timer.html#a8ebf4bae5420917957b0f6c9d7e31114" title="cTor. " alt="" coords="166,12,229,39"/>
-<area shape="rect" id="node3" href="$d6/da9/classppm__java_1_1backend_1_1module_1_1timer_1_1_t_timer.html#ae3856823906c4bc0f3fbea5c1a6a0544" title="Returns a sanitized timer interval, if the given value was out of bounds. " alt="" coords="277,12,400,39"/>
-<area shape="rect" id="node4" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html#a04cbe3f0b5057d0eb582200dea602297" title="ppm_java.typelib.VBrowseable.\lGetID" alt="" coords="448,5,653,46"/>
-</map>

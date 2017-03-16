@@ -39,7 +39,7 @@ public class TAtomicBuffer_Stats implements IStats
     /**
      * The synchronization lock
      */
-    private AtomicInteger fLock;
+    private AtomicInteger               fLock;
     
     /**
      * The number of times the producer and the consumer clashed 
@@ -54,7 +54,7 @@ public class TAtomicBuffer_Stats implements IStats
      * 
      * @see TAtomicBuffer
      */
-    int fNumContentions;
+    private int                         fNumContentions;
 
     /**
      * The number of overruns. Overruns happen if the producer 
@@ -64,10 +64,10 @@ public class TAtomicBuffer_Stats implements IStats
      * 
      * @see TAtomicBuffer
      */
-    int fNumOverruns;
+    private int                         fNumOverruns;
     
     /**
-     * Returns the number of underruns. Underruns happen if the consumer 
+     * The number of underruns. Underruns happen if the consumer 
      * tries to get more chunks than the producer submits, which leads 
      * to consumer starvation (= data loss). See the 
      * {@link TAtomicBuffer} for an automated strategy to 
@@ -78,11 +78,38 @@ public class TAtomicBuffer_Stats implements IStats
     private int                         fNumUnderruns;
     
     /**
+     * The total number of contentions. This number will never be cleared.
+     * 
+     * @see #fNumContentions
+     */
+    private long                        fTot_NumContentions;
+    
+    /**
+     * The total number of overruns. This number will never be cleared.
+     * 
+     * @see #fNumOverruns
+     */
+    private long                        fTot_NumOverruns;
+    
+    /**
+     * The total number of underruns. This number will never be cleared.
+     * 
+     * @see #fNumUnderruns
+     */
+    private long                        fTot_NumUnderruns;
+    
+    /**
      * cTor.
      */
     public TAtomicBuffer_Stats ()
     {
-        fLock = new AtomicInteger (gkUnlocked);
+        fLock               = new AtomicInteger (gkUnlocked);
+        fNumContentions     = 0;
+        fNumOverruns        = 0;
+        fNumUnderruns       = 0;
+        fTot_NumContentions = 0;
+        fTot_NumOverruns    = 0;
+        fTot_NumUnderruns   = 0;
     }
     
     /**
@@ -99,11 +126,18 @@ public class TAtomicBuffer_Stats implements IStats
     @Override
     public String GetDumpStr ()
     {
-        String ret;
+        int     diff;
+        long    totDiff;
+        String  ret;
         
         _Lock ();
         
-        ret = "cnt=" + fNumContentions + ", o/runs=" + fNumOverruns + ", u/runs=" + fNumUnderruns;
+        diff    = fNumOverruns - fNumUnderruns;
+        totDiff = fTot_NumOverruns - fTot_NumUnderruns;
+        ret     =   "cnt="    + fNumContentions + " (total:" + fTot_NumContentions + "), " 
+                  + "o_runs=" + fNumOverruns    + " (total:" + fTot_NumOverruns    + "), " 
+                  + "u_runs=" + fNumUnderruns   + " (total:" + fTot_NumUnderruns   + "), "
+                  + "diff="   + diff            + " (total:" + totDiff             + ")";
         
         _Unlock ();
         
@@ -125,10 +159,14 @@ public class TAtomicBuffer_Stats implements IStats
         
         _Lock ();
         
-        ret.fNumContentions     = fNumContentions;
-        ret.fNumOverruns        = fNumOverruns;
-        ret.fNumUnderruns       = fNumUnderruns;
-        ret.fDiffOverUnderruns  = fNumOverruns - fNumUnderruns;
+        ret.fNumContentions         = fNumContentions;
+        ret.fNumOverruns            = fNumOverruns;
+        ret.fNumUnderruns           = fNumUnderruns;
+        ret.fDiffOverUnderruns      = fNumOverruns - fNumUnderruns;
+        ret.fTot_NumContentions     = fTot_NumContentions;
+        ret.fTot_NumOverruns        = fTot_NumOverruns;
+        ret.fTot_NumUnderruns       = fTot_NumUnderruns;
+        ret.fTot_DiffOverUnderruns  = fTot_NumOverruns - fTot_NumUnderruns;
         
         _Unlock ();
         
@@ -181,18 +219,21 @@ public class TAtomicBuffer_Stats implements IStats
     private void _Increment (EIncField field)
     {
         _Lock ();
-        
+
         if (field == EIncField.kContentions)
         {
             fNumContentions++;
+            fTot_NumContentions++;
         }
         else if (field == EIncField.kOverruns)
         {
             fNumOverruns++;
+            fTot_NumOverruns++;
         }
         else if (field == EIncField.kUnderruns)
         {
             fNumUnderruns++;
+            fTot_NumUnderruns++;
         }
         
         _Unlock ();

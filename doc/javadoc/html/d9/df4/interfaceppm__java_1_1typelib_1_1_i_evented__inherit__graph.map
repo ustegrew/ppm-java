@@ -1,9 +1,0 @@
-<map id="IEvented" name="IEvented">
-<area shape="rect" id="node2" href="$d2/da1/classppm__java_1_1__dev_1_1concept_1_1example_1_1event_1_1_t_sink.html" title="{TSink\n||+ TSink()\l+ OnEvent()\l+ Start()\l+ Stop()\l+ OnEvent()\l+ OnEvent()\l+ OnEvent()\l# _Register()\l}" alt="" coords="5,411,101,591"/>
-<area shape="rect" id="node3" href="$da/d60/classppm__java_1_1__dev_1_1concept_1_1example_1_1event_1_1_t_source.html" title="{TSource\n||+ TSource()\l+ Start()\l+ Stop()\l+ OnEvent()\l+ OnEvent()\l+ OnEvent()\l+ OnEvent()\l# _Register()\l}" alt="" coords="126,411,223,591"/>
-<area shape="rect" id="node4" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html" title="PPM meter class. " alt="" coords="248,265,440,738"/>
-<area shape="rect" id="node5" href="$d2/d99/classppm__java_1_1backend_1_1module_1_1integrator_1_1_t_node_integrator___p_p_m_ballistics.html" title="A stepwise integrator to implement PPM ballistics. " alt="" coords="464,323,685,679"/>
-<area shape="rect" id="node6" href="$de/db8/classppm__java_1_1backend_1_1module_1_1pump_1_1_t_node_pump.html" title="A data pump. " alt="" coords="709,287,901,716"/>
-<area shape="rect" id="node7" href="$d6/da9/classppm__java_1_1backend_1_1module_1_1timer_1_1_t_timer.html" title="Emits a constant stream of IEvented#gkEventTimerTick events, on event per given interval. " alt="" coords="926,375,1065,628"/>
-<area shape="rect" id="node8" href="$dc/de5/classppm__java_1_1frontend_1_1console_1_1text_1_1_t_console___text_out.html" title="A simple text&#45;only frontend. " alt="" coords="1090,375,1248,628"/>
-</map>

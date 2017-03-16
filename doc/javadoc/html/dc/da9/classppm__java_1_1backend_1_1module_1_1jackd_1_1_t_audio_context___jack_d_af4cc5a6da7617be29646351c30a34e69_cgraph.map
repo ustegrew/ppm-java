@@ -1,8 +1,0 @@
-<map id="process" name="process">
-<area shape="rect" id="node2" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#adcb71601f3fe96a1cfb862abb6a0ceb2" title="Processes data ready to be sent to the Jack driver i.e. " alt="" coords="127,77,241,104"/>
-<area shape="rect" id="node5" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#a4856e0278c53e540fa90916754598360" title="Processes data ready to be retrieved from the Jack driver i.e. " alt="" coords="123,143,245,169"/>
-<area shape="rect" id="node3" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#a74df81bf9ed4fa17020e9ac54f349066" title="ppm_java.typelib.VAudioProcessor.\lGetNumPortsIn" alt="" coords="293,5,523,46"/>
-<area shape="rect" id="node4" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#a5bfd065f6711c094469beafa8b649b71" title="Returns the ith input port. " alt="" coords="293,70,523,111"/>
-<area shape="rect" id="node6" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#ab030471d2e0ce8c7ba7b074d56dcb7c2" title="ppm_java.typelib.VAudioProcessor.\lGetNumPortsOut" alt="" coords="293,135,523,177"/>
-<area shape="rect" id="node7" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html#a2a3eff032668d4235f02e6cad3f43a66" title="Returns the ith output port. " alt="" coords="293,201,523,242"/>
-</map>

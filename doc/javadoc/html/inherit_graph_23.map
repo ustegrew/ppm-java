@@ -1,6 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$d1/d82/classppm__java_1_1__dev_1_1concept_1_1example_1_1_t_atomic_buffer_1_1_t_dev___example___atomic_b97e95d2d901073869329a4f73ca83d96.html" title="The producer. " alt="" coords="131,5,330,46"/>
-<area shape="rect" id="node3" href="$d8/d1e/classppm__java_1_1__dev_1_1concept_1_1example_1_1_t_atomic_buffer_1_1_t_dev___example___atomic_bc460d210c001fecbfdf03e5fb16d4c64.html" title="The consumer. " alt="" coords="131,70,330,111"/>
-<area shape="rect" id="node4" href="$d2/df2/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffed45a420e4fba64d481cf2bcce0c03f63.html" title="TDev_Trial_AtomicBuffer\l_Contention_01.TConsumer" alt="" coords="138,135,323,177"/>
-<area shape="rect" id="node5" href="$db/ded/classppm__java_1_1__dev_1_1concept_1_1trial_1_1_t_atomic_buffer_1_1_t_dev___trial___atomic_buffe0e8937bd81dc59db72ba674899a04877.html" title="TDev_Trial_AtomicBuffer\l_Contention_01.TProducer" alt="" coords="142,201,319,242"/>
-</map>

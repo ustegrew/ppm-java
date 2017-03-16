@@ -1,4 +1,0 @@
-var namespaceppm__java_1_1__dev_1_1concept_1_1example_1_1_t_atomic_buffer =
-[
-    [ "TDev_Example_AtomicBuffer", "df/d17/classppm__java_1_1__dev_1_1concept_1_1example_1_1_t_atomic_buffer_1_1_t_dev___example___atomic_buffer.html", "df/d17/classppm__java_1_1__dev_1_1concept_1_1example_1_1_t_atomic_buffer_1_1_t_dev___example___atomic_buffer" ]
-];
