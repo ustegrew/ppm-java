@@ -1,0 +1,9 @@
+<map id="VFrontend" name="VFrontend">
+<area shape="rect" id="node5" href="$db/d79/classppm__java_1_1frontend_1_1console_1_1lineargauge_1_1_t_console___linear_gauge.html" title="A linear gauge on the console. " alt="" coords="5,728,184,1187"/>
+<area shape="rect" id="node6" href="$dc/de5/classppm__java_1_1frontend_1_1console_1_1text_1_1_t_console___text_out.html" title="A simple text&#45;only frontend. " alt="" coords="209,831,367,1084"/>
+<area shape="rect" id="node7" href="$d2/dd7/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___surrogate.html" title="The UI controller. " alt="" coords="391,823,597,1091"/>
+<area shape="rect" id="node8" href="$d5/d13/classppm__java_1_1frontend_1_1gui_1_1needle_1_1_t_g_u_i_needle___surrogate.html" title="The UI controller. " alt="" coords="622,831,796,1084"/>
+<area shape="rect" id="node2" href="$d5/d6a/classppm__java_1_1typelib_1_1_v_audio_processor.html" title="Base class for all modules processing audio samples. " alt="" coords="319,286,461,525"/>
+<area shape="rect" id="node3" href="$d1/db3/classppm__java_1_1typelib_1_1_v_audio_object.html" title="Base class for all browseable audio objects. " alt="" coords="329,160,452,237"/>
+<area shape="rect" id="node4" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html" title="Base class for all browseable objects. " alt="" coords="331,5,449,112"/>
+</map>

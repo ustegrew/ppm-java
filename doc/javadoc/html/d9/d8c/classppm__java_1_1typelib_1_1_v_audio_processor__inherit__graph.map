@@ -1,0 +1,16 @@
+<map id="VAudioProcessor" name="VAudioProcessor">
+<area shape="rect" id="node4" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html" title="PPM meter class. " alt="" coords="5,574,197,1047"/>
+<area shape="rect" id="node5" href="$dd/db2/classppm__java_1_1backend_1_1module_1_1converter__db_1_1_t_node_converter_db.html" title="Converts a raw value [0, 1] into its equivalent dB value. " alt="" coords="222,713,372,908"/>
+<area shape="rect" id="node6" href="$d2/d99/classppm__java_1_1backend_1_1module_1_1integrator_1_1_t_node_integrator___p_p_m_ballistics.html" title="A stepwise integrator to implement PPM ballistics. " alt="" coords="397,633,619,989"/>
+<area shape="rect" id="node7" href="$da/da6/classppm__java_1_1backend_1_1module_1_1peak__estimator_1_1_t_node_peak_estimator.html" title="Estimator that finds the raw peak value of each given sample chunk and pushes its absolute value to t..." alt="" coords="643,721,805,901"/>
+<area shape="rect" id="node8" href="$de/db8/classppm__java_1_1backend_1_1module_1_1pump_1_1_t_node_pump.html" title="A data pump. " alt="" coords="829,596,1021,1025"/>
+<area shape="rect" id="node9" href="$dc/d95/classppm__java_1_1typelib_1_1_v_audio_driver.html" title="Base class for all audio drivers. " alt="" coords="1045,765,1168,857"/>
+<area shape="rect" id="node11" href="$da/d04/classppm__java_1_1typelib_1_1_v_frontend.html" title="Base class for a front end. " alt="" coords="1312,757,1445,864"/>
+<area shape="rect" id="node2" href="$d1/db3/classppm__java_1_1typelib_1_1_v_audio_object.html" title="Base class for all browseable audio objects. " alt="" coords="663,160,785,237"/>
+<area shape="rect" id="node3" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html" title="Base class for all browseable objects. " alt="" coords="665,5,783,112"/>
+<area shape="rect" id="node10" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html" title="Audio driver for the JackD server. " alt="" coords="901,1169,1072,1481"/>
+<area shape="rect" id="node12" href="$db/d79/classppm__java_1_1frontend_1_1console_1_1lineargauge_1_1_t_console___linear_gauge.html" title="A linear gauge on the console. " alt="" coords="1096,1096,1275,1555"/>
+<area shape="rect" id="node13" href="$dc/de5/classppm__java_1_1frontend_1_1console_1_1text_1_1_t_console___text_out.html" title="A simple text&#45;only frontend. " alt="" coords="1299,1199,1457,1452"/>
+<area shape="rect" id="node14" href="$d2/dd7/classppm__java_1_1frontend_1_1gui_1_1lineargauge_1_1_t_g_u_i_linear_gauge___surrogate.html" title="The UI controller. " alt="" coords="1482,1191,1688,1459"/>
+<area shape="rect" id="node15" href="$d5/d13/classppm__java_1_1frontend_1_1gui_1_1needle_1_1_t_g_u_i_needle___surrogate.html" title="The UI controller. " alt="" coords="1713,1199,1887,1452"/>
+</map>

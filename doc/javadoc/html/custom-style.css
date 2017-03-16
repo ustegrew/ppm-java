@@ -1,0 +1,13 @@
+#projectlogo
+{
+    text-align:         center;
+    vertical-align:     middle;
+    border-collapse:    separate;
+}
+
+#projectname 
+{
+    font:       2em Tahoma, Arial,sans-serif;
+    margin:     0px;
+    padding:    2px 0px;
+}

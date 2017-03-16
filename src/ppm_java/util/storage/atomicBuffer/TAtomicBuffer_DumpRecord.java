@@ -30,17 +30,23 @@ public class TAtomicBuffer_DumpRecord
     public int      fDiffOverUnderruns;
     
     /**
+     * The number of contentions.
+     * 
      * @see TAtomicBuffer_Stats#fNumContentions
      */
     public int      fNumContentions;
     
     /**
+     * The number of overruns.
+     * 
      * @see TAtomicBuffer_Stats#fNumOverruns
      */
     public int      fNumOverruns;
     
     /**
-     * @see TAtomicBuffer_Stats#fNumOverruns
+     * The number of underruns.
+     * 
+     * @see TAtomicBuffer_Stats#fNumUnderruns
      */
     public int      fNumUnderruns;
 
@@ -50,16 +56,22 @@ public class TAtomicBuffer_DumpRecord
     public long     fTot_DiffOverUnderruns;
     
     /**
+     * The total number of contentions. This number will never be cleared.
+     * 
      * @see TAtomicBuffer_Stats#fTot_NumContentions
      */
     public long     fTot_NumContentions;
     
     /**
+     * The total number of overruns. This number will never be cleared.
+     * 
      * @see TAtomicBuffer_Stats#fTot_NumOverruns
      */
     public long     fTot_NumOverruns;
     
     /**
+     * The total number of underruns. This number will never be cleared.
+     * 
      * @see TAtomicBuffer_Stats#fTot_NumUnderruns
      */
     public long     fTot_NumUnderruns;

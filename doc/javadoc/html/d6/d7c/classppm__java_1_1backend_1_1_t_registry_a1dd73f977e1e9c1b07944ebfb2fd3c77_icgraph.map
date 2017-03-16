@@ -1,0 +1,7 @@
+<map id="GetObject" name="GetObject">
+<area shape="rect" id="node2" href="$df/d79/classppm__java_1_1backend_1_1_t_controller.html#aafdb47c9c900c8052bbb9d27e147c766" title="Looks up an audio object by ID. " alt="" coords="136,37,339,78"/>
+<area shape="rect" id="node5" href="$df/d79/classppm__java_1_1backend_1_1_t_controller.html#a19b40aaeb2952cd6640f2bd39d644fb1" title="Starts/stops all modules in the start list. " alt="" coords="136,102,339,143"/>
+<area shape="rect" id="node6" href="$df/d79/classppm__java_1_1backend_1_1_t_controller.html#a321a0c4029a593ebfcdcd9d9998f9ab9" title="Subscribes an IEvented object (subscriber) to receive events from another VBrowseable (subscribed)..." alt="" coords="136,167,339,209"/>
+<area shape="rect" id="node3" href="$df/d79/classppm__java_1_1backend_1_1_t_controller.html#a840dd5e2bf669143e3fcfbd395f69a05" title="Creates an input port on a module. " alt="" coords="387,5,589,46"/>
+<area shape="rect" id="node4" href="$df/d79/classppm__java_1_1backend_1_1_t_controller.html#a8411f5bb89772321ad7f3fb75ea7755d" title="Creates an output port on a module. " alt="" coords="387,70,589,111"/>
+</map>

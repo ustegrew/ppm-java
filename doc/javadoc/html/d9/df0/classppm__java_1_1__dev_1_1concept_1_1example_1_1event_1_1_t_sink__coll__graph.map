@@ -1,0 +1,5 @@
+<map id="TSink" name="TSink">
+<area shape="rect" id="node2" href="$de/dd1/classppm__java_1_1typelib_1_1_v_browseable.html" title="Base class for all browseable objects. " alt="" coords="5,57,123,164"/>
+<area shape="rect" id="node3" href="$df/dbb/interfaceppm__java_1_1typelib_1_1_i_evented.html" title="Base interface for the event system. " alt="" coords="148,6,353,215"/>
+<area shape="rect" id="node4" href="$db/d44/interfaceppm__java_1_1typelib_1_1_i_controllable.html" title="A module or construct which can receive some low level control commands (start/stop etc..." alt="" coords="378,65,472,157"/>
+</map>

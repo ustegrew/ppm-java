@@ -1,0 +1,7 @@
+<map id="TAtomicBuffer" name="TAtomicBuffer">
+<area shape="rect" id="node2" href="$dc/dc0/interfaceppm__java_1_1typelib_1_1_i_stat_enabled.html" title="Interface for an object that supports runtime statistics. " alt="" coords="5,272,101,349"/>
+<area shape="rect" id="node7" href="$d4/dc0/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer___stats.html" title="Runtime statistics of a TAtomicBuffer. " alt="" coords="212,147,383,474"/>
+<area shape="rect" id="node5" href="$df/d84/enumppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_e_atomic_buffer___if_invalid_policy.html" title="The Invalid data policy. " alt="" coords="518,265,713,357"/>
+<area shape="rect" id="node6" href="$d4/d79/enumppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_e_atomic_buffer___copy_policy.html" title="The Copy policy. " alt="" coords="739,257,920,364"/>
+<area shape="rect" id="node8" href="$d7/d5a/interfaceppm__java_1_1typelib_1_1_i_stats.html" title="Interface for a statistics record. " alt="" coords="240,5,355,83"/>
+</map>

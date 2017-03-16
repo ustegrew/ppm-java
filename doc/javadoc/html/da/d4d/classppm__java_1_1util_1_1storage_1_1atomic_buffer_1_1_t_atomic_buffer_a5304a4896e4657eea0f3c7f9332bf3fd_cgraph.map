@@ -1,0 +1,7 @@
+<map id="Get" name="Get">
+<area shape="rect" id="node2" href="$da/d4d/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer.html#ac00f83154af73418afa968577fcd2aa8" title="An internal work method: Retrieves (a deep copy of) the newest sample chunk, or empty chunk..." alt="" coords="97,5,175,32"/>
+<area shape="rect" id="node4" href="$da/d4d/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer.html#a60fe7aa6d1a53dab132be5ecc82d668e" title="Definitely acquire the lock on the critical section (spin lock, as it&#39;s merry&#45;go&#45;round until lock has..." alt="" coords="107,56,165,83"/>
+<area shape="rect" id="node5" href="$da/d4d/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer.html#a1dd55dd250854d9c48b81bda879e3d16" title="Tentatively try to lock the critical section. " alt="" coords="98,107,174,133"/>
+<area shape="rect" id="node6" href="$da/d4d/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer.html#a4e9f36f97f1d8af33e8f50dce5153568" title="Definitely unlock the critical section (spin lock, as it&#39;s merry&#45;go&#45;round until lock has been release..." alt="" coords="101,157,171,184"/>
+<area shape="rect" id="node3" href="$da/d4d/classppm__java_1_1util_1_1storage_1_1atomic_buffer_1_1_t_atomic_buffer.html#a09e17a8ac5f90d1659762c06a3798c64" title="Creates a deep copy of the passed float buffer (for copy&#45;on&#45;write semantics). " alt="" coords="224,5,336,32"/>
+</map>

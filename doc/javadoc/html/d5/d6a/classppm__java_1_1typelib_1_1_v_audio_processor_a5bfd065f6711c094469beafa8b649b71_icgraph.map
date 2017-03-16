@@ -1,0 +1,10 @@
+<map id="GetPortIn" name="GetPortIn">
+<area shape="rect" id="node2" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#acb24179b9cce6b4e388b2c7589b0a681" title="Auto compensation for Overruns/Underruns on the atomic buffer associated with the input..." alt="" coords="138,5,398,61"/>
+<area shape="rect" id="node3" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#a9170c532c1d0021b723f0285c672a6cd" title="The central computation piece of the PPM level meter. " alt="" coords="451,32,711,88"/>
+<area shape="rect" id="node5" href="$de/db8/classppm__java_1_1backend_1_1module_1_1pump_1_1_t_node_pump.html#ae229ebda3ceb1f6b51687126a833aa40" title="Initializes a few objects and sets the initial value for fTLast. " alt="" coords="159,137,377,178"/>
+<area shape="rect" id="node7" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#adcb71601f3fe96a1cfb862abb6a0ceb2" title="Processes data ready to be sent to the Jack driver i.e. " alt="" coords="143,202,393,243"/>
+<area shape="rect" id="node9" href="$d3/df6/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d___stats.html#aeca6a90af8e17967096f2bfd719ceb45" title="ppm_java.backend.module.jackd.\lTAudioContext_JackD_Stats.GetDumpStr" alt="" coords="133,267,403,309"/>
+<area shape="rect" id="node4" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#a310a2f2cdbda46d8166b50e45943e7e4" title="Receive an event with no parameter. " alt="" coords="761,32,1021,88"/>
+<area shape="rect" id="node6" href="$de/db8/classppm__java_1_1backend_1_1module_1_1pump_1_1_t_node_pump.html#a310a2f2cdbda46d8166b50e45943e7e4" title="Receive an event with no parameter. " alt="" coords="473,137,690,178"/>
+<area shape="rect" id="node8" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#af4cc5a6da7617be29646351c30a34e69" title="ppm_java.backend.module.jackd.\lTAudioContext_JackD.process" alt="" coords="473,202,689,243"/>
+</map>

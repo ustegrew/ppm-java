@@ -1,0 +1,8 @@
+<map id="AddPortOut" name="AddPortOut">
+<area shape="rect" id="node2" href="$da/da6/classppm__java_1_1backend_1_1module_1_1peak__estimator_1_1_t_node_peak_estimator.html#a1d50b4bdc07d447555e6c7ff69b97855" title="ppm_java.backend.module.peak\l_estimator.TNodePeakEstimator.Create\lPort_Out" alt="" coords="147,5,402,61"/>
+<area shape="rect" id="node3" href="$dd/db2/classppm__java_1_1backend_1_1module_1_1converter__db_1_1_t_node_converter_db.html#a1d50b4bdc07d447555e6c7ff69b97855" title="ppm_java.backend.module.converter\l_db.TNodeConverterDb.CreatePort_Out" alt="" coords="147,85,402,126"/>
+<area shape="rect" id="node4" href="$dc/da9/classppm__java_1_1backend_1_1module_1_1jackd_1_1_t_audio_context___jack_d.html#a1d50b4bdc07d447555e6c7ff69b97855" title="ppm_java.backend.module.jackd.\lTAudioContext_JackD.CreatePort_Out" alt="" coords="150,150,399,191"/>
+<area shape="rect" id="node5" href="$d2/d99/classppm__java_1_1backend_1_1module_1_1integrator_1_1_t_node_integrator___p_p_m_ballistics.html#a1d50b4bdc07d447555e6c7ff69b97855" title="ppm_java.backend.module.integrator.\lTNodeIntegrator_PPMBallistics.Create\lPort_Out" alt="" coords="151,215,399,271"/>
+<area shape="rect" id="node6" href="$de/db8/classppm__java_1_1backend_1_1module_1_1pump_1_1_t_node_pump.html#a1d50b4bdc07d447555e6c7ff69b97855" title="ppm_java.backend.module.pump.\lTNodePump.CreatePort_Out" alt="" coords="166,294,383,335"/>
+<area shape="rect" id="node7" href="$dc/d04/classppm__java_1_1backend_1_1module_1_1__deprecated__ppm_1_1_t_node_p_p_m_processor.html#a1d50b4bdc07d447555e6c7ff69b97855" title="ppm_java.backend.module.\l_deprecated_ppm.TNodePPMProcessor.\lCreatePort_Out" alt="" coords="145,359,405,415"/>
+</map>
